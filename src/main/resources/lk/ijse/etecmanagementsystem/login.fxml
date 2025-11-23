@@ -70,7 +70,7 @@
       </AnchorPane>
       <AnchorPane layoutX="214.0" layoutY="53.0" prefHeight="68.0" prefWidth="472.0">
          <children>
-            <Pane opacity="0.54" prefHeight="72.0" prefWidth="470.0" style="-fx-background-color: rgba(39, 50, 105,8); -fx-background-radius: 20;" />
+            <Pane prefHeight="72.0" prefWidth="470.0" style="-fx-background-color: rgba(39, 50, 105,8); -fx-background-radius: 20;" />
             <VBox alignment="CENTER" prefHeight="76.0" prefWidth="465.0">
                <children>
                   <Text fill="WHITE" stroke="BLACK" strokeType="OUTSIDE" strokeWidth="0.0" text="ETEC Computers" textAlignment="CENTER" wrappingWidth="444.9716796875">
