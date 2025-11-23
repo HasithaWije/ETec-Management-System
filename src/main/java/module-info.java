@@ -6,4 +6,5 @@ module lk.ijse.etecmanagementsystem {
 
     opens lk.ijse.etecmanagementsystem to javafx.fxml;
     exports lk.ijse.etecmanagementsystem;
+
 }
