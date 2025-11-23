@@ -21,7 +21,7 @@ public class App extends Application {
         primaryStage.show();
     }
 
-    static void setRoot(String fxml) throws IOException {
+    public static void setRoot(String fxml) throws IOException {
         scene.setRoot(loadFXML(fxml));
         // keep login fixed-size, allow resizing for other scenes
         if (primaryStage != null) {

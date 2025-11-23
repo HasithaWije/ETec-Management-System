@@ -1,6 +1,348 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import javafx.scene.layout.AnchorPane?>
+<?import java.lang.String?>
+<?import javafx.collections.FXCollections?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.ListView?>
+<?import javafx.scene.control.ScrollPane?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.effect.DropShadow?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Region?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
 
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="600.0" minWidth="1000.0" prefHeight="720.0" prefWidth="1280.0" style="-fx-background-color: #f3f4f6;" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="lk.ijse.etecmanagementsystem.InventoryController">
 
-<AnchorPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="600.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" />
+    <left>
+        <VBox spacing="10.0" style="-fx-background-color: #1e293b;" BorderPane.alignment="CENTER">
+            <children>
+                <Label alignment="CENTER" prefHeight="65.0" prefWidth="259.0" text="ETEC POS" textAlignment="CENTER" textFill="WHITE">
+                    <font>
+                        <Font name="System Bold" size="24.0" />
+                    </font>
+                    <padding>
+                        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                    </padding>
+                </Label>
+                <Separator opacity="0.3" prefWidth="200.0" />
+
+                <Button fx:id="btnDashboard" alignment="BASELINE_LEFT" graphicTextGap="15.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" style="-fx-background-color: transparent; -fx-cursor: hand;" text="Dashboard" textFill="WHITE">
+                    <padding>
+                        <Insets bottom="12.0" left="20.0" right="20.0" top="12.0" />
+                    </padding>
+                    <font>
+                        <Font size="14.0" />
+                    </font>
+                    <graphic>
+                        <Label text="🏠" textFill="WHITE" />
+                    </graphic>
+                </Button>
+                <Button fx:id="btnInventory" alignment="BASELINE_LEFT" graphicTextGap="15.0" layoutX="10.0" layoutY="78.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" style="-fx-background-color: transparent; -fx-cursor: hand;" text="Inventory" textFill="#cbd5e1">
+                    <padding>
+                        <Insets bottom="12.0" left="20.0" right="20.0" top="12.0" />
+                    </padding>
+                    <font>
+                        <Font size="14.0" />
+                    </font>
+                    <graphic>
+                        <Label text="📦" textFill="#cbd5e1" />
+                    </graphic>
+                </Button>
+                <Button fx:id="btnRepairs" alignment="BASELINE_LEFT" graphicTextGap="15.0" layoutX="10.0" layoutY="254.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" style="-fx-background-color: transparent; -fx-cursor: hand;" text="Repairs" textFill="#cbd5e1">
+                    <padding>
+                        <Insets bottom="12.0" left="20.0" right="20.0" top="12.0" />
+                    </padding>
+                    <font>
+                        <Font size="14.0" />
+                    </font>
+                    <graphic>
+                        <Label text="🛠" textFill="#cbd5e1" />
+                    </graphic>
+                </Button>
+                <Button fx:id="btnSuppliers" alignment="BASELINE_LEFT" graphicTextGap="15.0" layoutX="10.0" layoutY="122.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" style="-fx-background-color: transparent; -fx-cursor: hand;" text="Suppliers" textFill="#cbd5e1">
+                    <padding>
+                        <Insets bottom="12.0" left="20.0" right="20.0" top="12.0" />
+                    </padding>
+                    <font>
+                        <Font size="14.0" />
+                    </font>
+                    <graphic>
+                        <Label text="🚚" textFill="#cbd5e1" />
+                    </graphic>
+                </Button>
+                <Button fx:id="btnCustomers" alignment="BASELINE_LEFT" graphicTextGap="15.0" layoutX="10.0" layoutY="166.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" style="-fx-background-color: transparent; -fx-cursor: hand;" text="Customers" textFill="#cbd5e1">
+                    <padding>
+                        <Insets bottom="12.0" left="20.0" right="20.0" top="12.0" />
+                    </padding>
+                    <font>
+                        <Font size="14.0" />
+                    </font>
+                    <graphic>
+                        <Label text="🧑‍🤝‍🧑" textFill="#cbd5e1" />
+                    </graphic>
+                </Button>
+                <Button fx:id="btnPayments" alignment="BASELINE_LEFT" graphicTextGap="15.0" layoutX="10.0" layoutY="210.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" style="-fx-background-color: transparent; -fx-cursor: hand;" text="Payments" textFill="#cbd5e1">
+                    <padding>
+                        <Insets bottom="12.0" left="20.0" right="20.0" top="12.0" />
+                    </padding>
+                    <font>
+                        <Font size="14.0" />
+                    </font>
+                    <graphic>
+                        <Label text="💳" textFill="#cbd5e1" />
+                    </graphic>
+                </Button>
+            <Button fx:id="btnWarranty" alignment="BASELINE_LEFT" graphicTextGap="15.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" style="-fx-background-color: transparent; -fx-cursor: hand;" text="Warranty" textFill="#cbd5e1">
+               <padding>
+                  <Insets bottom="12.0" left="20.0" right="20.0" top="12.0" />
+               </padding>
+               <font>
+                  <Font size="14.0" />
+               </font>
+               <graphic>
+                  <Label text="✅" textFill="#cbd5e1" />
+               </graphic>
+            </Button>
+
+                <Region VBox.vgrow="ALWAYS" />
+            <Button fx:id="btnSettings" alignment="BASELINE_LEFT" graphicTextGap="15.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" style="-fx-background-color: transparent; -fx-cursor: hand;" text="Settings" textFill="#cbd5e1">
+               <padding>
+                  <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
+               </padding>
+               <font>
+                  <Font size="14.0" />
+               </font>
+               <graphic>
+                  <Label text="⚙️" textFill="#cbd5e1" />
+               </graphic>
+            </Button>
+            <Button fx:id="btnUser" alignment="BASELINE_LEFT" graphicTextGap="15.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" style="-fx-background-color: transparent; -fx-cursor: hand;" text="User" textFill="#cbd5e1">
+               <padding>
+                  <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
+               </padding>
+               <font>
+                  <Font size="14.0" />
+               </font>
+               <graphic>
+                  <Label contentDisplay="RIGHT" graphicTextGap="15.0" text="👤" textFill="#cbd5e1">
+                     <padding>
+                        <Insets right="15.0" />
+                     </padding>
+                  </Label>
+               </graphic>
+            </Button>
+            <Region prefHeight="10.0" prefWidth="259.0" />
+            </children>
+        </VBox>
+    </left>
+
+    <center>
+        <ScrollPane fitToWidth="true" style="-fx-background-color: transparent; -fx-background: #f3f4f6;" BorderPane.alignment="CENTER">
+            <content>
+                <VBox spacing="20.0">
+                    <padding>
+                        <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />
+                    </padding>
+                    <children>
+
+                        <HBox alignment="CENTER_LEFT" spacing="20.0">
+                            <children>
+                                <Label text="Inventory Overview" textFill="#1e293b">
+                                    <font>
+                                        <Font name="System Bold" size="24.0" />
+                                    </font>
+                                </Label>
+                                <Region HBox.hgrow="ALWAYS" />
+                                <Button style="-fx-background-color: white; -fx-border-color: #e2e8f0; -fx-cursor: hand;" text="Generate Report" textFill="#64748b">
+                                    <padding>
+                                        <Insets bottom="8.0" left="15.0" right="15.0" top="8.0" />
+                                    </padding>
+                                </Button>
+                                <Button style="-fx-background-color: #3b82f6; -fx-cursor: hand;" text="+ New Sale" textFill="WHITE">
+                                    <font>
+                                        <Font name="System Bold" size="12.0" />
+                                    </font>
+                                    <padding>
+                                        <Insets bottom="8.0" left="15.0" right="15.0" top="8.0" />
+                                    </padding>
+                                </Button>
+                            </children>
+                        </HBox>
+
+                        <HBox spacing="20.0">
+                            <children>
+                                <VBox maxWidth="1.7976931348623157E308" spacing="5.0" style="-fx-background-color: white; -fx-background-radius: 5;" HBox.hgrow="ALWAYS">
+                                    <padding>
+                                        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                                    </padding>
+                                    <effect>
+                                        <DropShadow color="#0000001a" height="10.0" radius="4.5" width="10.0" />
+                                    </effect>
+                                    <children>
+                                        <Label text="Total Revenue" textFill="#64748b" />
+                                        <Label text="\$54,200" textFill="#1e293b">
+                                            <font>
+                                                <Font name="System Bold" size="24.0" />
+                                            </font>
+                                        </Label>
+                                        <Label text="📈 +5% vs last month" textFill="#10b981">
+                                            <font>
+                                                <Font size="12.0" />
+                                            </font>
+                                        </Label>
+                                    </children>
+                                </VBox>
+
+                                <VBox layoutX="10.0" layoutY="10.0" maxWidth="1.7976931348623157E308" spacing="5.0" style="-fx-background-color: white; -fx-background-radius: 5;" HBox.hgrow="ALWAYS">
+                                    <padding>
+                                        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                                    </padding>
+                                    <effect>
+                                        <DropShadow color="#0000001a" height="10.0" radius="4.5" width="10.0" />
+                                    </effect>
+                                    <children>
+                                        <Label text="Stock Value" textFill="#64748b" />
+                                        <Label text="\$120,500" textFill="#1e293b">
+                                            <font>
+                                                <Font name="System Bold" size="24.0" />
+                                            </font>
+                                        </Label>
+                                        <Label text="⚠️ 5 items low stock" textFill="#f59e0b">
+                                            <font>
+                                                <Font size="12.0" />
+                                            </font>
+                                        </Label>
+                                    </children>
+                                </VBox>
+
+                                <VBox layoutX="210.0" layoutY="10.0" maxWidth="1.7976931348623157E308" spacing="5.0" style="-fx-background-color: white; -fx-background-radius: 5;" HBox.hgrow="ALWAYS">
+                                    <padding>
+                                        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                                    </padding>
+                                    <effect>
+                                        <DropShadow color="#0000001a" height="10.0" radius="4.5" width="10.0" />
+                                    </effect>
+                                    <children>
+                                        <Label text="Active Warranties" textFill="#64748b" />
+                                        <Label text="245" textFill="#1e293b">
+                                            <font>
+                                                <Font name="System Bold" size="24.0" />
+                                            </font>
+                                        </Label>
+                                        <Label text="🕒 7 expiring soon" textFill="#64748b">
+                                            <font>
+                                                <Font size="12.0" />
+                                            </font>
+                                        </Label>
+                                    </children>
+                                </VBox>
+
+                                <VBox layoutX="410.0" layoutY="10.0" maxWidth="1.7976931348623157E308" spacing="5.0" style="-fx-background-color: white; -fx-background-radius: 5;" HBox.hgrow="ALWAYS">
+                                    <padding>
+                                        <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
+                                    </padding>
+                                    <effect>
+                                        <DropShadow color="#0000001a" height="10.0" radius="4.5" width="10.0" />
+                                    </effect>
+                                    <children>
+                                        <Label text="New Customers" textFill="#64748b" />
+                                        <Label text="12" textFill="#1e293b">
+                                            <font>
+                                                <Font name="System Bold" size="24.0" />
+                                            </font>
+                                        </Label>
+                                        <Label text="👤 +2 walk-ins" textFill="#64748b">
+                                            <font>
+                                                <Font size="12.0" />
+                                            </font>
+                                        </Label>
+                                    </children>
+                                </VBox>
+                            </children>
+                        </HBox>
+
+                        <HBox spacing="20.0">
+                            <children>
+                                <VBox spacing="10.0" style="-fx-background-color: white; -fx-background-radius: 5;" HBox.hgrow="ALWAYS">
+                                    <padding>
+                                        <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                                    </padding>
+                                    <effect>
+                                        <DropShadow color="#0000001a" height="10.0" radius="4.5" width="10.0" />
+                                    </effect>
+                                    <children>
+                                        <Label text="🔔 Inventory Alerts" textFill="#1e293b">
+                                            <font>
+                                                <Font name="System Bold" size="16.0" />
+                                            </font>
+                                        </Label>
+                                        <ListView fixedCellSize="35.0" prefHeight="150.0" style="-fx-background-color: transparent; -fx-border-color: transparent;">
+                                            <items>
+                                                <FXCollections fx:factory="observableArrayList">
+                                                    <String fx:value="• Product A (SKU123): Low Stock (Qty: 5)" />
+                                                    <String fx:value="• Product B (SKU456): Expiring Soon" />
+                                                    <String fx:value="• Supplier Z: Payment Overdue" />
+                                                    <String fx:value="• Product C (SKU789): Stock mismatch" />
+                                                </FXCollections>
+                                            </items>
+                                        </ListView>
+                                    </children>
+                                </VBox>
+
+                                <VBox layoutX="10.0" layoutY="10.0" spacing="10.0" style="-fx-background-color: white; -fx-background-radius: 5;" HBox.hgrow="ALWAYS">
+                                    <padding>
+                                        <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                                    </padding>
+                                    <effect>
+                                        <DropShadow color="#0000001a" height="10.0" radius="4.5" width="10.0" />
+                                    </effect>
+                                    <children>
+                                        <Label text="📝 Recent Activity" textFill="#1e293b">
+                                            <font>
+                                                <Font name="System Bold" size="16.0" />
+                                            </font>
+                                        </Label>
+                                        <ListView fixedCellSize="35.0" prefHeight="150.0" style="-fx-background-color: transparent; -fx-border-color: transparent;">
+                                            <items>
+                                                <FXCollections fx:factory="observableArrayList">
+                                                    <String fx:value="Sale #1004 to John Doe (2m ago)" />
+                                                    <String fx:value="Stock received from Supplier XYZ (15m ago)" />
+                                                    <String fx:value="New customer profile: Sarah Smith (1h ago)" />
+                                                    <String fx:value="Warranty claim updated #W-990 (2h ago)" />
+                                                </FXCollections>
+                                            </items>
+                                        </ListView>
+                                    </children>
+                                </VBox>
+                            </children>
+                        </HBox>
+
+                        <VBox style="-fx-background-color: white; -fx-background-radius: 5;">
+                            <padding>
+                                <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                            </padding>
+                            <effect>
+                                <DropShadow color="#0000001a" height="10.0" radius="4.5" width="10.0" />
+                            </effect>
+                            <children>
+                                <Label text="Sales &amp; Payment Overview" textFill="#1e293b">
+                                    <font>
+                                        <Font name="System Bold" size="16.0" />
+                                    </font>
+                                    <padding>
+                                        <Insets bottom="10.0" />
+                                    </padding>
+                                </Label>
+                            </children>
+                        </VBox>
+
+                    </children>
+                </VBox>
+            </content>
+        </ScrollPane>
+    </center>
+</BorderPane>

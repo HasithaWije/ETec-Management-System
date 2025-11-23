@@ -4,6 +4,8 @@ module lk.ijse.etecmanagementsystem {
 
     requires org.controlsfx.controls;
 
+
+
     opens lk.ijse.etecmanagementsystem to javafx.fxml;
     exports lk.ijse.etecmanagementsystem;
 

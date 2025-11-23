@@ -1,19 +1,16 @@
 package lk.ijse.etecmanagementsystem;
 
-import javafx.event.ActionEvent;
+
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
-import javafx.scene.control.Label;
 import lk.ijse.etecmanagementsystem.service.Login;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class DashboardController {
-
-    // Inject all buttons from FXML
-    @FXML private Button btnDashboard;
+public class InventoryController {
+    @FXML
+    private Button btnDashboard;
     @FXML private Button btnInventory;
     @FXML private Button btnRepairs;
     @FXML private Button btnSuppliers;
@@ -23,13 +20,12 @@ public class DashboardController {
     @FXML private Button btnSettings;
     @FXML private Button btnUser;
 
-
     // We need a list to easily loop through them
     private List<Button> menuButtons = new ArrayList<>();
 
     @FXML
     public void initialize() {
-        // Add all buttons to the list
+//         Add all buttons to the list
         menuButtons.add(btnDashboard);
         menuButtons.add(btnInventory);
         menuButtons.add(btnRepairs);
@@ -52,7 +48,7 @@ public class DashboardController {
         }
 
         // Set Default Active Button (e.g., Dashboard)
-        MenuBar.setActive(btnDashboard);
+        MenuBar.setActive(btnInventory);
 
     }
 }
