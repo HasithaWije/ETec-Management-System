@@ -47,7 +47,8 @@ public class MenuBar {
                 }
                 try {
                     App.setRoot(btnText);
-                } catch (IOException e1) {
+                    System.gc();
+                } catch (Exception e1) {
                     e1.printStackTrace();
                 }
             }
