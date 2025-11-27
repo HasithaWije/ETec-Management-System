@@ -177,14 +177,18 @@ public class InventoryController {
             btnLoadMore.setVisible(true);
         }
 
+        if(gridViewButton.isDisable()){
+            renderGrid();
+        }
+        if(tableViewButton.isDisable()){
+            // Set up the product table
+            setProductTable();
+            loadProductData();
+        }
+
         System.out.println("is loadingThead deamon: "+ThreadService.getInventoryLoadingThread().isDaemon());
         System.out.println("is loadingThead alive: "+ThreadService.getInventoryLoadingThread().isAlive());
 
-        renderGrid();
-
-        // Set up the product table
-        setProductTable();
-        loadProductData();
     }
 
     @FXML
@@ -235,7 +239,7 @@ public class InventoryController {
 
         ThreadService.setInventoryLoadingThread(new Thread(() -> {
             try {
-                Thread.sleep(5); // Reduced for better UX
+                Thread.sleep(50);
 
                 javafx.application.Platform.runLater(() -> {
                     // Stop Skeleton Animations before removing them
@@ -440,13 +444,13 @@ public class InventoryController {
 
 
 
-        // Set up the product table
-        setProductTable();
-        loadProductData();
-
         ThreadService.getInventoryLoadingThread().setDaemon(false);
         ThreadService.getInventoryLoadingThread().interrupt();
         productGrid.getChildren().clear();
+
+        // 4. Initial Render
+        filterAndRender();
+
 
 
     }
