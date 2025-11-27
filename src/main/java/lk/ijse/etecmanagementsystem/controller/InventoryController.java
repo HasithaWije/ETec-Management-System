@@ -3,8 +3,10 @@ package lk.ijse.etecmanagementsystem.controller;
 
 import javafx.animation.FadeTransition;
 import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.StackPane;
 import javafx.scene.paint.Color;
 import javafx.scene.shape.Rectangle;
@@ -66,18 +68,30 @@ public class InventoryController {
     @FXML
     private Label lblPageInfo;
 
-    // Pagination Config
-    private int currentPage = 0;       // Current page index (starts at 0)
-    private final int ITEMS_PER_PAGE = 8; // How many items to show per page
+    @FXML
+    private TableView productTable;
+    @FXML
+    private TableColumn colId;
+    @FXML
+    private TableColumn colName;
+    @FXML
+    private TableColumn colCategory;
+    @FXML
+    private TableColumn colSellPrice;
+    @FXML
+    private TableColumn colWarrantyMonth;
+    @FXML
+    private TableColumn colQty;
 
-    // Data Storage
+
+    private int currentPage = 0;
+    private final int ITEMS_PER_PAGE = 8;
+
     private final List<ProductDTO> allProductDTOS = new ArrayList<>(); // Master list
     private List<ProductDTO> displayedList = new ArrayList<>(); // List after filtering
 
-    // Keep track of running animations to stop them later
     private final List<FadeTransition> runningAnimations = new ArrayList<>();
 
-    // Pagination Variables
     private int currentLimit = 10;
     private final int BATCH_SIZE = 10;
     private final int moreButtonThreshold = 48;
@@ -119,10 +133,14 @@ public class InventoryController {
         // 4. Initial Render
         filterAndRender();
 
+
+        // Set up the product table
+//        setProductTable();
+        loadProductData();
+
     }
 
     private void loadDummyData() {
-        // Create 30 dummy items to test scrolling and pagination
         for (int i = 1; i <= 3000; i++) {
             String cat = (i % 3 == 0) ? "Electronics" : (i % 2 == 0) ? "Accessories" : "Parts";
             allProductDTOS.add(new ProductDTO("Item " + i, 1000 + (i * 50), cat, "placeholder.png"));
@@ -132,12 +150,10 @@ public class InventoryController {
         allProductDTOS.add(new ProductDTO("Zebra Cable", 500, "Accessories", "0.png"));
     }
 
-    // --- MAIN LOGIC: FILTER, SORT, AND UPDATE GRID ---
     private void filterAndRender() {
         String searchText = txtSearch.getText().toLowerCase();
         String selectedCategory = cmbCategory.getValue();
 
-        // 1. Filter the Master List
         displayedList = allProductDTOS.stream().filter(p -> p.getName().toLowerCase().contains(searchText)) // Search Name
                 .filter(p -> {
                     if (selectedCategory == null || selectedCategory.equals("All Categories")) return true;
@@ -145,10 +161,8 @@ public class InventoryController {
                 }).sorted(Comparator.comparing(ProductDTO::getName)) // Sort A-Z (Ascending)
                 .collect(Collectors.toList());
 
-        // 2. Reset Pagination
         currentLimit = BATCH_SIZE;
 
-        // reset Load More button visibility
         if (displayedList.size() <= moreButtonThreshold)
             btnLoadMore.setVisible(false);
         else {
@@ -157,7 +171,7 @@ public class InventoryController {
 
         System.out.println("is loadingThead deamon: "+ThreadService.getInventoryLoadingThread().isDaemon());
         System.out.println("is loadingThead alive: "+ThreadService.getInventoryLoadingThread().isAlive());
-        // 3. Update UI
+
         renderGrid();
     }
 
@@ -189,9 +203,7 @@ public class InventoryController {
     private void renderGrid() {
         productGrid.getChildren().clear();
 
-
         loadProductGrid();
-
     }
 
     private void loadProductGrid() {
@@ -244,8 +256,6 @@ public class InventoryController {
         ThreadService.getInventoryLoadingThread().start();
     }
 
-    // --- UI GENERATOR FOR SINGLE CARD ---
-    // This looks exactly like the FXML dummy card
     private VBox createProductCard(ProductDTO p) {
 // 1. The Main Card Container
         VBox card = new VBox(5); // Spacing of 5 between elements
@@ -349,5 +359,23 @@ public class InventoryController {
         runningAnimations.add(fade);
 
         return card;
+    }
+
+    private void setProductTable(){
+
+
+
+
+    }
+    private void loadProductData() {
+        // Example data (replace with actual database data)
+        ObservableList<ProductDTO> products = FXCollections.observableArrayList(
+                new ProductDTO("P001", "Laptop Pro", "Electronics", 1250.00, 12, 15),
+                new ProductDTO("P002", "Mechanical Keyboard", "Accessories", 150.99, 6, 22),
+                new ProductDTO("P003", "Mousepad XXL", "Accessories", 25.50, 0, 50)
+        );
+
+        // Set the data into the TableView
+        productTable.setItems(products);
     }
 }

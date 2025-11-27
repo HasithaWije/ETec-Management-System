@@ -6,6 +6,8 @@
 <?import javafx.scene.control.Label?>
 <?import javafx.scene.control.ScrollPane?>
 <?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextField?>
 <?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
@@ -168,23 +170,33 @@
                         </children>
                     </HBox>
 
-                    <HBox spacing="15.0">
+                    <HBox alignment="CENTER_LEFT" spacing="15.0">
                         <children>
 
-                            <javafx.scene.control.ComboBox fx:id="cmbCategory" prefWidth="180.0" promptText="All Categories" style="-fx-font-size: 14px; -fx-background-color: white; -fx-padding: 2;" />
-                        <HBox alignment="CENTER" prefHeight="34.0" prefWidth="441.0">
+                            <javafx.scene.control.ComboBox fx:id="cmbCategory" prefHeight="34.0" prefWidth="204.0" promptText="All Categories" style="-fx-font-size: 14px; -fx-background-color: white; -fx-padding: 2;" />
+                        <HBox alignment="CENTER" prefHeight="34.0" prefWidth="588.0" HBox.hgrow="ALWAYS">
                            <children>
-                              <TextField fx:id="txtSearch" prefHeight="26.0" prefWidth="421.0" promptText="🔍Search" />
+                              <TextField fx:id="txtSearch" prefHeight="25.0" prefWidth="579.0" promptText="🔍Search" HBox.hgrow="ALWAYS" />
                            </children>
                         </HBox>
-                        <Region prefHeight="34.0" prefWidth="311.0" />
+                        <Region prefHeight="34.0" prefWidth="185.0" />
                         </children>
                     </HBox>
+                  <TableView fx:id="productTable" prefHeight="44.0" prefWidth="1284.0">
+                    <columns>
+                      <TableColumn fx:id="colId" prefWidth="75.0" text="Stock_ID" />
+                      <TableColumn fx:id="colName" prefWidth="271.0" text="Product_Name" />
+                        <TableColumn fx:id="colCategory" prefWidth="184.0" text="Catogary" />
+                        <TableColumn fx:id="colSellPrice" prefWidth="211.0" text="Sell_Price" />
+                        <TableColumn fx:id="colWarrantyMonth" prefWidth="134.0" text="Warranty_Month" />
+                        <TableColumn fx:id="colQty" prefWidth="83.0" text="Qty" />
+                    </columns>
+                  </TableView>
 
-                    <javafx.scene.layout.TilePane fx:id="productGrid" hgap="30.0" prefColumns="4" tileAlignment="TOP_LEFT" vgap="30.0">
+                          <javafx.scene.layout.TilePane fx:id="productGrid" hgap="30.0" prefColumns="4" tileAlignment="TOP_LEFT" vgap="30.0">
                         <children>
                             
-                            <VBox alignment="CENTER" spacing="5.0" style="-fx-background-color: white; -fx-background-radius: 10; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 5); -fx-cursor: hand;">
+                                  <VBox alignment="CENTER" spacing="5.0" style="-fx-background-color: white; -fx-background-radius: 10; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 5); -fx-cursor: hand;">
                                 <padding>
                                     <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
                                 </padding>
@@ -207,7 +219,7 @@
                                 </children>
                             </VBox>
 
-                            <VBox alignment="CENTER" spacing="10.0" style="-fx-background-color: white; -fx-background-radius: 10; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 5); -fx-cursor: hand;">
+                                  <VBox alignment="CENTER" spacing="10.0" style="-fx-background-color: white; -fx-background-radius: 10; -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 10, 0, 0, 5); -fx-cursor: hand;">
                                 <padding>
                                     <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
                                 </padding>
@@ -225,7 +237,7 @@
                                 </children>
                             </VBox>
 
-                        </children>
+                              </children>
                     </javafx.scene.layout.TilePane>
 
                     <HBox alignment="CENTER">
