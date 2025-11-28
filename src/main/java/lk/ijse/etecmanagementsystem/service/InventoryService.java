@@ -6,6 +6,8 @@ import java.util.Comparator;
 import java.util.List;
 import java.util.stream.Collectors;
 
+import static lk.ijse.etecmanagementsystem.util.ProductCondition.USED;
+
 public class InventoryService {
 
     private final List<ProductDTO> masterList = new ArrayList<>();
@@ -18,7 +20,7 @@ public class InventoryService {
         // Simulating Database Fetch
         for (int i = 1; i <= 500; i++) {
             String cat = (i % 3 == 0) ? "Electronics" : (i % 2 == 0) ? "Accessories" : "Parts";
-            masterList.add(new ProductDTO("p"+i,"Item " + i, 1000 + (i * 50), cat, "placeholder.png", 800 + (i * 40), 12 + (i % 24), 10 + (i % 50)));
+            masterList.add(new ProductDTO("p"+i,"Item " + i, 1000 + (i * 50), cat, "placeholder.png", 800 + (i * 40), 12 + (i % 24),USED, 10 + (i % 50)));
         }
         masterList.add(new ProductDTO("MacBook Pro", 450000, "Electronics", "placeholder.png"));
     }

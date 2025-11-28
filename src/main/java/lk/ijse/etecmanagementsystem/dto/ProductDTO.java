@@ -1,10 +1,13 @@
 package lk.ijse.etecmanagementsystem.dto;
 
+import lk.ijse.etecmanagementsystem.util.ProductCondition;
+
 public class ProductDTO {
     private String id;
     private String name;
     private double sellPrice;
     private String category;
+    private ProductCondition condition;
     private String imagePath;
     private double buyPrice;
     private int warrantyMonth;
@@ -26,7 +29,7 @@ public class ProductDTO {
         this.qty = qty;
     }
 
-    public ProductDTO(String id, String name, double sellPrice, String category, String imagePath, double buyPrice, int warrantyMonth, int qty) {
+    public ProductDTO(String id, String name, double sellPrice, String category, String imagePath, double buyPrice, int warrantyMonth,ProductCondition condition, int qty) {
         this.id = id;
         this.name = name;
         this.sellPrice = sellPrice;
@@ -34,6 +37,7 @@ public class ProductDTO {
         this.imagePath = imagePath;
         this.buyPrice = buyPrice;
         this.warrantyMonth = warrantyMonth;
+        this.condition = condition;
         this.qty = qty;
     }
 
@@ -104,6 +108,14 @@ public class ProductDTO {
 
     public void setQty(int qty) {
         this.qty = qty;
+    }
+
+    public ProductCondition getCondition() {
+        return condition;
+    }
+
+    public void setCondition(ProductCondition condition) {
+        this.condition = condition;
     }
 
     @Override

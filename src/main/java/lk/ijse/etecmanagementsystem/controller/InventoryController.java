@@ -13,6 +13,7 @@ import lk.ijse.etecmanagementsystem.dto.ProductDTO;
 import lk.ijse.etecmanagementsystem.service.InventoryService;
 import lk.ijse.etecmanagementsystem.service.ThreadService;
 import lk.ijse.etecmanagementsystem.service.MenuBar; // Assuming you have this
+import lk.ijse.etecmanagementsystem.util.ProductCondition;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,9 +41,12 @@ public class InventoryController {
     @FXML
     private Label lblPageInfo;
 
-    // Side Menu Buttons (Optional, kept from your code)
     @FXML
     private Button btnDashboard, btnInventory, btnRepairs, btnSuppliers, btnCustomers, btnTransactions, btnWarranty, btnSettings, btnUser;
+
+    @FXML
+    private ComboBox<ProductCondition> cmbCondition;
+
 
     // --- State Management ---
     private final InventoryService inventoryService = new InventoryService();
@@ -67,6 +71,7 @@ public class InventoryController {
         // 1. Setup Controls
         cmbCategory.setItems(FXCollections.observableArrayList("All Categories", "Electronics", "Accessories", "Parts"));
         cmbCategory.getSelectionModel().selectFirst();
+        cmbCondition.getItems().setAll(ProductCondition.values());
         btnLoadMore.setVisible(false); // Hide until data loads
 
         // 2. Setup Listeners (Debouncing could be added here for optimization)
