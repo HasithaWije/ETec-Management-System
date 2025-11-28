@@ -15,5 +15,7 @@ module lk.ijse.etecmanagementsystem {
     opens lk.ijse.etecmanagementsystem.util to javafx.fxml;
     opens lk.ijse.etecmanagementsystem.dto to java.base;
     exports  lk.ijse.etecmanagementsystem.dto;
+    exports lk.ijse.etecmanagementsystem.service;
+    opens lk.ijse.etecmanagementsystem.service to javafx.fxml;
 
 }

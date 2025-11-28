@@ -1,6 +1,5 @@
 package lk.ijse.etecmanagementsystem.controller;
 
-import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.concurrent.Task;
@@ -13,7 +12,7 @@ import lk.ijse.etecmanagementsystem.component.SkeletonCard;
 import lk.ijse.etecmanagementsystem.dto.ProductDTO;
 import lk.ijse.etecmanagementsystem.service.InventoryService;
 import lk.ijse.etecmanagementsystem.service.ThreadService;
-import lk.ijse.etecmanagementsystem.util.MenuBar; // Assuming you have this
+import lk.ijse.etecmanagementsystem.service.MenuBar; // Assuming you have this
 
 import java.util.ArrayList;
 import java.util.List;
@@ -21,19 +20,29 @@ import java.util.List;
 public class InventoryController {
 
     // --- FXML UI Elements ---
-    @FXML private TilePane productGrid;
-    @FXML private TableView<ProductDTO> productTable;
-    @FXML private TableColumn<ProductDTO, String> colId, colName, colCategory;
-    @FXML private TableColumn<ProductDTO, Double> colSellPrice;
-    @FXML private TableColumn<ProductDTO, Integer> colWarrantyMonth, colQty;
+    @FXML
+    private TilePane productGrid;
+    @FXML
+    private TableView<ProductDTO> productTable;
+    @FXML
+    private TableColumn<ProductDTO, String> colId, colName, colCategory;
+    @FXML
+    private TableColumn<ProductDTO, Double> colSellPrice;
+    @FXML
+    private TableColumn<ProductDTO, Integer> colWarrantyMonth, colQty;
 
-    @FXML private TextField txtSearch;
-    @FXML private ComboBox<String> cmbCategory;
-    @FXML private Button btnLoadMore, gridViewButton, tableViewButton;
-    @FXML private Label lblPageInfo;
+    @FXML
+    private TextField txtSearch;
+    @FXML
+    private ComboBox<String> cmbCategory;
+    @FXML
+    private Button btnLoadMore, gridViewButton, tableViewButton;
+    @FXML
+    private Label lblPageInfo;
 
     // Side Menu Buttons (Optional, kept from your code)
-    @FXML private Button btnDashboard, btnInventory, btnRepairs, btnSuppliers, btnCustomers, btnTransactions, btnWarranty, btnSettings, btnUser;
+    @FXML
+    private Button btnDashboard, btnInventory, btnRepairs, btnSuppliers, btnCustomers, btnTransactions, btnWarranty, btnSettings, btnUser;
 
     // --- State Management ---
     private final InventoryService inventoryService = new InventoryService();
@@ -68,23 +77,15 @@ public class InventoryController {
         switchToGridView();
     }
 
-    /**
-     * MAIN DATA LOADING LOGIC
-     * 1. Cancels old tasks.
-     * 2. Shows skeletons (if in grid mode).
-     * 3. Fetches data in background.
-     * 4. Updates UI on success or shows error on failure.
-     */
+
     private void refreshData() {
-        // A. Cancel running task
+
         if (currentLoadTask != null && currentLoadTask.isRunning()) {
             currentLoadTask.cancel();
         }
 
-        // B. Reset Pagination
         currentGridLimit = BATCH_SIZE;
 
-        // C. Show Skeletons ONLY if in Grid View
         if (isGridView) {
             productGrid.getChildren().clear();
             for (int i = 0; i < 10; i++) {
@@ -94,7 +95,6 @@ public class InventoryController {
         }
 
 
-        // D. Create Background Task
         currentLoadTask = new Task<>() {
             @Override
             protected List<ProductDTO> call() throws Exception {
@@ -107,7 +107,6 @@ public class InventoryController {
         };
 
 
-        // E. Handle Success
         currentLoadTask.setOnSucceeded(event -> {
             allFetchedData = currentLoadTask.getValue(); // Store master list
 
@@ -118,15 +117,12 @@ public class InventoryController {
             }
         });
 
-        // F. Handle Failure (Exception Handling)
         currentLoadTask.setOnFailed(event -> {
             Throwable e = currentLoadTask.getException();
             e.printStackTrace(); // Log for developer
 
-            // Remove skeletons
             if (isGridView) productGrid.getChildren().clear();
 
-            // Show User Alert
             Alert alert = new Alert(Alert.AlertType.ERROR);
             alert.setTitle("Data Load Error");
             alert.setHeaderText("Could not load inventory.");
@@ -134,15 +130,11 @@ public class InventoryController {
             alert.showAndWait();
         });
 
-        // G. Start Task
-        ThreadService.setInventoryLoadingThread(new Thread(currentLoadTask));
 
+        ThreadService.setInventoryLoadingThread(new Thread(currentLoadTask));
         ThreadService.getInventoryLoadingThread().start();
     }
 
-    /**
-     * Renders the Grid View based on 'currentGridLimit' (Pagination Logic)
-     */
     private void renderGrid() {
         productGrid.getChildren().clear(); // Clear skeletons
 
@@ -154,49 +146,36 @@ public class InventoryController {
             return;
         }
 
-        // Slice the data: Show only from 0 to currentGridLimit
         int limit = Math.min(currentGridLimit, allFetchedData.size());
 
         for (int i = 0; i < limit; i++) {
-            // Create Card Component
+
             ProductDTO p = allFetchedData.get(i);
             productGrid.getChildren().add(new ProductCard(p));
         }
 
-        // Update "Load More" Button Logic
         if (limit < allFetchedData.size()) {
             btnLoadMore.setVisible(true);
-//            lblPageInfo.setText("Showing " + limit + " of " + allFetchedData.size());
         } else {
             btnLoadMore.setVisible(false);
-//            lblPageInfo.setText("All " + allFetchedData.size() + " products shown.");
         }
 
-        if (allFetchedData.size() <= moreButtonThreshold)
+        if(productGrid.getChildren().size() >= moreButtonThreshold) {
             btnLoadMore.setVisible(false);
-        else {
-            btnLoadMore.setVisible(true);
         }
     }
 
-    /**
-     * Renders the Table View (Tables handle large data better, so we usually show all)
-     */
     private void renderTable() {
         tableDataList.setAll(allFetchedData);
         productTable.setItems(tableDataList);
-        // Hide "Load More" in table view as tables have scrollbars
         btnLoadMore.setVisible(false);
-//        lblPageInfo.setText(allFetchedData.size() + " records found.");
     }
-
-    // --- Event Handlers ---
 
     @FXML
     private void handleLoadMore() {
         // Increase limit
-        currentGridLimit += moreButtonThreshold;
-        // Re-render grid (It's fast enough to re-render from memory)
+        currentGridLimit = moreButtonThreshold;
+        btnLoadMore.setVisible(false);
         renderGrid();
     }
 
@@ -212,9 +191,7 @@ public class InventoryController {
         gridViewButton.setDisable(true);
         tableViewButton.setDisable(false);
 
-        // Render existing data without re-fetching from DB
-
-            refreshData(); // First load
+        refreshData(); // First load
 
     }
 
@@ -231,11 +208,10 @@ public class InventoryController {
         gridViewButton.setDisable(false);
 
         // Render existing data
-            renderTable();
+        renderTable();
 
     }
 
-    // --- Initialization Helpers ---
 
     private void setupTableColumns() {
         colId.setCellValueFactory(new PropertyValueFactory<>("id"));
@@ -260,3 +236,6 @@ public class InventoryController {
         menuBar.setupButton(btnUser);
     }
 }
+
+
+

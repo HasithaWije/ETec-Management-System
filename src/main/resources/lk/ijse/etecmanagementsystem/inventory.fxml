@@ -264,6 +264,9 @@
                                                 </VBox>
 
                                             </children>
+                                 <padding>
+                                    <Insets bottom="30.0" left="30.0" right="30.0" top="30.0" />
+                                 </padding>
                                         </javafx.scene.layout.TilePane>
 
                                         <HBox alignment="CENTER">

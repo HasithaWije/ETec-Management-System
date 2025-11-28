@@ -1,9 +1,6 @@
-package lk.ijse.etecmanagementsystem.util;
+package lk.ijse.etecmanagementsystem.service;
 
 import javafx.scene.control.Button;
-import lk.ijse.etecmanagementsystem.App;
-import lk.ijse.etecmanagementsystem.service.StageManager;
-import lk.ijse.etecmanagementsystem.service.ThreadService;
 
 public class MenuBar {
 

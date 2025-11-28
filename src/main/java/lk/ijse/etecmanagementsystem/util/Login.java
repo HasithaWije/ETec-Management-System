@@ -1,4 +1,4 @@
-package lk.ijse.etecmanagementsystem.service;
+package lk.ijse.etecmanagementsystem.util;
 
 public class Login {
     private static String userName;

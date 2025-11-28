@@ -1,18 +1,13 @@
 package lk.ijse.etecmanagementsystem.controller;
 
 import javafx.fxml.FXML;
-import javafx.scene.Scene;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
-import lk.ijse.etecmanagementsystem.App;
-import lk.ijse.etecmanagementsystem.service.Login;
+import lk.ijse.etecmanagementsystem.util.Login;
 import lk.ijse.etecmanagementsystem.service.StageManager;
-import lk.ijse.etecmanagementsystem.util.ButtonStyle;
-
-import java.io.IOException;
-import java.net.URL;
+import lk.ijse.etecmanagementsystem.service.ButtonStyle;
 
 
 public class LoginController {
