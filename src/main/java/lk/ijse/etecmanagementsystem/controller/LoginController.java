@@ -5,8 +5,8 @@ import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextField;
+import lk.ijse.etecmanagementsystem.App;
 import lk.ijse.etecmanagementsystem.util.Login;
-import lk.ijse.etecmanagementsystem.service.StageManager;
 import lk.ijse.etecmanagementsystem.service.ButtonStyle;
 
 
@@ -37,7 +37,7 @@ public class LoginController {
 
             Login.setUserName(username);
             try {
-                StageManager.setupPrimaryStageScene("dashboard");
+                App.setupPrimaryStageScene("dashboard");
             } catch (Exception e) {
                 e.printStackTrace();
             }

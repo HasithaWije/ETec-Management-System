@@ -5,6 +5,7 @@ import lk.ijse.etecmanagementsystem.util.ProductCondition;
 public class ProductDTO {
     private String id;
     private String name;
+    private String description;
     private double sellPrice;
     private String category;
     private ProductCondition condition;
@@ -32,6 +33,18 @@ public class ProductDTO {
     public ProductDTO(String id, String name, double sellPrice, String category, String imagePath, double buyPrice, int warrantyMonth,ProductCondition condition, int qty) {
         this.id = id;
         this.name = name;
+        this.sellPrice = sellPrice;
+        this.category = category;
+        this.imagePath = imagePath;
+        this.buyPrice = buyPrice;
+        this.warrantyMonth = warrantyMonth;
+        this.condition = condition;
+        this.qty = qty;
+    }
+    public ProductDTO(String id, String name, String description, double sellPrice, String category, String imagePath, double buyPrice, int warrantyMonth,ProductCondition condition, int qty) {
+        this.id = id;
+        this.name = name;
+        this.description = description;
         this.sellPrice = sellPrice;
         this.category = category;
         this.imagePath = imagePath;
@@ -116,6 +129,13 @@ public class ProductDTO {
 
     public void setCondition(ProductCondition condition) {
         this.condition = condition;
+    }
+
+    public String getDescription() {
+        return description;
+    }
+    public void setDescription(String description) {
+        this.description = description;
     }
 
     @Override

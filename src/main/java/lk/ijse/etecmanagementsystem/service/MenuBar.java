@@ -1,6 +1,7 @@
 package lk.ijse.etecmanagementsystem.service;
 
 import javafx.scene.control.Button;
+import lk.ijse.etecmanagementsystem.App;
 
 public class MenuBar {
 
@@ -45,7 +46,7 @@ public class MenuBar {
                 }
 
                 try {
-                    StageManager.setRoot(btnText);
+                    App.setRoot(btnText);
                     System.gc();
 
                 } catch (Exception e1) {

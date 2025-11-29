@@ -18,4 +18,6 @@ module lk.ijse.etecmanagementsystem {
     exports lk.ijse.etecmanagementsystem.service;
     opens lk.ijse.etecmanagementsystem.service to javafx.fxml;
 
+
+
 }

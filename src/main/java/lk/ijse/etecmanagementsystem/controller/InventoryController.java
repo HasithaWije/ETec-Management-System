@@ -7,6 +7,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.TilePane;
+import lk.ijse.etecmanagementsystem.App;
 import lk.ijse.etecmanagementsystem.component.ProductCard;
 import lk.ijse.etecmanagementsystem.component.SkeletonCard;
 import lk.ijse.etecmanagementsystem.dto.ProductDTO;
@@ -17,6 +18,7 @@ import lk.ijse.etecmanagementsystem.util.ProductCondition;
 
 import java.util.ArrayList;
 import java.util.List;
+
 
 public class InventoryController {
 
@@ -46,6 +48,9 @@ public class InventoryController {
 
     @FXML
     private ComboBox<ProductCondition> cmbCondition;
+
+    @FXML
+    private Button btnAddProduct;
 
 
     // --- State Management ---
@@ -80,6 +85,23 @@ public class InventoryController {
 
         // 3. Initial View State
         switchToGridView();
+    }
+
+    @FXML
+    private void addProduct() {
+        // Logic to open Add Product dialog or navigate to Add Product page
+        System.out.println("Add Product button clicked.");
+
+        openSecondaryWindow();
+    }
+
+    private void openSecondaryWindow() {
+        try {
+            // Changed title from "Secondary Window" to "Product Management"
+            App.setupSecondaryStageScene("product", "Product Management");
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 
 

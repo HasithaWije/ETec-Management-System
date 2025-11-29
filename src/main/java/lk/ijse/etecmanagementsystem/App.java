@@ -4,6 +4,7 @@ import javafx.application.Application;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
 
 import java.io.IOException;
@@ -11,6 +12,7 @@ import java.io.IOException;
 public class App extends Application {
     private static Scene scene;
     private static Stage primaryStage;
+    private static Scene secondaryScene;
 
     @Override
     public void start(Stage stage) throws IOException {
@@ -25,12 +27,33 @@ public class App extends Application {
         scene.setRoot(loadFXML(fxml));
         // keep login fixed-size, allow resizing for other scenes
         if (primaryStage != null) {
-            primaryStage.setResizable("login".equals(fxml) ? false : true);
+            primaryStage.setResizable(!"login".equals(fxml));
         }
+    }
+    public static void setupPrimaryStageScene(String fxmlFileName) throws Exception {
+
+        scene = new Scene(loadFXML(fxmlFileName), 1280, 720);
+        primaryStage.setScene(scene);
+        primaryStage.setResizable(true);
+        primaryStage.setMinHeight(656);
+        primaryStage.setMinWidth(1016);
+        primaryStage.show();
+    }
+
+    public static void setupSecondaryStageScene(String fxmlFileName,String title) throws Exception {
+        Stage secondaryStage = new Stage();
+        secondaryScene = new Scene(loadFXML(fxmlFileName), 800, 600);
+        secondaryStage.setScene(secondaryScene);
+        secondaryStage.setTitle(title);
+        secondaryStage.setResizable(false);
+        secondaryStage.setAlwaysOnTop(true);
+        secondaryStage.initModality(Modality.WINDOW_MODAL);
+        secondaryStage.initOwner(primaryStage);
+        secondaryStage.show();
     }
 
     private static Parent loadFXML(String fxml) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource(fxml + ".fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource( fxml + ".fxml"));
         return fxmlLoader.load();
     }
 

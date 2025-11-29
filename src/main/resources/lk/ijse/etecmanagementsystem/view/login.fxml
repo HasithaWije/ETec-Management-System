@@ -19,7 +19,7 @@
    <children>
       <ImageView fitHeight="714.0" fitWidth="1033.0" pickOnBounds="true" preserveRatio="true">
          <image>
-            <Image url="@images/Background03.png" />
+            <Image url="@../images/Background03.png" />
          </image>
          <viewport>
             <Rectangle2D />
