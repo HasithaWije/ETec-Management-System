@@ -37,7 +37,7 @@ public class LoginController {
 
             Login.setUserName(username);
             try {
-                App.setupPrimaryStageScene("dashboard");
+                App.setupPrimaryStageScene("layout");
             } catch (Exception e) {
                 e.printStackTrace();
             }

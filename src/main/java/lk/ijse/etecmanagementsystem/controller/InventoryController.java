@@ -77,11 +77,13 @@ public class InventoryController {
         cmbCategory.setItems(FXCollections.observableArrayList("All Categories", "Electronics", "Accessories", "Parts"));
         cmbCategory.getSelectionModel().selectFirst();
         cmbCondition.getItems().setAll(ProductCondition.values());
+        cmbCondition.getSelectionModel().select(ProductCondition.BOTH);
         btnLoadMore.setVisible(false); // Hide until data loads
 
         // 2. Setup Listeners (Debouncing could be added here for optimization)
         txtSearch.textProperty().addListener((obs, old, newVal) -> refreshData());
         cmbCategory.valueProperty().addListener((obs, old, newVal) -> refreshData());
+        cmbCondition.valueProperty().addListener((obs, old, newVal) -> refreshData());
 
         // 3. Initial View State
         switchToGridView();
@@ -129,7 +131,7 @@ public class InventoryController {
                 Thread.sleep(600);
 
                 // Fetch ALL matching data from Service
-                return inventoryService.getFilteredProducts(txtSearch.getText(), cmbCategory.getValue());
+                return inventoryService.getFilteredProducts(txtSearch.getText(), cmbCategory.getValue(), cmbCondition.getValue());
             }
         };
 
