@@ -79,6 +79,9 @@ public class SalesController {
     private Label lblTax;
     @FXML
     private Label lblGrandTotal;
+    @FXML
+    private TextField txtDisc;
+
 
     // Actions
     @FXML
@@ -97,6 +100,15 @@ public class SalesController {
     private TextField txtEmail;
     @FXML
     private TextField txtAddress;
+
+
+    @FXML
+    private TextField txtItemName;
+    @FXML
+    private TextField txtSerialNumber;
+    @FXML
+    private TextField txtWarranty;
+
 
     @FXML
     private TextField txtDiscount;
@@ -136,10 +148,20 @@ public class SalesController {
     }
 
     @FXML
+    private  void handleProductTableClick() {
+        InventoryItemDTO selectedItem = tblProductInventory.getSelectionModel().getSelectedItem();
+        if (selectedItem != null) {
+            populateItemFields(selectedItem);
+        }
+    }
+
+    @FXML
     private void handleAddToCartAction() {
         if(!tblProductInventory.getSelectionModel().isEmpty()) {
             handleAddToCartFromTbl();
 
+        }else {
+            new Alert(Alert.AlertType.WARNING, "Please select a product to add to the cart.").show();
         }
     }
 
@@ -249,6 +271,24 @@ public class SalesController {
             btnRemoveItem.setDisable(newValue == null);
 
         });
+
+        txtDisPercentage.setTextFormatter(new TextFormatter<>(change -> {
+            String newText = change.getControlNewText();
+            String regex = "^([0-9]{0,2}(\\.)?(\\d?)?)?$";
+            if (newText.matches(regex)) {
+                return change;
+            } else {
+                return null;
+            }
+        }));
+    }
+
+    private void populateItemFields(InventoryItemDTO item) {
+
+        txtPrice.setText(String.valueOf(item.getItemPrice()));
+        txtItemName.setText(item.getProductName());
+        txtSerialNumber.setText(item.getSerialNumber());
+        txtWarranty.setText(String.valueOf(item.getCustomerWarranty()));
     }
 
     private void setupCusCmbBox() {
@@ -310,26 +350,51 @@ public class SalesController {
     }
 
     private void setupDiscountFieldListener() {
-        txtDiscount.textProperty().addListener((observable, oldValue, newValue) -> calculateFinalPrice());
-        txtDisPercentage.textProperty().addListener((observable, oldValue, newValue) -> {
-            try {
-                double price = Double.parseDouble(txtPrice.getText().trim());
-                double percentage = 0;
+        txtDiscount.textProperty().addListener((observable, oldValue, newValue) -> {
+            calculateFinalPrice();
+            if (!txtDisPercentage.isFocused()) {
+                try {
+                    double price = Double.parseDouble(txtPrice.getText().trim());
+                    double discount = 0;
 
-                if (!txtDisPercentage.getText().isEmpty()) {
-                    percentage = Double.parseDouble(txtDisPercentage.getText().trim());
+                    if (!txtDiscount.getText().isEmpty()) {
+                        discount = Double.parseDouble(txtDiscount.getText().trim());
+                    }
+
+                    double percentage = (discount / price) * 100;
+                    String formattedPercentage = String.format("%.1f", percentage);
+                    txtDisPercentage.setText(formattedPercentage);
+
+                } catch (NumberFormatException e) {
+                    // If errors, just clear the final price
+                    txtDisPercentage.setText("");
                 }
-
-                double discount = (price * percentage) / 100;
-                String formattedDiscount = String.format("%.2f", discount);
-                txtDiscount.setText(formattedDiscount);
-
-            } catch (NumberFormatException e) {
-                // If errors, just clear the final price
-                txtDiscount.setText("");
             }
         });
+        txtDisPercentage.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (!txtDiscount.isFocused()) {
+                try {
+                    double price = Double.parseDouble(txtPrice.getText().trim());
+                    double percentage = 0;
+
+
+                    if (!txtDisPercentage.getText().isEmpty()) {
+                        percentage = Double.parseDouble(txtDisPercentage.getText().trim());
+                    }
+
+                    double discount = (price * percentage) / 100;
+                    String formattedDiscount = String.format("%.2f", discount);
+                    txtDiscount.setText(formattedDiscount);
+
+                } catch (NumberFormatException e) {
+                    // If errors, just clear the final price
+                    txtDiscount.setText("");
+                }
+            }
+        });
+
     }
+
     private void calculateFinalPrice() {
         try {
             double price = Double.parseDouble(txtPrice.getText().trim());
