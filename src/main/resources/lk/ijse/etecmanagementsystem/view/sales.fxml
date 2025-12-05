@@ -1,0 +1,325 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.Button?>
+<?import javafx.scene.control.ComboBox?>
+<?import javafx.scene.control.Label?>
+<?import javafx.scene.control.Separator?>
+<?import javafx.scene.control.SplitPane?>
+<?import javafx.scene.control.TableColumn?>
+<?import javafx.scene.control.TableView?>
+<?import javafx.scene.control.TextField?>
+<?import javafx.scene.control.ToggleButton?>
+<?import javafx.scene.layout.BorderPane?>
+<?import javafx.scene.layout.ColumnConstraints?>
+<?import javafx.scene.layout.GridPane?>
+<?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.RowConstraints?>
+<?import javafx.scene.layout.VBox?>
+<?import javafx.scene.text.Font?>
+
+<BorderPane prefHeight="720.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="lk.ijse.etecmanagementsystem.controller.SalesController">
+
+    <top>
+        <HBox alignment="CENTER_LEFT" prefHeight="60.0" spacing="20.0" style="-fx-background-color: #2c3e50;" BorderPane.alignment="CENTER">
+            <children>
+                <Label text="SALES POINT" textFill="WHITE">
+                    <font>
+                        <Font name="System Bold" size="24.0" />
+                    </font>
+                </Label>
+                <Label fx:id="lblDate" text="2025-12-04" textFill="#bdc3c7">
+                    <font>
+                        <Font size="14.0" />
+                    </font>
+                </Label>
+                <Label fx:id="lblCashierName" text="Cashier: Admin" textFill="#bdc3c7">
+                    <HBox.margin>
+                        <Insets left="20.0" />
+                    </HBox.margin>
+                </Label>
+            </children>
+            <padding>
+                <Insets left="20.0" right="20.0" />
+            </padding>
+        </HBox>
+    </top>
+
+    <center>
+        <SplitPane dividerPositions="0.5521042084168337" BorderPane.alignment="CENTER">
+            <items>
+
+                <VBox spacing="10.0">
+                    <padding>
+                        <Insets bottom="15.0" left="10.0" right="10.0" top="15.0" />
+                    </padding>
+                    <children>
+                        <Label text="Inventory Items">
+                            <font>
+                                <Font name="System Bold" size="16.0" />
+                            </font>
+                        </Label>
+
+                        <HBox spacing="10.0">
+                            <children>
+                                <TextField fx:id="txtSearchProduct" prefHeight="40.0" prefWidth="300.0" promptText="Search by Name, ID or Serial Number..." HBox.hgrow="ALWAYS" />
+                        <Button prefHeight="40.0" prefWidth="80.0" text="Search" />
+                            </children>
+                        </HBox>
+
+                        <TableView fx:id="tblProductInventory">
+                            <columns>
+                                <TableColumn fx:id="colItemId" prefWidth="60.0" text="Item ID" />
+                                <TableColumn fx:id="colItemName" prefWidth="180.0" text="Product Name" />
+                                <TableColumn fx:id="colSerial" prefWidth="120.0" text="Serial No" />
+                                <TableColumn fx:id="colPrice" prefWidth="100.0" text="Price" />
+                        <TableColumn fx:id="colWarranty" prefWidth="120.0" text="Warranty" />
+                                <TableColumn fx:id="colStatus" prefWidth="70.0" text="Status" />
+                            </columns>
+                            <columnResizePolicy>
+                                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                            </columnResizePolicy>
+                        </TableView>
+                  <VBox alignment="CENTER" prefHeight="240.0" prefWidth="528.0" spacing="2.0">
+                     <children>
+                        <Separator prefWidth="200.0">
+                           <padding>
+                              <Insets left="5.0" right="5.0" />
+                           </padding>
+                        </Separator>
+                                <Button fx:id="btnScan" mnemonicParsing="false" prefHeight="37.0" prefWidth="326.0" style="-fx-background-color: #63bfe0;" text="Scan" textFill="WHITE">
+                           <VBox.margin>
+                              <Insets bottom="2.0" />
+                           </VBox.margin>
+                           <font>
+                              <Font name="System Bold" size="18.0" />
+                           </font></Button>
+                        <Separator prefWidth="200.0">
+                           <padding>
+                              <Insets left="5.0" right="5.0" />
+                           </padding>
+                        </Separator>
+                        <GridPane hgap="5.0" vgap="5.0">
+                          <columnConstraints>
+                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="369.0" minWidth="10.0" prefWidth="60.0" />
+                              <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="369.0" minWidth="10.0" prefWidth="266.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="258.0" minWidth="10.0" prefWidth="61.0" />
+                            <ColumnConstraints hgrow="SOMETIMES" maxWidth="258.0" minWidth="10.0" prefWidth="128.0" />
+                          </columnConstraints>
+                          <rowConstraints>
+                            <RowConstraints />
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                            <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                          </rowConstraints>
+                           <children>
+                              <TextField fx:id="txtPrice" alignment="CENTER_RIGHT" editable="false" prefHeight="25.0" prefWidth="100.0" promptText="0.00" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+                              <TextField fx:id="txtFinalPrice" alignment="CENTER_RIGHT" prefHeight="25.0" prefWidth="100.0" promptText="0.00" GridPane.columnIndex="3" GridPane.rowIndex="3" />
+                              <Label prefHeight="17.0" prefWidth="60.0" text="Price:" GridPane.columnIndex="2" GridPane.rowIndex="1" />
+                              <Label prefHeight="17.0" prefWidth="60.0" text="Discount:" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                              <Label prefWidth="60.0" text="Final Price:" GridPane.columnIndex="2" GridPane.rowIndex="3" />
+                              <TextField GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                              <Label text="Name:" GridPane.rowIndex="1" />
+                              <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="5.0" GridPane.columnIndex="3" GridPane.rowIndex="2">
+                                 <children>
+                                    <TextField fx:id="txtDisPercentage" alignment="CENTER_RIGHT" prefHeight="25.0" prefWidth="50.0" promptText="0">
+                                       <padding>
+                                          <Insets right="15.0" />
+                                       </padding>
+                                    </TextField>
+                                    <TextField fx:id="txtDiscount" alignment="CENTER_RIGHT" prefHeight="25.0" prefWidth="86.0" promptText="0.00" />
+                                 </children>
+                              </HBox>
+                              <Label prefHeight="17.0" prefWidth="10.0" text="\%" textFill="#868686" GridPane.columnIndex="3" GridPane.rowIndex="2">
+                                 <GridPane.margin>
+                                    <Insets left="31.0" />
+                                 </GridPane.margin>
+                              </Label>
+                              <Label prefHeight="17.0" prefWidth="55.0" text="Serial No:" GridPane.rowIndex="2" />
+                              <TextField GridPane.columnIndex="1" GridPane.rowIndex="2" />
+                              <Label prefHeight="17.0" prefWidth="55.0" text="Warranty:" GridPane.rowIndex="3" />
+                              <TextField GridPane.columnIndex="1" GridPane.rowIndex="3" />
+                           </children>
+                        </GridPane>
+                        <Separator prefWidth="200.0">
+                           <padding>
+                              <Insets left="5.0" right="5.0" />
+                           </padding>
+                        </Separator>
+                     </children>
+                  </VBox>
+
+                        <HBox alignment="CENTER_RIGHT">
+                            <children>
+                                <Button fx:id="btnAddToCart" onAction="#handleAddToCartAction" style="-fx-background-color: #3498db; -fx-text-fill: white;" text="ADD TO CART ➔">
+                                    <font>
+                                        <Font name="System Bold" size="14.0" />
+                                    </font>
+                                    <padding>
+                                        <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
+                                    </padding>
+                                </Button>
+                            </children>
+                        </HBox>
+                    </children>
+                </VBox>
+
+                <VBox spacing="10.0" style="-fx-background-color: #ecf0f1;">
+                    <padding>
+                        <Insets bottom="15.0" left="15.0" right="15.0" top="15.0" />
+                    </padding>
+                    <children>
+                        <Label text="Current Cart">
+                            <font>
+                                <Font name="System Bold" size="16.0" />
+                            </font>
+                        </Label>
+                  <VBox style="-fx-background-color: white; -fx-border-radius: 5; -fx-border-color: #bdc3c7;" VBox.vgrow="ALWAYS">
+                     <children>
+      
+                              <HBox alignment="CENTER_LEFT" prefHeight="43.0" prefWidth="417.0" spacing="10.0">
+                                  <children>
+                                      <Label text="Customer:">
+                                          <font>
+                                              <Font name="System Bold" size="12.0" />
+                                          </font>
+                                      </Label>
+                                      <ComboBox fx:id="comboCustomer" prefWidth="200.0" promptText="Select Customer" HBox.hgrow="ALWAYS" />
+                              <ToggleButton fx:id="tglBtnAdd" mnemonicParsing="false" text="ToggleButton" />
+                                  </children>
+                                  <padding>
+                                      <Insets bottom="10.0" left="10.0" right="10.0" top="10.0" />
+                                  </padding>
+                              </HBox>
+                        <VBox>
+                           <children>
+            
+                                    <Separator prefWidth="200.0">
+                                 <padding>
+                                    <Insets left="5.0" right="5.0" />
+                                 </padding>
+                              </Separator>
+                              <GridPane vgap="2.0">
+                                <columnConstraints>
+                                  <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" maxWidth="209.0" minWidth="10.0" prefWidth="74.0" />
+                                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="353.0" minWidth="10.0" prefWidth="353.0" />
+                                </columnConstraints>
+                                <rowConstraints>
+                                  <RowConstraints />
+                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                    <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                </rowConstraints>
+                                 <children>
+                                    <Label text="Contact:" GridPane.rowIndex="2">
+                                       <GridPane.margin>
+                                          <Insets left="10.0" />
+                                       </GridPane.margin>
+                                    </Label>
+                                    <Label text="Name:" GridPane.rowIndex="1">
+                                       <GridPane.margin>
+                                          <Insets left="10.0" />
+                                       </GridPane.margin>
+                                    </Label>
+                                    <Label text="Email:" GridPane.rowIndex="3">
+                                       <GridPane.margin>
+                                          <Insets left="10.0" />
+                                       </GridPane.margin>
+                                    </Label>
+                                    <Label text="Address:" GridPane.rowIndex="4">
+                                       <GridPane.margin>
+                                          <Insets left="10.0" />
+                                       </GridPane.margin>
+                                    </Label>
+                                    <TextField fx:id="txtName" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                       <GridPane.margin>
+                                          <Insets right="2.0" />
+                                       </GridPane.margin>
+                                    </TextField>
+                                    <TextField fx:id="txtContact" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                                       <GridPane.margin>
+                                          <Insets right="2.0" />
+                                       </GridPane.margin>
+                                    </TextField>
+                                    <TextField fx:id="txtEmail" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                                       <GridPane.margin>
+                                          <Insets right="2.0" />
+                                       </GridPane.margin>
+                                    </TextField>
+                                    <TextField fx:id="txtAddress" GridPane.columnIndex="1" GridPane.rowIndex="4">
+                                       <GridPane.margin>
+                                          <Insets right="2.0" />
+                                       </GridPane.margin>
+                                    </TextField>
+                                 </children>
+                              </GridPane>
+                           </children>
+                        </VBox>
+                     </children>
+                  </VBox>
+
+                        <TableView fx:id="tblCart" prefHeight="197.0" prefWidth="425.0" VBox.vgrow="ALWAYS">
+                            <columns>
+                                <TableColumn fx:id="colCartItem" prefWidth="150.0" text="Item" />
+                                <TableColumn fx:id="colCartSerial" prefWidth="100.0" text="Serial" />
+                                <TableColumn fx:id="colCartPrice" prefWidth="80.0" text="Price" />
+                                <TableColumn fx:id="colCartDiscount" prefWidth="70.0" text="Disc." />
+                                <TableColumn fx:id="colCartTotal" prefWidth="90.0" text="Total" />
+                            </columns>
+                            <columnResizePolicy>
+                                <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
+                            </columnResizePolicy>
+                        </TableView>
+
+                        <Separator prefWidth="200.0" />
+
+                        <GridPane hgap="10.0" minHeight="-Infinity" vgap="5.0">
+                            <columnConstraints>
+                                <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                                <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                            </columnConstraints>
+                            <rowConstraints>
+                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                <RowConstraints minHeight="10.0" prefHeight="40.0" vgrow="SOMETIMES" />
+                            </rowConstraints>
+                            <children>
+                                <Label text="Subtotal:" textFill="#7f8c8d" />
+                                <Label fx:id="lblSubTotal" text="0.00" GridPane.columnIndex="1" />
+
+                                <Label text="Discount:" textFill="#7f8c8d" GridPane.rowIndex="1" />
+                                <Label fx:id="lblDiscount" text="0.00" textFill="RED" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+
+                                <Label text="GRAND TOTAL:" GridPane.rowIndex="2">
+                                    <font>
+                                        <Font name="System Bold" size="18.0" />
+                                    </font>
+                                </Label>
+                                <Label fx:id="lblGrandTotal" text="0.00" textFill="#27ae60" GridPane.columnIndex="1" GridPane.rowIndex="2">
+                                    <font>
+                                        <Font name="System Bold" size="24.0" />
+                                    </font>
+                                </Label>
+                            </children>
+                     <padding>
+                        <Insets right="5.0" />
+                     </padding>
+                        </GridPane>
+
+                        <HBox spacing="10.0">
+                            <children>
+                                <Button fx:id="btnRemoveItem" onAction="#handleRemoveItemAction" prefHeight="50.0" prefWidth="100.0" style="-fx-background-color: #e74c3c; -fx-text-fill: white;" text="Remove" />
+                                <Button fx:id="btnCheckout" maxWidth="1.7976931348623157E308" prefHeight="50.0" style="-fx-background-color: #27ae60; -fx-text-fill: white;" text="CHECKOUT &amp; PAY" HBox.hgrow="ALWAYS">
+                                    <font>
+                                        <Font name="System Bold" size="18.0" />
+                                    </font>
+                                </Button>
+                            </children>
+                        </HBox>
+                    </children>
+                </VBox>
+            </items>
+        </SplitPane>
+    </center>
+</BorderPane>

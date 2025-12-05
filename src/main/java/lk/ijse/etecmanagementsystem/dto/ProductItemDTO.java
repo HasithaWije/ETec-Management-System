@@ -30,6 +30,13 @@ public class ProductItemDTO {
         this.soldDate = soldDate;
     }
 
+    public ProductItemDTO(String serialNumber, String productName, int customerWarranty, String status) {
+        this.serialNumber = serialNumber;
+        this.productName = productName;
+        this.customerWarranty = customerWarranty;
+        this.status = status;
+    }
+
     // Getters & Setters
     public String getSerialNumber() { return serialNumber; }
     public void setSerialNumber(String serialNumber) { this.serialNumber = serialNumber; }

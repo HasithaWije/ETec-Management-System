@@ -69,7 +69,7 @@ public class LayoutController {
     private void btnRepairsClicked()  {
         menuBar.setActive(btnRepairs);
         try {
-            contentArea.getChildren().setAll(App.loadFXML("repairs"));
+            contentArea.getChildren().setAll(App.loadFXML("sales"));
         } catch (IOException e) {
             e.printStackTrace();
         }

@@ -11,6 +11,7 @@ module lk.ijse.etecmanagementsystem {
     requires javafx.graphics;
 
 
+
     exports lk.ijse.etecmanagementsystem;
     opens lk.ijse.etecmanagementsystem to javafx.fxml;
 
