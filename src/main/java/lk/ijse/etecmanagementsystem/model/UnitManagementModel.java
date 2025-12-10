@@ -15,13 +15,10 @@ public class UnitManagementModel {
     // --- 1. CHANGED: Get Map of ID -> Name ---
     public Map<Integer, String> getAllProductMap() throws SQLException {
         Map<Integer, String> map = new HashMap<>();
-        ResultSet rs = CrudUtil.execute("SELECT stock_id, name FROM Product");
-        try {
+        try (ResultSet rs = CrudUtil.execute("SELECT stock_id, name FROM Product")) {
             while (rs.next()) {
                 map.put(rs.getInt("stock_id"), rs.getString("name"));
             }
-        } finally {
-            if (rs != null) rs.close();
         }
         return map;
     }
@@ -29,26 +26,20 @@ public class UnitManagementModel {
     // --- 2. CHANGED: Get Map of ID -> Name ---
     public Map<Integer, String> getAllSuppliersMap() throws SQLException {
         Map<Integer, String> map = new HashMap<>();
-        ResultSet rs = CrudUtil.execute("SELECT supplier_id, supplier_name FROM Supplier");
-        try {
+        try (ResultSet rs = CrudUtil.execute("SELECT supplier_id, supplier_name FROM Supplier")) {
             while (rs.next()) {
                 map.put(rs.getInt("supplier_id"), rs.getString("supplier_name"));
             }
-        } finally {
-            if (rs != null) rs.close();
         }
         return map;
     }
 
     // --- 3. NEW: Get Meta by ID ---
     public ProductMeta getProductMetaById(int stockId) throws SQLException {
-        ResultSet rs = CrudUtil.execute("SELECT name, warranty_months FROM Product WHERE stock_id = ?", stockId);
-        try {
+        try (ResultSet rs = CrudUtil.execute("SELECT name, warranty_months FROM Product WHERE stock_id = ?", stockId)) {
             if (rs.next()) {
                 return new ProductMeta(stockId, rs.getInt("warranty_months"));
             }
-        } finally {
-            if (rs != null) rs.close();
         }
         return null;
     }
@@ -56,13 +47,10 @@ public class UnitManagementModel {
     // --- 4. NEW: Helper to get specific IDs for a serial (Used in Fix Tab) ---
     public ItemIds getIdsBySerial(String serial) throws SQLException {
         String sql = "SELECT stock_id, supplier_id FROM ProductItem WHERE serial_number = ?";
-        ResultSet rs = CrudUtil.execute(sql, serial);
-        try {
+        try (ResultSet rs = CrudUtil.execute(sql, serial)) {
             if (rs.next()) {
                 return new ItemIds(rs.getInt("stock_id"), rs.getInt("supplier_id"));
             }
-        } finally {
-            if (rs != null) rs.close();
         }
         return null;
     }
@@ -151,9 +139,10 @@ public class UnitManagementModel {
         PreparedStatement pstm = conn.prepareStatement(sql);
         pstm.setString(1, serial);
         ResultSet rs = pstm.executeQuery();
+        ProductItemDTO productItemDTO = null;
 
         if (rs.next()) {
-            return new ProductItemDTO(
+             productItemDTO = new ProductItemDTO(
                     rs.getString("serial_number"), rs.getString("product_name"), rs.getString("supplier_name"),
                     rs.getInt("supplier_warranty_mo"), rs.getInt("customer_warranty_mo"),
                     rs.getString("status"), rs.getDate("added_date"), rs.getDate("sold_date")
@@ -161,7 +150,7 @@ public class UnitManagementModel {
         }
         pstm.close();
         rs.close();
-        return null;
+        return productItemDTO;
     }
 
     public boolean correctItemMistake(String oldSerial, String newSerial, int newStockId, Integer newSupplierId, int newSupWar) throws SQLException {

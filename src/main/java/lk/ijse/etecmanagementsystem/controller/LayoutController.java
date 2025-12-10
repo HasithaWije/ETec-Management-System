@@ -15,6 +15,7 @@ public class LayoutController {
 
     @FXML
     private Button btnDashboard;
+    @FXML private Button btnSales;
     @FXML private Button btnInventory;
     @FXML private Button btnRepairs;
     @FXML private Button btnSuppliers;
@@ -54,6 +55,18 @@ public class LayoutController {
         }
 
     }
+
+    @FXML
+    private void btnSalesClicked(){
+        menuBar.setActive(btnSales);
+        try {
+            contentArea.getChildren().setAll(App.loadFXML("sales"));
+        } catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+
     @FXML
     private void btnInventoryClicked()  {
         menuBar.setActive(btnInventory);
@@ -69,7 +82,7 @@ public class LayoutController {
     private void btnRepairsClicked()  {
         menuBar.setActive(btnRepairs);
         try {
-            contentArea.getChildren().setAll(App.loadFXML("sales"));
+            contentArea.getChildren().setAll(App.loadFXML("repairs"));
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -136,6 +149,7 @@ public class LayoutController {
     private void setupMenuBar() {
 
         menuBar.setupButton(btnDashboard);
+        menuBar.setupButton(btnSales);
         menuBar.setupButton(btnInventory);
         menuBar.setupButton(btnRepairs);
         menuBar.setupButton(btnSuppliers);

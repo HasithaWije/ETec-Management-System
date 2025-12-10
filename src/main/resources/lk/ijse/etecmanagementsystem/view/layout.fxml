@@ -23,7 +23,7 @@
                </padding>
             </Label>
             <Separator opacity="0.3" prefWidth="200.0" />
-            <Button fx:id="btnDashboard" alignment="BASELINE_LEFT" graphicTextGap="15.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#btnDashboardClicked" style="-fx-background-color: transparent; -fx-cursor: hand;" text="Dashboard" textFill="WHITE">
+            <Button fx:id="btnDashboard" alignment="BASELINE_LEFT" graphicTextGap="15.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#btnDashboardClicked" style="-fx-background-color: transparent; -fx-cursor: hand;" text="Dashboard" textFill="#cbd5e1">
                <padding>
                   <Insets bottom="12.0" left="20.0" right="20.0" top="12.0" />
                </padding>
@@ -31,7 +31,18 @@
                   <Font size="14.0" />
                </font>
                <graphic>
-                  <Label text="🏠" textFill="WHITE" />
+                  <Label text="🏠" textFill="#cbd5e1" />
+               </graphic>
+            </Button>
+            <Button fx:id="btnSales" alignment="BASELINE_LEFT" graphicTextGap="15.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#btnSalesClicked" style="-fx-background-color: transparent; -fx-cursor: hand;" text="Sales" textFill="#cbd5e1">
+               <padding>
+                  <Insets bottom="12.0" left="20.0" right="20.0" top="12.0" />
+               </padding>
+               <font>
+                  <Font size="14.0" />
+               </font>
+               <graphic>
+                  <Label text="📈" textFill="#cbd5e1" />
                </graphic>
             </Button>
             <Button fx:id="btnInventory" alignment="BASELINE_LEFT" graphicTextGap="15.0" layoutX="10.0" layoutY="78.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#btnInventoryClicked" style="-fx-background-color: transparent; -fx-cursor: hand;" text="Inventory" textFill="#cbd5e1">
@@ -78,7 +89,7 @@
                   <Label text="🧑‍🤝‍🧑" textFill="#cbd5e1" />
                </graphic>
             </Button>
-            <Button fx:id="btnTransactions" alignment="BASELINE_LEFT" graphicTextGap="15.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" style="-fx-background-color: transparent; -fx-cursor: hand;" text="Transactions" textFill="#cbd5e1">
+            <Button fx:id="btnTransactions" alignment="BASELINE_LEFT" graphicTextGap="15.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#btnTransactionsClicked" style="-fx-background-color: transparent; -fx-cursor: hand;" text="Transactions" textFill="#cbd5e1">
                <padding>
                   <Insets bottom="12.0" left="20.0" right="20.0" top="12.0" />
                </padding>
@@ -89,7 +100,7 @@
                   <Label text="💲" textFill="#cbd5e1" />
                </graphic>
             </Button>
-            <Button fx:id="btnWarranty" alignment="BASELINE_LEFT" graphicTextGap="15.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" style="-fx-background-color: transparent; -fx-cursor: hand;" text="Warranty" textFill="#cbd5e1">
+            <Button fx:id="btnWarranty" alignment="BASELINE_LEFT" graphicTextGap="15.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#btnWarrantyClicked" style="-fx-background-color: transparent; -fx-cursor: hand;" text="Warranty" textFill="#cbd5e1">
                <padding>
                   <Insets bottom="12.0" left="20.0" right="20.0" top="12.0" />
                </padding>
@@ -101,7 +112,7 @@
                </graphic>
             </Button>
             <Region VBox.vgrow="ALWAYS" />
-            <Button fx:id="btnSettings" alignment="BASELINE_LEFT" graphicTextGap="15.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" style="-fx-background-color: transparent; -fx-cursor: hand;" text="Settings" textFill="#cbd5e1">
+            <Button fx:id="btnSettings" alignment="BASELINE_LEFT" graphicTextGap="15.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#btnSettingsClicked" style="-fx-background-color: transparent; -fx-cursor: hand;" text="Settings" textFill="#cbd5e1">
                <padding>
                   <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
                </padding>
@@ -112,7 +123,7 @@
                   <Label text="⚙️" textFill="#cbd5e1" />
                </graphic>
             </Button>
-            <Button fx:id="btnUser" alignment="BASELINE_LEFT" graphicTextGap="15.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" style="-fx-background-color: transparent; -fx-cursor: hand;" text="User" textFill="#cbd5e1">
+            <Button fx:id="btnUser" alignment="BASELINE_LEFT" graphicTextGap="15.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#btnUserClicked" style="-fx-background-color: transparent; -fx-cursor: hand;" text="User" textFill="#cbd5e1">
                <padding>
                   <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
                </padding>
