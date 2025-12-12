@@ -9,6 +9,7 @@ module lk.ijse.etecmanagementsystem {
     requires java.desktop;
     requires javafx.base;
     requires javafx.graphics;
+    requires jdk.httpserver;
 
 
 

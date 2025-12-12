@@ -5,14 +5,20 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 
 
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
 import javafx.util.StringConverter;
+import lk.ijse.etecmanagementsystem.App;
 import lk.ijse.etecmanagementsystem.dto.*;
+import lk.ijse.etecmanagementsystem.server.BarcodeServer;
 import lk.ijse.etecmanagementsystem.util.ProductCondition;
 import lk.ijse.etecmanagementsystem.util.ProductUtil;
 import lk.ijse.etecmanagementsystem.util.Stock;
 
+import java.io.IOException;
 import java.sql.Date;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -144,6 +150,40 @@ public class SalesController {
 
         setupDiscountFieldListener();
 
+    }
+
+    @FXML
+    private void handleScanAction() {
+        TextField barcodeInput = new TextField();
+        BarcodeServer barcodeServer = BarcodeServer.getBarcodeServerInstance(txtSerialNumber);
+        barcodeServer.startServer();
+        Stage newStage = new Stage();
+
+        try {
+
+
+            newStage.setTitle("Barcode Scanner");
+            newStage.setScene(new Scene(App.loadFXML("barcode")));
+            newStage.setResizable(false);
+            newStage.show();
+
+
+
+        } catch (Exception e) {
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Failed to start barcode server: " + e.getMessage());
+            alert.showAndWait();
+        }
+        txtSerialNumber.setText(barcodeInput.getText());
+        newStage.setOnCloseRequest(event -> barcodeServer.stopServer());
+
+
+
+
+
+        // Start the server and pass the text field to it
+
+
+        System.out.println("Scan button clicked. Implement barcode scanning logic here.");
     }
 
     @FXML
