@@ -1,0 +1,47 @@
+/* --- 1. IDLE STATE (OFF) - Clean Outline Style --- */
+.btn-scan {
+    -fx-background-color: transparent;
+    -fx-background-radius: 5px;
+    -fx-border-radius: 5px;
+
+    /* The Border is the main visible part */
+    -fx-border-color: #3498db;
+    -fx-border-width: 2px;
+
+    /* Text matches the border */
+    -fx-text-fill: #3498db;
+    -fx-font-family: "Segoe UI", System, sans-serif;
+    -fx-font-weight: bold;
+    -fx-font-size: 14px;
+    -fx-cursor: hand;
+    -fx-padding: 9 19; /* Adjusted for border width */
+}
+
+/* Hover when OFF (Subtle fade) */
+.btn-scan:hover {
+    -fx-background-color: rgba(52, 152, 219, 0.1); /* Very faint blue tint */
+    -fx-effect: dropshadow(three-pass-box, rgba(52, 152, 219, 0.3), 5, 0, 0, 0);
+}
+
+/* --- 2. SELECTED STATE (ON / Scanning) - Fills with Color --- */
+.btn-scan:selected {
+    -fx-background-color: #3498db; /* Fills with your theme Blue */
+    -fx-text-fill: white;          /* Text turns white */
+    -fx-border-color: #3498db;     /* Border matches background */
+
+    /* Adds a "Glow" to show it is active/working */
+    -fx-effect: dropshadow(three-pass-box, rgba(52, 152, 219, 0.6), 10, 0, 0, 0);
+}
+
+/* Hover when ON */
+.btn-scan:selected:hover {
+    -fx-background-color: #2980b9; /* Slightly darker blue */
+    -fx-border-color: #2980b9;
+}
+
+/* --- 3. PRESSED STATE (Clicking) --- */
+.btn-scan:pressed {
+    -fx-background-color: #1abc9c; /* A Teal color for instant click feedback */
+    -fx-border-color: #1abc9c;
+    -fx-text-fill: white;
+}

@@ -1,0 +1,36 @@
+/* --- MATERIAL CARD TABLE --- */
+.table-view.material-table {
+    -fx-background-color: white;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.08), 10, 0, 0, 0); /* Soft shadow */
+    -fx-background-radius: 8px; /* Rounded corners for the whole table */
+    -fx-border-radius: 8px;
+    -fx-padding: 10px;
+}
+
+/* Header Row */
+.table-view.material-table .column-header-background {
+    -fx-background-color: white;
+    -fx-border-color: transparent transparent #eeeeee transparent;
+    -fx-border-width: 2px;
+}
+
+.table-view.material-table .column-header .label {
+    -fx-text-fill: #888888; /* Grey text for headers */
+    -fx-font-size: 11px;
+    -fx-text-transform: uppercase; /* ALL CAPS HEADERS */
+    -fx-font-weight: bold;
+}
+
+/* Rows */
+.table-row-cell {
+    -fx-border-color: transparent;
+    -fx-font-size: 14px;
+}
+
+/* Selected Row */
+.table-row-cell:selected {
+    -fx-background-color: transparent; /* No background color change */
+    -fx-border-color: transparent transparent transparent #6200ea; /* Purple left border indicator */
+    -fx-border-width: 0 0 0 4px;
+    -fx-text-fill: #6200ea;
+}

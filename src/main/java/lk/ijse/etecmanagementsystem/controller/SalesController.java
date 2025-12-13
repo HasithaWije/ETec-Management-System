@@ -5,9 +5,11 @@ import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 
 
+import javafx.geometry.Side;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
@@ -17,6 +19,7 @@ import lk.ijse.etecmanagementsystem.server.BarcodeServer;
 import lk.ijse.etecmanagementsystem.util.ProductCondition;
 import lk.ijse.etecmanagementsystem.util.ProductUtil;
 import lk.ijse.etecmanagementsystem.util.Stock;
+import org.controlsfx.control.textfield.TextFields;
 
 import java.io.IOException;
 import java.sql.Date;
@@ -24,6 +27,7 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.stream.Collectors;
+
 
 public class SalesController {
 
@@ -95,7 +99,9 @@ public class SalesController {
     private Button btnCheckout;
 
     @FXML
-    private ToggleButton tglBtnAdd;
+    private ToggleButton tglBtnCusAdd;
+    @FXML
+    private VBox vboxCustomerDetails;
 
     @FXML
     private TextField txtCusName;
@@ -134,6 +140,17 @@ public class SalesController {
 
         loadCustomers();
         loadProductItems();
+
+        List<String> suggestions = new ArrayList<>();
+
+        for (InventoryItemDTO item : inventoryItemsList) {
+            suggestions.add(item.getProductName());
+        }
+
+        // Call the new SAFE method
+        setupSearchWithSuggestions(txtItemName, suggestions);
+
+
 
         tblProductInventory.setItems(inventoryItemsList);
         tblCart.setItems(cartItemList);
@@ -184,6 +201,43 @@ public class SalesController {
 
 
         System.out.println("Scan button clicked. Implement barcode scanning logic here.");
+    }
+
+    private void setupSearchWithSuggestions(TextField searchField, List<String> entries) {
+        ContextMenu suggestionsPopup = new ContextMenu();
+
+        // Listen for text changes
+        searchField.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue == null || newValue.isEmpty()) {
+                suggestionsPopup.hide();
+            } else {
+                // Filter the list
+                List<String> filteredList = entries.stream()
+                        .filter(e -> e.toLowerCase().contains(newValue.toLowerCase()))
+                        .collect(Collectors.toList());
+
+                if (!filteredList.isEmpty()) {
+                    suggestionsPopup.getItems().clear();
+                    // Add menu items for each match
+                    for (String match : filteredList) {
+                        MenuItem item = new MenuItem(match);
+                        item.setOnAction(e -> {
+                            searchField.setText(match);
+                            searchField.positionCaret(match.length());
+                            suggestionsPopup.hide();
+                        });
+                        suggestionsPopup.getItems().add(item);
+                    }
+
+                    // Show the popup if not already showing
+                    if (!suggestionsPopup.isShowing()) {
+                        suggestionsPopup.show(searchField, Side.BOTTOM, 0, 0);
+                    }
+                } else {
+                    suggestionsPopup.hide();
+                }
+            }
+        });
     }
 
     @FXML
@@ -347,6 +401,7 @@ public class SalesController {
         }
 
         cartItemList.remove(selectedCartItem);
+        tblCart.getSelectionModel().clearSelection();
         calculateTotals();
     }
 
@@ -471,51 +526,6 @@ public class SalesController {
         System.out.println("Customer Updated: " + customer.getName());
     }
 
-//    private  void handleCustomerFromFields(CustomerDTO customer){
-//        String cusName = txtCusName.getText().trim() == null ? "" : txtCusName.getText().trim();
-//        String cusContact = txtCusContact.getText().trim() == null ? "" : txtCusContact.getText().trim();
-//        String cusEmail = txtCusEmail.getText().trim() == null ? "" : txtCusEmail.getText().trim();
-//        String cusAddress =  txtCusAddress.getText().trim() == null ? "" : txtCusAddress.getText().trim();
-//
-//        if (!cusName.isEmpty() && !cusContact.isEmpty()) {
-//            if (customer == null || !customer.getName().equalsIgnoreCase(cusName)
-//                    || !customer.getNumber().equalsIgnoreCase(cusContact)
-//                    || (customer.getEmailAddress() == null ? "" : customer.getEmailAddress()).equalsIgnoreCase(cusEmail)
-//                    || (customer.getAddress() == null ? "" : customer.getAddress()).equalsIgnoreCase(cusAddress)) {
-//
-//                Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "You are modifying the selected customer details."
-//                        + " Do you want to add modified customer?", ButtonType.YES, ButtonType.NO);
-//                alert.showAndWait();
-//                if(customer != null && !customer.getName().equalsIgnoreCase(cusName)
-//                || !customer.getNumber().equalsIgnoreCase(cusContact)){
-//
-//                }
-//
-//                if (alert.getResult() == ButtonType.YES) {
-//                    // Add or update customer in database
-//                    // If new customer, get generated ID from database
-//                    int newCustomerId = customerList.size() + 1; // Dummy ID for demo
-//                    CustomerDTO newCustomer = new CustomerDTO(
-//                            newCustomerId,
-//                            cusName,
-//                            cusContact,
-//                            cusEmail,
-//                            cusAddress
-//                    );
-//                    customerList.add(newCustomer);
-//                    customerMap.put(String.valueOf(newCustomerId), cusName);
-//                    comboCustomer.getItems().add(String.valueOf(newCustomerId));
-//                    comboCustomer.setValue(String.valueOf(newCustomerId));
-//                }
-//            }
-//
-//        }
-//
-//
-//        // Open Customer Details Modal
-//        System.out.println("Opening Customer Details Modal...");
-//    }
-
     private void calculateTotals() {
         double subTotal = cartItemList.stream()
                 .mapToDouble(ItemCartDTO::getUnitPrice)
@@ -580,9 +590,7 @@ public class SalesController {
         txtSearchProduct.textProperty().addListener((observable, oldValue, newValue) -> getFilteredProducts(newValue.trim()));
         tblCart.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
             btnRemoveItem.setDisable(newValue == null);
-//            if(!tblCart.isFocused()){
-//                tblCart.getSelectionModel().clearSelection();
-//            }
+
 
         });
 
@@ -595,6 +603,23 @@ public class SalesController {
                 return null;
             }
         }));
+
+        tglBtnCusAdd.setText("DETAILS ▼");
+        vboxCustomerDetails.setVisible(false);
+        vboxCustomerDetails.setManaged(false);
+
+        tglBtnCusAdd.selectedProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue) {
+                tglBtnCusAdd.setText("DETAILS ▲");
+                vboxCustomerDetails.setVisible(true);
+                vboxCustomerDetails.setManaged(true);
+
+            } else {
+                tglBtnCusAdd.setText("DETAILS ▼");
+                vboxCustomerDetails.setVisible(false);
+                vboxCustomerDetails.setManaged(false);
+            }
+        });
     }
 
     private void populateItemFields(InventoryItemDTO item) {
@@ -664,6 +689,9 @@ public class SalesController {
     }
 
     private void setupDiscountFieldListener() {
+        txtPrice.textProperty().addListener((observable, oldValue, newValue) -> {
+            txtDiscount.setText("");
+        });
         txtDiscount.textProperty().addListener((observable, oldValue, newValue) -> {
             calculateFinalPrice();
             if (!txtDisPercentage.isFocused()) {
@@ -741,6 +769,35 @@ public class SalesController {
             return;
         }
         tblProductInventory.setItems(FXCollections.observableArrayList(filteredList));
+    }
+
+    @FXML
+    private void clearItemFields() {
+        txtPrice.setText("");
+        txtItemName.setText("");
+        txtSerialNumber.setText("");
+        txtWarranty.setText("");
+    }
+    @FXML
+    private void clearCustomerFields() {
+        comboCustomer.setValue("");
+        txtCusName.setText("");
+        txtCusContact.setText("");
+        txtCusEmail.setText("");
+        txtCusAddress.setText("");
+    }
+    @FXML
+    private void clearCart() {
+        cartItemList.clear();
+        calculateTotals();
+    }
+    @FXML
+    private void resetAllFields() {
+        clearItemFields();
+        clearCustomerFields();
+        clearCart();
+        tblProductInventory.getSelectionModel().clearSelection();
+        tblCart.getSelectionModel().clearSelection();
     }
 
 }

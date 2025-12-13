@@ -1,0 +1,58 @@
+/* --- MODERN TABLE STYLE --- */
+.table-view {
+    -fx-background-color: transparent; /* Removes grey border */
+    -fx-base: #f4f4f4; /* Subtle background */
+    -fx-control-inner-background: white;
+    -fx-background-insets: 0;
+    -fx-padding: 0;
+}
+
+/* Header Row */
+.table-view .column-header-background {
+    -fx-background-color: #f8f9fa; /* Light grey header */
+    -fx-border-color: transparent transparent #dee2e6 transparent; /* Bottom border only */
+    -fx-border-width: 1px;
+}
+
+.table-view .column-header {
+    -fx-background-color: transparent;
+    -fx-size: 45px; /* Header Height */
+    -fx-font-weight: bold;
+    -fx-text-fill: #495057;
+}
+/* Keeps the text dark even when the row is selected */
+.table-row-cell:selected .text {
+    -fx-fill: black;
+}
+
+/* Optional: If you want to slightly darken the blue selection color to make it pop more */
+.table-row-cell:selected {
+    -fx-background-color: #e8f0fe; /* The light blue you currently have */
+    -fx-table-cell-border-color: transparent;
+}
+
+/* Rows */
+.table-row-cell {
+    -fx-background-color: white;
+    -fx-border-color: transparent transparent #f1f1f1 transparent; /* Subtle row separator */
+    -fx-padding: 5px 0; /* Add some space inside rows */
+}
+
+/* Alternating Row Colors (Optional - Uncomment to use) */
+/*
+.table-row-cell:odd {
+    -fx-background-color: #fcfcfc;
+}
+*/
+
+/* Selected Row */
+.table-row-cell:selected {
+    -fx-background-color: #e8f0fe; /* Light Blue highlight (Google style) */
+    -fx-text-fill: #1967d2; /* Dark Blue text */
+    -fx-font-weight: bold;
+}
+
+/* Remove the "dot" pattern on headers */
+.table-view .column-header .label {
+    -fx-alignment: CENTER_LEFT;
+}

@@ -1,0 +1,49 @@
+/* --- DARK TABLE STYLE --- */
+.table-view.dark-table {
+    -fx-base: #1e1e1e;
+    -fx-control-inner-background: #1e1e1e;
+    -fx-background-color: #1e1e1e;
+    -fx-table-cell-border-color: transparent;
+    -fx-table-header-border-color: transparent;
+    -fx-padding: 5;
+}
+
+/* Header Row */
+.table-view.dark-table .column-header-background {
+    -fx-background-color: #2d2d2d;
+    -fx-background-radius: 5px 5px 0 0;
+}
+
+.table-view.dark-table .column-header {
+    -fx-background-color: transparent;
+    -fx-text-fill: #e0e0e0;
+    -fx-font-weight: bold;
+}
+
+/* Rows */
+.table-row-cell {
+    -fx-background-color: #1e1e1e;
+    -fx-text-fill: #bbbbbb;
+    -fx-border-color: transparent transparent #333333 transparent;
+}
+
+/* Hover Effect on Rows */
+.table-row-cell:hover {
+    -fx-background-color: #2a2a2a;
+}
+
+/* Selected Row */
+.table-row-cell:selected {
+    -fx-background-color: #007acc; /* VS Code Blue */
+    -fx-text-fill: white;
+}
+
+/* Scrollbar fixing for dark mode */
+.table-view.dark-table .scroll-bar:horizontal,
+.table-view.dark-table .scroll-bar:vertical {
+    -fx-background-color: transparent;
+}
+.table-view.dark-table .scroll-bar:horizontal .thumb,
+.table-view.dark-table .scroll-bar:vertical .thumb {
+    -fx-background-color: #444444;
+}
