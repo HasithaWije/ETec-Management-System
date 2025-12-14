@@ -1,11 +1,11 @@
 package lk.ijse.etecmanagementsystem.model;
 
+import lk.ijse.etecmanagementsystem.db.DBConnection;
 import lk.ijse.etecmanagementsystem.dto.CustomerDTO;
 import lk.ijse.etecmanagementsystem.dto.SupplierDTO;
 import lk.ijse.etecmanagementsystem.util.CrudUtil;
 
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -75,6 +75,38 @@ public class CustomersModel {
                 customer.getNumber(),
                 customer.getEmailAddress() == null ? "" : customer.getEmailAddress(),
                 customer.getAddress());
+    }
+    public int insertCustomerAndGetId(CustomerDTO customer) throws SQLException {
+        String sql = "INSERT INTO Customer(name,number,email,address) VALUES(?,?,?,?)";
+
+        int generatedKey = -2;
+
+        // 1. Pass 'Statement.RETURN_GENERATED_KEYS' as the second argument
+        Connection conn = DBConnection.getInstance().getConnection();
+        try (PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+
+            pstmt.setString(1, customer.getName());
+            pstmt.setString(2, customer.getNumber() == null ? "" : customer.getNumber());
+            pstmt.setString(3, customer.getEmailAddress() == null ? "" : customer.getEmailAddress());
+            pstmt.setString(4, customer.getAddress() == null ? "" : customer.getAddress());
+
+            int affectedRows = pstmt.executeUpdate();
+
+            if (affectedRows > 0) {
+                // 2. Retrieve the generated keys ResultSet
+                try (ResultSet rs = pstmt.getGeneratedKeys()) {
+                    if (rs.next()) {
+                        // 3. Get the ID (usually the first column)
+                        generatedKey = rs.getInt(1);
+                        System.out.println("Inserted Record ID: " + generatedKey);
+                    }
+                }
+            }
+        } catch (SQLException e) {
+            throw e;
+        }
+
+        return generatedKey;
     }
 
     public boolean updateCustomer(CustomerDTO customer) throws SQLException {

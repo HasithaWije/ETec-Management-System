@@ -16,12 +16,16 @@ import javafx.stage.Stage;
 import javafx.util.StringConverter;
 import lk.ijse.etecmanagementsystem.App;
 import lk.ijse.etecmanagementsystem.dto.*;
+import lk.ijse.etecmanagementsystem.model.CustomersModel;
+import lk.ijse.etecmanagementsystem.model.SalesModel;
 import lk.ijse.etecmanagementsystem.server.BarcodeServer;
 import lk.ijse.etecmanagementsystem.util.*;
 import org.controlsfx.control.textfield.TextFields;
 
 import java.io.IOException;
 import java.sql.Date;
+import java.sql.SQLException;
+import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -142,12 +146,19 @@ public class SalesController {
     private final BarcodeServer barcodeServer = BarcodeServer.getBarcodeServerInstance(barcodeInput);
     private final Stage newStage = new Stage();
 
+    private SalesModel salesModel = new SalesModel();
+    CustomersModel customersModel = new CustomersModel();
+
 
     @FXML
     public void initialize() {
 
-        loadCustomers();
-        loadProductItems();
+        lblCashierName.setText("Cashier: " + Login.getUserName());
+        LocalDate localDate = LocalDate.now();
+        lblDate.setText(localDate.toString());
+
+        loadCustomers();// Load Customers from DB
+        loadProductItems(); // Load Products from DB
 
         List<String> suggestions = new ArrayList<>();
 
@@ -164,12 +175,11 @@ public class SalesController {
         );
 
 
-
         tblProductInventory.setItems(inventoryItemsList);
         tblCart.setItems(cartItemList);
         setupTableColumns();
 
-        setupCusCmbBox();
+        setupCusCmbBox();// Setup Customer ComboBox
 
         formatTxtFieldAsNumber(txtDiscount, true);
         formatTxtFieldAsNumber(txtCusContact, false);
@@ -177,9 +187,8 @@ public class SalesController {
         formatTxtFieldAsNumber(txtPrice, true);
 
 
-        setupListeners();
-
-        setupDiscountFieldListener();
+        setupListeners(); // Setup various listeners
+        setupDiscountFieldListener(); // Setup discount field listeners
 
         // Barcode Input Listener
         barcodeInput.textProperty().addListener((observable, oldValue, newValue) -> {
@@ -209,15 +218,13 @@ public class SalesController {
 
 
         newStage.setOnCloseRequest(event -> {
-                    barcodeServer.stopServer();
-                    tglBtnScan.setSelected(false);
+            barcodeServer.stopServer();
+            tglBtnScan.setSelected(false);
 
-                });
+        });
 
         System.out.println("Scan button clicked. Implement barcode scanning logic here.");
     }
-
-
 
     @FXML
     private void handleProductTableClick() {
@@ -267,6 +274,29 @@ public class SalesController {
             new Alert(Alert.AlertType.WARNING, "Please select a product to add to the cart.").show();
         }
     }
+
+    @FXML
+    private void handleRemoveItemAction() {
+        ItemCartDTO selectedCartItem = tblCart.getSelectionModel().getSelectedItem();
+        if (selectedCartItem == null) {
+            new Alert(Alert.AlertType.WARNING, "Please select an item to remove from the cart.").show();
+            return;
+        }
+
+        cartItemList.remove(selectedCartItem);
+        tblCart.getSelectionModel().clearSelection();
+        calculateTotals();
+    }
+
+    @FXML
+    private void handleCheckoutAction() {
+        handleCustomerAction();
+        // This is where you OPEN THE POPUP
+        System.out.println("Opening Payment Modal...");
+
+        // openPaymentModal(currentTotal);
+    }
+
 
     private void handleAddToCartFromTbl() {
         InventoryItemDTO selectedItem = tblProductInventory.getSelectionModel().getSelectedItem();
@@ -371,21 +401,8 @@ public class SalesController {
         calculateTotals();
     }
 
-    @FXML
-    private void handleRemoveItemAction() {
-        ItemCartDTO selectedCartItem = tblCart.getSelectionModel().getSelectedItem();
-        if (selectedCartItem == null) {
-            new Alert(Alert.AlertType.WARNING, "Please select an item to remove from the cart.").show();
-            return;
-        }
+    private void handleCustomerAction() {
 
-        cartItemList.remove(selectedCartItem);
-        tblCart.getSelectionModel().clearSelection();
-        calculateTotals();
-    }
-
-    @FXML
-    private void handleCheckoutAction() {
         CustomerDTO selectedCustomer = null;
         if (comboCustomer.getValue() != null) {
             String selectedKey = comboCustomer.getValue();
@@ -399,18 +416,13 @@ public class SalesController {
 
         if (customerId == -1) {
             System.out.println("Walk-in Customer or Error in Customer Details.");
-        }else  if(customerId == -2){
+        } else if (customerId == -2) {
             // Error in customer details
             return;
         } else {
             System.out.println("Customer ID for Transaction: " + customerId);
         }
-        // This is where you OPEN THE POPUP
-        System.out.println("Opening Payment Modal...");
-
-        // openPaymentModal(currentTotal);
     }
-
 
     private int handleCustomerFromFields(CustomerDTO selectedCustomer) {
 
@@ -421,28 +433,27 @@ public class SalesController {
 
 
         if ((inputName.isEmpty())
-        && ( !inputContact.isEmpty() || !inputEmail.isEmpty() || !inputAddress.isEmpty()) ) {
+                && (!inputContact.isEmpty() || !inputEmail.isEmpty() || !inputAddress.isEmpty())) {
             new Alert(Alert.AlertType.WARNING, "Customer name is required when other details are provided.").showAndWait();
             return -2;
         }
-        if( inputName.isEmpty()){
+        if (inputName.isEmpty()) {
             // Walk-in Customer
             return -1;
         }
 
         boolean isIdentityChanged = selectedCustomer != null && (
-                !inputName.equalsIgnoreCase(selectedCustomer.getName()) ||
-                        !inputContact.equalsIgnoreCase(selectedCustomer.getNumber())
+                !inputName.equalsIgnoreCase(selectedCustomer.getName())
         );
 
         if (selectedCustomer == null || isIdentityChanged) {
 
-               // get new customer id from db and return it ***********************************************
+            // get new customer id from db and return it ***********************************************
             Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "You are adding a new customer. Do you want to proceed?", ButtonType.YES, ButtonType.NO);
             alert.showAndWait();
             if (alert.getResult() == ButtonType.YES) {
                 return saveNewCustomer(inputName, inputContact, inputEmail, inputAddress);
-            }else {
+            } else {
                 return selectedCustomer == null ? -1 : selectedCustomer.getId();
             }
 
@@ -451,21 +462,23 @@ public class SalesController {
 
             String currentEmail = selectedCustomer.getEmailAddress() == null ? "" : selectedCustomer.getEmailAddress();
             String currentAddress = selectedCustomer.getAddress() == null ? "" : selectedCustomer.getAddress();
+            String currentContact = selectedCustomer.getNumber() == null ? "" : selectedCustomer.getNumber();
 
             boolean isDetailsChanged = !inputEmail.equalsIgnoreCase(currentEmail) ||
-                    !inputAddress.equalsIgnoreCase(currentAddress);
+                    !inputAddress.equalsIgnoreCase(currentAddress) ||
+                    !inputContact.equalsIgnoreCase(currentContact);
 
             if (isDetailsChanged) {
 
-                    Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "You are modifying the selected customer's details."
-                            + " Do you want to update the customer?", ButtonType.YES, ButtonType.NO);
-                    alert.showAndWait();
-                    if (alert.getResult() == ButtonType.YES) {
-                        updateExistingCustomer(selectedCustomer, inputEmail, inputAddress);
-                        return selectedCustomer.getId();
-                    }else {
-                        return selectedCustomer.getId();
-                    }
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "You are modifying the selected customer's details."
+                        + " Do you want to update the customer?", ButtonType.YES, ButtonType.NO);
+                alert.showAndWait();
+                if (alert.getResult() == ButtonType.YES) {
+                    updateExistingCustomer(selectedCustomer, inputEmail, inputAddress);
+                    return selectedCustomer.getId();
+                } else {
+                    return selectedCustomer.getId();
+                }
 
             } else {
                 // Optional: Logic for when nothing changed at all
@@ -476,22 +489,22 @@ public class SalesController {
     }
 
     private int saveNewCustomer(String name, String contact, String email, String address) {
-        // 1. Database Insert Logic Here
-        // int newId = customerService.add(...);
+
+        CustomerDTO newCustomer = new CustomerDTO(0, name, contact, email, address);
+        try {
+            int newCustomerId = customersModel.insertCustomerAndGetId(newCustomer);
+            loadCustomers();// Reload Customers from DB
+            setupCusCmbBox(); // Refresh ComboBox
+            comboCustomer.setValue(String.valueOf(newCustomerId)); // Select the newly added customer
 
 
-        // 2. UI Update Logic (Dummy code based on your snippet)
-        int newCustomerId = customerList.size() + 1;
-        CustomerDTO newCustomer = new CustomerDTO(newCustomerId, name, contact, email, address);
+            System.out.println("New Customer Added: " + name);
+            return newCustomerId;
 
-        customerList.add(newCustomer);
-        customerMap.put(String.valueOf(newCustomerId), name);
-        comboCustomer.getItems().add(String.valueOf(newCustomerId));
-        comboCustomer.setValue(String.valueOf(newCustomerId));
-
-
-        System.out.println("New Customer Added: " + name);
-        return newCustomerId;
+        } catch (SQLException e) {
+            e.printStackTrace();
+        }
+        return -2; // Indicate failure
     }
 
     private void updateExistingCustomer(CustomerDTO customer, String newEmail, String newAddress) {
@@ -500,9 +513,17 @@ public class SalesController {
         customer.setAddress(newAddress);
 
         // 2. Database Update Logic Here
-        // customerService.update(customer);
 
-        System.out.println("Customer Updated: " + customer.getName());
+        try {
+            customersModel.updateCustomer(customer);
+        } catch (SQLException e) {
+            new Alert(Alert.AlertType.ERROR, "Failed to update customer: " + e.getMessage()).show();
+            return;
+        } finally {
+            loadCustomers();// Reload Customers from DB
+        }
+
+        System.out.println("Customer Updated: " + customer.getName() + " (ID: " + customer.getId() + ")");
     }
 
     private void calculateTotals() {
@@ -544,9 +565,12 @@ public class SalesController {
     private void loadCustomers() {
         // Load data from Database
         customerList = new ArrayList<>();
-        customerList.add(new CustomerDTO(1, "John Doe", "1234567890", "", "123 Main St"));
-        customerList.add(new CustomerDTO(2, "Jane Smith", "0987654321", "", "456 Elm St"));
-        customerList.add(new CustomerDTO(3, "Bob Johnson", "5555555555", "", "789 Oak St"));
+        try {
+            customerList = customersModel.getAllCustomers();
+        } catch (SQLException e) {
+            new Alert(Alert.AlertType.ERROR, "Failed to load customers: " + e.getMessage()).show();
+            return;
+        }
 
         for (CustomerDTO c : customerList) {
             customerMap.put(String.valueOf(c.getId()), c.getName());
@@ -555,13 +579,13 @@ public class SalesController {
     }
 
     private void loadProductItems() {
-        // Load data from Database
-
-        inventoryItemsList.addAll(
-                new InventoryItemDTO(1, "Laptop", "SN12345", 12, 1500.00, "Available"),
-                new InventoryItemDTO(2, "Smartphone", "SN67890", 24, 800.00, "Available"),
-                new InventoryItemDTO(3, "Tablet", "SN54321", 18, 600.00, "Sold")
-        );
+        try {
+            // Load from DB
+            inventoryItemsList.clear();
+            inventoryItemsList.addAll(salesModel.getAllAvailableItems());
+        } catch (SQLException e) {
+            new Alert(Alert.AlertType.ERROR, "Failed to load inventory items: " + e.getMessage()).show();
+        }
     }
 
     private void setupListeners() {
@@ -608,13 +632,21 @@ public class SalesController {
 
         // Item Name and Serial Number Enter Key Listeners
         txtItemName.setOnKeyPressed(event -> {
-            if(event.getCode().toString().equals("ENTER")) {
+            if (event.getCode().toString().equals("ENTER")) {
                 getProductByName(txtItemName.getText().trim());
             }
         });
+        // Serial Number Enter Key Listener
         txtSerialNumber.setOnKeyPressed(event -> {
-            if(event.getCode().toString().equals("ENTER")) {
+            if (event.getCode().toString().equals("ENTER")) {
                 getProductBySerialNumber(txtSerialNumber.getText().trim());
+            }
+        });
+
+        // Customer Name Enter Key Listener
+        txtCusName.setOnKeyPressed(event -> {
+            if (event.getCode().toString().equals("ENTER")) {
+                getCustomerByName(txtCusName.getText().trim());
             }
         });
 
@@ -669,6 +701,18 @@ public class SalesController {
         }
     }
 
+    private void getCustomerByName(String customerName) {
+        CustomerDTO customer = customerList.stream()
+                .filter(c -> c.getName().equalsIgnoreCase(customerName))
+                .findFirst()
+                .orElse(null);
+        if (customer != null) {
+            populateCusField(customer);
+        } else {
+            System.out.println("No customer found with the given name.");
+        }
+    }
+
     private void populateItemFields(InventoryItemDTO item) {
 
         txtPrice.setText(String.valueOf(item.getItemPrice()));
@@ -679,7 +723,7 @@ public class SalesController {
 
     private void setupCusCmbBox() {
 
-        comboCustomer.getItems().addAll(customerMap.keySet());
+        comboCustomer.getItems().setAll(customerMap.keySet());
 
         comboCustomer.setConverter(new StringConverter<String>() {
             @Override
@@ -737,10 +781,12 @@ public class SalesController {
 
     private void setupDiscountFieldListener() {
         txtPrice.textProperty().addListener((observable, oldValue, newValue) -> {
-            txtDiscount.setText("");
+
+            txtDiscount.setText("0.0");
         });
         txtDiscount.textProperty().addListener((observable, oldValue, newValue) -> {
             calculateFinalPrice();
+
             if (!txtDisPercentage.isFocused()) {
                 try {
                     double price = Double.parseDouble(txtPrice.getText().trim());
@@ -825,19 +871,22 @@ public class SalesController {
         txtSerialNumber.setText("");
         txtWarranty.setText("");
     }
+
     @FXML
     private void clearCustomerFields() {
-        comboCustomer.setValue("");
+        setupCusCmbBox();
         txtCusName.setText("");
         txtCusContact.setText("");
         txtCusEmail.setText("");
         txtCusAddress.setText("");
     }
+
     @FXML
     private void clearCart() {
         cartItemList.clear();
         calculateTotals();
     }
+
     @FXML
     private void resetAllFields() {
         clearItemFields();
