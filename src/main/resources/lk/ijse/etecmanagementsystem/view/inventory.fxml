@@ -155,7 +155,7 @@
                                         </HBox>
                                     </children>
                                 </VBox>
-                                <TableView fx:id="productTable" onMouseClicked="#getTableSelectedItem" tableMenuButtonVisible="true" visible="false" StackPane.alignment="CENTER">
+                                <TableView fx:id="productTable" onMouseClicked="#getTableSelectedItem" stylesheets="@../css/SalesTableStyle.css" tableMenuButtonVisible="true" visible="false" StackPane.alignment="CENTER">
                                     <columns>
                                         <TableColumn fx:id="colId" minWidth="45.0" prefWidth="75.0" text="Stock_ID" />
                                         <TableColumn fx:id="colName" minWidth="-1.0" prefWidth="322.0" text="Product_Name" />

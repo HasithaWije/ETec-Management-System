@@ -47,7 +47,7 @@
     </top>
 
     <center>
-        <SplitPane dividerPositions="0.32064128256513025" BorderPane.alignment="CENTER">
+        <SplitPane dividerPositions="0.5470941883767535" BorderPane.alignment="CENTER">
             <items>
 
                 <VBox spacing="10.0">
@@ -128,7 +128,7 @@
                                     </children>
                                 </HBox>
                                 <TextField fx:id="txtFinalPrice" alignment="CENTER_RIGHT" editable="false" prefHeight="25.0" prefWidth="100.0" promptText="0.00" GridPane.columnIndex="3" GridPane.rowIndex="3" />
-                        <ComboBox fx:id="cmbCondition" promptText="Select Condition" style="-fx-background-color: white;" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="3">
+                        <ComboBox fx:id="cmbCondition" promptText="Select Condition" style="-fx-background-color: white;" styleClass="combo-box" stylesheets="@../css/CmbBoxStyle.css" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="3">
                            <cursor>
                               <Cursor fx:constant="HAND" />
                            </cursor>
@@ -189,7 +189,7 @@
                                                 <Font name="System Bold" size="12.0" />
                                             </font>
                                         </Label>
-                                        <ComboBox fx:id="comboCustomer" maxWidth="1.7976931348623157E308" promptText="Select Customer" style="-fx-background-color: white;" HBox.hgrow="ALWAYS">
+                                        <ComboBox fx:id="comboCustomer" maxWidth="1.7976931348623157E308" promptText="Select Customer" style="-fx-background-color: white;" styleClass="combo-box" stylesheets="@../css/CmbBoxStyle.css" HBox.hgrow="ALWAYS">
                                  <cursor>
                                     <Cursor fx:constant="HAND" />
                                  </cursor></ComboBox>

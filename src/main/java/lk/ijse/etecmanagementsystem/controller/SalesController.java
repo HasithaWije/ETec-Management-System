@@ -5,6 +5,8 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -21,6 +23,7 @@ import lk.ijse.etecmanagementsystem.dto.tm.ItemCartTM;
 import lk.ijse.etecmanagementsystem.server.BarcodeServer;
 import lk.ijse.etecmanagementsystem.util.*;
 
+import java.io.IOException;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.util.ArrayList;
@@ -375,7 +378,53 @@ public class SalesController {
             return;
         }
         System.out.println("Opening Payment Modal...");
-        // openPaymentModal(currentTotal);
+        // Inside SalesController.java -> handleCheckoutAction()
+
+        try {
+            FXMLLoader loader = new FXMLLoader(getClass().getResource("view/salesCheckout.fxml")); // Check path
+            Parent root = loader.load();
+
+            SalesCheckoutController controller = loader.getController();
+
+            // Calculate values to pass
+            double subTotalVal = Double.parseDouble(lblSubTotal.getText());
+            double discountVal = Double.parseDouble(lblDiscount.getText());
+            double grandTotalVal = Double.parseDouble(lblGrandTotal.getText());
+
+            // Find the current customer object
+            CustomerDTO currentCus = null;
+            if (comboCustomer.getValue() != null) {
+                // Logic to find customer object from list based on ID/Name
+                // ...
+
+                String selectedKey = comboCustomer.getValue();
+                currentCus = customerList.stream()
+                        .filter(c -> String.valueOf(c.getId()).equals(selectedKey))
+                        .findFirst()
+                        .orElse(null);
+            }
+
+            // PASS DATA TO POPUP
+            controller.setInvoiceData(
+                    this,              // Pass 'this' so Checkout can clear the form later
+                    currentCus,        // The selected customer
+                    cartItemList,      // The table list
+                    subTotalVal,
+                    discountVal,
+                    grandTotalVal
+            );
+
+            Stage stage = new Stage();
+            stage.setScene(new Scene(root));
+            stage.setTitle("Checkout");
+            stage.centerOnScreen();
+            stage.show(); // Use show() or showAndWait()
+
+
+        } catch (IOException e) {
+            System.out.println("Error loading checkout form: " + e.getMessage());
+        }
+
     }
 
     private boolean handleCustomerAction() {
@@ -564,10 +613,13 @@ public class SalesController {
         txtSearchProduct.textProperty().addListener((observable, oldValue, newValue) -> getFilteredProducts(newValue.trim()));
         tblCart.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> btnRemoveItem.setDisable(newValue == null));
 
+        vboxCustomerDetails.setVisible(false);
+        vboxCustomerDetails.setManaged(false);
+
         tglBtnCusAdd.selectedProperty().addListener((observable, oldValue, newValue) -> {
             vboxCustomerDetails.setVisible(newValue);
             vboxCustomerDetails.setManaged(newValue);
-            tglBtnCusAdd.setText(newValue ? "DETAILS ▲" : "DETAILS ▼");
+            tglBtnCusAdd.setText(newValue ? "DETAILS ▼" : "DETAILS ▲");
         });
 
         txtIProductName.setOnAction(e -> getProductByName(safeGetText(txtIProductName)));
@@ -862,7 +914,7 @@ public class SalesController {
     }
 
     @FXML
-    private void resetAllFields() {
+    void resetAllFields() {
         clearItemFields();
         clearCustomerFields();
         clearCart();

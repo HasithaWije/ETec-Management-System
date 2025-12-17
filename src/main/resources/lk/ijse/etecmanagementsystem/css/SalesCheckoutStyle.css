@@ -1,0 +1,38 @@
+/* The Paper Receipt Look */
+.receipt-paper {
+    -fx-background-color: #ffffff;
+    /* Soft Drop Shadow to lift it off the screen */
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.15), 10, 0, 0, 5);
+    -fx-border-radius: 0;
+    -fx-background-radius: 0;
+}
+
+/* Minimalist Table for Receipt */
+.receipt-table {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+.receipt-table .column-header-background {
+    -fx-background-color: transparent;
+    -fx-border-width: 0 0 1 0;
+    -fx-border-color: #bdc3c7;
+}
+
+.receipt-table .column-header .label {
+    -fx-text-fill: #7f8c8d;
+    -fx-font-family: "Courier New";
+    -fx-font-weight: bold;
+    -fx-font-size: 12px;
+}
+
+.receipt-table .table-cell {
+    -fx-text-fill: #2c3e50;
+    -fx-font-family: "Courier New";
+    -fx-alignment: CENTER-LEFT;
+    -fx-border-color: transparent;
+}
+
+.receipt-table .table-row-cell {
+    -fx-background-color: transparent;
+}

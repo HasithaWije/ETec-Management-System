@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<VBox spacing="15" style="-fx-background-color: white; -fx-padding: 20;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="lk.ijse.demo1.controller.TicketController">
+    <Label text="New Repair Ticket" textFill="#0f172a"><font><Font name="System Bold" size="18"/></font></Label>
+    <Separator />
+
+    <GridPane hgap="10" vgap="15">
+        <Label text="Customer Name:" GridPane.rowIndex="0" GridPane.columnIndex="0" textFill="#64748b"/>
+        <TextField fx:id="tfName" GridPane.rowIndex="0" GridPane.columnIndex="1" style="-fx-background-color: #f1f5f9; -fx-border-color: #e2e8f0; -fx-border-radius: 4;"/>
+
+        <Label text="Phone:" GridPane.rowIndex="1" GridPane.columnIndex="0" textFill="#64748b"/>
+        <TextField fx:id="tfPhone" GridPane.rowIndex="1" GridPane.columnIndex="1" style="-fx-background-color: #f1f5f9; -fx-border-color: #e2e8f0; -fx-border-radius: 4;"/>
+
+        <Label text="Device Model:" GridPane.rowIndex="2" GridPane.columnIndex="0" textFill="#64748b"/>
+        <TextField fx:id="tfDevice" GridPane.rowIndex="2" GridPane.columnIndex="1" style="-fx-background-color: #f1f5f9; -fx-border-color: #e2e8f0; -fx-border-radius: 4;"/>
+
+        <Label text="Serial/IMEI:" GridPane.rowIndex="3" GridPane.columnIndex="0" textFill="#64748b"/>
+        <TextField fx:id="tfSN" GridPane.rowIndex="3" GridPane.columnIndex="1" style="-fx-background-color: #f1f5f9; -fx-border-color: #e2e8f0; -fx-border-radius: 4;"/>
+    </GridPane>
+
+    <Label text="Problem Description:" textFill="#64748b"/>
+    <TextArea fx:id="taProblem" prefHeight="80" wrapText="true" style="-fx-background-color: white; -fx-border-color: #e2e8f0;"/>
+
+    <HBox alignment="CENTER_RIGHT" spacing="10">
+        <Button text="Cancel" onAction="#close" style="-fx-background-color: white; -fx-border-color: #cbd5e1; -fx-cursor: hand;"/>
+        <Button text="Create Ticket" onAction="#submit" style="-fx-background-color: #3B82F6; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand;"/>
+    </HBox>
+</VBox>

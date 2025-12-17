@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<?import javafx.geometry.Insets?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+<?import javafx.scene.text.Font?>
+
+<VBox spacing="15" style="-fx-background-color: white; -fx-padding: 20;" xmlns="http://javafx.com/javafx/19" xmlns:fx="http://javafx.com/fxml/1" fx:controller="lk.ijse.demo1.controller.CheckoutController">
+    <Label text="Checkout &amp; Payment" textFill="#0f172a"><font><Font name="System Bold" size="18"/></font></Label>
+    <Separator />
+
+    <VBox style="-fx-background-color: #F0FDF4; -fx-padding: 10; -fx-border-color: #bbf7d0; -fx-border-radius: 5;">
+        <HBox><Label text="Parts Total:" /><Pane HBox.hgrow="ALWAYS"/><Label fx:id="lblParts" text="0.00"/></HBox>
+        <HBox><Label text="Labor Cost:" /><Pane HBox.hgrow="ALWAYS"/><Label fx:id="lblLabor" text="0.00"/></HBox>
+        <Separator style="-fx-opacity: 0.5;" />
+        <HBox><Label text="Total Due:" style="-fx-font-weight: bold;"/><Pane HBox.hgrow="ALWAYS"/><Label fx:id="lblTotal" text="0.00" style="-fx-font-weight: bold; -fx-text-fill: #15803d;"/></HBox>
+    </VBox>
+
+    <Label text="Payment Method:" textFill="#64748b"/>
+    <ComboBox fx:id="cbMethod" prefWidth="250" style="-fx-background-color: #f1f5f9; -fx-border-color: #e2e8f0;"/>
+
+    <HBox alignment="CENTER_RIGHT" spacing="10">
+        <Button text="Cancel" onAction="#close" style="-fx-background-color: white; -fx-border-color: #cbd5e1; -fx-cursor: hand;"/>
+        <Button text="Confirm Payment &amp; Deliver" onAction="#confirm" style="-fx-background-color: #10B981; -fx-text-fill: white; -fx-font-weight: bold; -fx-cursor: hand;"/>
+    </HBox>
+</VBox>

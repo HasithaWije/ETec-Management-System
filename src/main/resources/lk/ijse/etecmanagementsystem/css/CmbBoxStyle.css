@@ -1,0 +1,89 @@
+/* 1. Main ComboBox Body */
+.combo-box {
+    -fx-background-color: #ffffff;      /* White background like inputs */
+    -fx-border-color: #bdc3c7;          /* Light gray border */
+    -fx-border-width: 1px;
+    -fx-border-radius: 4px;             /* Slight rounding */
+    -fx-background-radius: 4px;
+    -fx-padding: 1 5 1 5;               /* Padding inside the box */
+    -fx-font-family: "Segoe UI", sans-serif; /* Clean modern font */
+    -fx-font-size: 13px;
+}
+
+/* 2. Hover State (Mouse over the box) */
+.combo-box:hover {
+    -fx-border-color: #95a5a6;          /* Slightly darker gray border */
+}
+
+/* 3. Focused State (When clicked/active) */
+.combo-box:focused {
+    -fx-border-color: #3498db;          /* Matches your 'Add to Cart' Blue */
+    -fx-background-color: #ffffff;
+    -fx-effect: dropshadow(three-pass-box, rgba(52, 152, 219, 0.2), 5, 0, 0, 0); /* Soft blue glow */
+}
+
+/* 4. The Text Area inside the ComboBox */
+.combo-box .list-cell {
+    -fx-background-color: transparent;
+    -fx-text-fill: #2c3e50;             /* Dark blue-gray text */
+    -fx-padding: 4px 5px;               /* Space around text */
+}
+
+/* 5. The Prompt Text (Placeholder) */
+.combo-box .text-input {
+    -fx-prompt-text-fill: #95a5a6;      /* Gray placeholder text */
+}
+
+/* 6. The Arrow Button Area */
+.combo-box .arrow-button {
+    -fx-background-color: transparent;  /* Transparent background */
+    -fx-padding: 0 10 0 10;             /* Spacing for the arrow */
+    -fx-cursor: hand;
+}
+
+/* 7. The Arrow Shape itself */
+.combo-box .arrow {
+    -fx-background-color: #7f8c8d;      /* Muted gray arrow */
+    -fx-scale-x: 0.8;                   /* Make it sharper/smaller */
+    -fx-scale-y: 0.8;
+}
+
+/* Change Arrow color when box is focused or hovered */
+.combo-box:hover .arrow,
+.combo-box:focused .arrow {
+    -fx-background-color: #2980b9;      /* Turns blue on interaction */
+}
+
+
+/* ========================================================
+   POPUP LIST (The Dropdown Menu)
+   ======================================================== */
+
+/* Container for the list */
+.combo-box-popup .list-view {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #bdc3c7;
+    -fx-border-width: 1px;
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 8, 0, 0, 4); /* Soft shadow */
+}
+
+/* Items in the list */
+.combo-box-popup .list-cell {
+    -fx-padding: 8px 10px;              /* Taller rows for easier clicking */
+    -fx-text-fill: #2c3e50;
+    -fx-background-color: #ffffff;
+}
+
+/* Item when hovered (The "Blue Highlight" look) */
+.combo-box-popup .list-cell:filled:hover {
+    -fx-background-color: #ecf0f1;      /* Light gray background */
+    -fx-text-fill: #2980b9;             /* Blue text */
+    -fx-cursor: hand;
+}
+
+/* Item when Selected */
+.combo-box-popup .list-cell:filled:selected,
+.combo-box-popup .list-cell:filled:selected:hover {
+    -fx-background-color: #2980b9;      /* Solid Blue background */
+    -fx-text-fill: white;               /* White text */
+}

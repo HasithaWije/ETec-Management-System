@@ -1,0 +1,48 @@
+/* 1. Base State (Clean, Flat, Airy) */
+.text-field {
+    -fx-background-color: #ffffff;
+    -fx-background-insets: 0;         /* Removes default JavaFX '3D' bevel */
+
+    -fx-border-color: #dee2e6;        /* Subtle light gray border */
+    -fx-border-width: 1px;
+    -fx-border-radius: 6px;           /* Modern rounded corners */
+    -fx-background-radius: 6px;
+
+    -fx-padding: 10px 12px;           /* More breathing room (Modern feel) */
+
+    -fx-text-fill: #212529;           /* Dark gray text (High contrast) */
+    -fx-font-family: "Segoe UI", sans-serif;
+    -fx-font-size: 14px;
+
+    /* Smooth animation when clicking/hovering */
+    -fx-transition: -fx-border-color 0.2s, -fx-effect 0.2s;
+}
+
+/* 2. Hover State (Subtle feedback) */
+.text-field:hover {
+    -fx-background-color: #f8f9fa;    /* Very slight grey tint */
+    -fx-border-color: #adb5bd;        /* Slightly darker border */
+}
+
+/* 3. Focused State ( The "Professional" Glow) */
+.text-field:focused {
+    -fx-background-color: #ffffff;
+    -fx-border-color: #3498db;        /* Your Brand Blue */
+    -fx-border-width: 1px;
+
+    /* This creates the modern "Ring" glow effect */
+    -fx-effect: dropshadow(three-pass-box, rgba(52, 152, 219, 0.25), 8, 0, 0, 0);
+}
+
+/* 4. Placeholder / Prompt Text */
+.text-field {
+    -fx-prompt-text-fill: #a0aec0;    /* Soft gray for placeholders */
+}
+
+/* 5. Read-Only / Disabled Fields (Like 'Final Price') */
+.text-field:disabled {
+    -fx-background-color: #e9ecef;    /* Distinct light gray background */
+    -fx-border-color: #dee2e6;        /* Fades into background */
+    -fx-text-fill: #495057;           /* Keeps text readable */
+    -fx-opacity: 1.0;                 /* Stops JavaFX from making text blurry */
+}

@@ -1,0 +1,50 @@
+/* --- Receipt Paper Styling --- */
+.receipt-paper {
+    -fx-background-color: #ffffff;
+    /* Soft shadow to look like paper sitting on a desk */
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.15), 10, 0, 0, 5);
+    -fx-border-color: #ecf0f1;
+    -fx-border-width: 1px;
+}
+
+/* --- Receipt Table Styling (Minimalist) --- */
+.receipt-table {
+    -fx-background-color: transparent;
+    -fx-border-color: transparent;
+}
+
+/* Hide the scroll bar track if possible, or make it subtle */
+.receipt-table .scroll-bar:vertical {
+    -fx-background-color: transparent;
+}
+
+/* Table Headers - Clean lines like a printed bill */
+.receipt-table .column-header-background {
+    -fx-background-color: transparent;
+    -fx-border-width: 0 0 1.5 0; /* Only bottom border */
+    -fx-border-color: #bdc3c7;
+}
+
+.receipt-table .column-header .label {
+    -fx-text-fill: #34495e;
+    -fx-font-family: "Courier New";
+    -fx-font-weight: bold;
+    -fx-font-size: 12px;
+}
+
+/* Table Rows - Monospace font for alignment */
+.receipt-table .table-cell {
+    -fx-text-fill: #2c3e50;
+    -fx-font-family: "Courier New";
+    -fx-font-size: 13px;
+    -fx-alignment: CENTER-LEFT;
+    -fx-border-color: transparent;
+    -fx-padding: 5 0 5 0;
+}
+
+.receipt-table .table-row-cell {
+    -fx-background-color: transparent;
+}
+.receipt-table .table-row-cell:odd {
+    -fx-background-color: transparent; /* No stripes for receipt look */
+}
