@@ -16,7 +16,7 @@
 
 .table-view .column-header {
     -fx-background-color: transparent;
-    -fx-padding: 5px 0 5px 10px;
+    -fx-padding: 5px 5px 5px 10px;
     /*-fx-size: 25px;*/
     /* This adds the vertical separator lines in the Header */
     -fx-border-color: transparent #34495e transparent transparent;

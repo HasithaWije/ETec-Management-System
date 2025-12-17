@@ -1,17 +1,36 @@
 package lk.ijse.etecmanagementsystem.dto;
 
+import lk.ijse.etecmanagementsystem.util.ProductCondition;
+
 public class InventoryItemDTO {
 
     private  int itemId;
     private  String itemName;
     private  String productName;
     private  String serialNumber;
+    private ProductCondition productCondition;
     private  int customerWarranty;
     private  double itemPrice;
     private  String status;
 
 
     public InventoryItemDTO() {
+    }
+
+    public InventoryItemDTO(String productName, ProductCondition productCondition, int customerWarranty, double itemPrice) {
+        this.productName = productName;
+        this.productCondition = productCondition;
+        this.customerWarranty = customerWarranty;
+        this.itemPrice = itemPrice;
+    }
+
+    public InventoryItemDTO(int itemId, String productName, String serialNumber, int customerWarranty, double itemPrice, ProductCondition productCondition) {
+        this.itemId = itemId;
+        this.productName = productName;
+        this.serialNumber = serialNumber;
+        this.customerWarranty = customerWarranty;
+        this.itemPrice = itemPrice;
+        this.productCondition = productCondition;
     }
 
     public InventoryItemDTO(int itemId, String productName, String serialNumber, int customerWarranty, double itemPrice, String status) {
@@ -79,6 +98,18 @@ public class InventoryItemDTO {
         this.status = status;
     }
 
+    public ProductCondition getProductCondition() {
+        return productCondition;
+    }
+
+    public void setProductCondition(ProductCondition productCondition) {
+        this.productCondition = productCondition;
+    }
+
+    public String getConditionAsString() {
+        return productCondition != null ? productCondition.getLabel() : "N/A";
+    }
+
     @Override
     public String toString() {
         return "InventoryItemDTO{" +
@@ -86,6 +117,7 @@ public class InventoryItemDTO {
                 ", itemName='" + itemName + '\'' +
                 ", productName='" + productName + '\'' +
                 ", serialNumber='" + serialNumber + '\'' +
+                ", productCondition=" + productCondition +
                 ", customerWarranty=" + customerWarranty +
                 ", itemPrice=" + itemPrice +
                 ", status='" + status + '\'' +

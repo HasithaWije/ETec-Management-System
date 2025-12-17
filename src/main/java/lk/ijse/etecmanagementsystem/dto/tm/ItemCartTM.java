@@ -1,20 +1,26 @@
-package lk.ijse.etecmanagementsystem.dto;
+package lk.ijse.etecmanagementsystem.dto.tm;
 
- class ItemCartDTO {
+public class ItemCartTM {
     private int itemId;
     private String itemName;
     private String serialNo;
+    private int warrantyMonths;
+    private  int quantity;
+    private String condition;
     private double unitPrice;
     private double discount;
     private double total; // (Price - Discount)
 
-    public ItemCartDTO() {
+    public ItemCartTM() {
     }
 
-    public ItemCartDTO(int itemId, String itemName, String serialNo, double unitPrice, double discount, double total) {
+    public ItemCartTM(int itemId, String itemName, String serialNo, int warrantyMonths, int quantity, String condition, double unitPrice, double discount, double total) {
         this.itemId = itemId;
         this.itemName = itemName;
         this.serialNo = serialNo;
+        this.warrantyMonths = warrantyMonths;
+        this.quantity = quantity;
+        this.condition = condition;
         this.unitPrice = unitPrice;
         this.discount = discount;
         this.total = total;
@@ -44,6 +50,30 @@ package lk.ijse.etecmanagementsystem.dto;
         this.serialNo = serialNo;
     }
 
+    public int getWarrantyMonths() {
+        return warrantyMonths;
+    }
+
+    public void setWarrantyMonths(int warrantyMonths) {
+        this.warrantyMonths = warrantyMonths;
+    }
+
+    public int getQuantity() {
+        return quantity;
+    }
+
+    public void setQuantity(int quantity) {
+        this.quantity = quantity;
+    }
+
+    public String getCondition() {
+        return condition;
+    }
+
+    public void setCondition(String condition) {
+        this.condition = condition;
+    }
+
     public double getUnitPrice() {
         return unitPrice;
     }
@@ -70,10 +100,13 @@ package lk.ijse.etecmanagementsystem.dto;
 
     @Override
     public String toString() {
-        return "ItemCartDTO{" +
+        return "ItemCartTM{" +
                 "itemId=" + itemId +
                 ", itemName='" + itemName + '\'' +
                 ", serialNo='" + serialNo + '\'' +
+                ", warrantyMonths=" + warrantyMonths +
+                ", quantity=" + quantity +
+                ", condition='" + condition + '\'' +
                 ", unitPrice=" + unitPrice +
                 ", discount=" + discount +
                 ", total=" + total +

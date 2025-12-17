@@ -14,6 +14,17 @@ public enum ProductCondition {
         this.label = label;
     }
 
+    public static ProductCondition fromString(String text) {
+        if (text == null) return BOTH;
+
+        switch (text) {
+            case "BRAND NEW": return BRAND_NEW;
+            case "USED":      return USED;
+            default:          return BOTH;
+        }
+    }
+
+
 
     public String getLabel() {
         return label;

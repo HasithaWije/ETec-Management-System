@@ -47,7 +47,7 @@
     </top>
 
     <center>
-        <SplitPane dividerPositions="0.5521042084168337" BorderPane.alignment="CENTER">
+        <SplitPane dividerPositions="0.32064128256513025" BorderPane.alignment="CENTER">
             <items>
 
                 <VBox spacing="10.0">
@@ -67,14 +67,14 @@
                             </children>
                         </HBox>
 
-                        <TableView fx:id="tblProductInventory" onMouseClicked="#handleProductTableClick" prefHeight="155.0" prefWidth="528.0" stylesheets="@../css/SalesTableStyle.css" VBox.vgrow="ALWAYS">
+                        <TableView fx:id="tblProductInventory" onMouseClicked="#handleProductTableClick" prefHeight="155.0" prefWidth="528.0" stylesheets="@../css/SalesTableStyle.css" tableMenuButtonVisible="true" VBox.vgrow="ALWAYS">
                             <columns>
                                 <TableColumn fx:id="colItemId" prefWidth="64.0" text="Item ID" />
                                 <TableColumn fx:id="colItemName" prefWidth="131.0" text="Product Name" />
                                 <TableColumn fx:id="colSerial" prefWidth="120.0" text="Serial No" />
-                                <TableColumn fx:id="colPrice" prefWidth="100.0" text="Price" />
-                                <TableColumn fx:id="colWarranty" prefWidth="120.0" text="Warranty" />
-                                <TableColumn fx:id="colStatus" prefWidth="70.0" text="Status" />
+                                <TableColumn fx:id="colPrice" prefWidth="82.0" text="Price" />
+                                <TableColumn fx:id="colWarranty" prefWidth="75.0" text="Warranty" />
+                                <TableColumn fx:id="colCondition" prefWidth="82.0" text="Condition" />
                             </columns>
                             <columnResizePolicy>
                                 <TableView fx:constant="CONSTRAINED_RESIZE_POLICY" />
@@ -99,34 +99,43 @@
                         <Separator prefWidth="200.0" />
                         <GridPane hgap="5.0" maxHeight="-Infinity" vgap="5.0">
                             <columnConstraints>
-                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="95.0" minWidth="10.0" prefWidth="57.0" />
-                                <ColumnConstraints hgrow="ALWAYS" minWidth="10.0" prefWidth="256.0" />
+                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="95.0" minWidth="10.0" prefWidth="65.0" />
+                                <ColumnConstraints hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="10.0" prefWidth="248.0" />
                                 <ColumnConstraints hgrow="NEVER" maxWidth="95.0" minWidth="10.0" prefWidth="63.0" />
                                 <ColumnConstraints hgrow="NEVER" maxWidth="137.0" minWidth="-Infinity" prefWidth="137.0" />
                             </columnConstraints>
                             <rowConstraints>
+                        <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
                             </rowConstraints>
                             <children>
-                                <TextField fx:id="txtItemName" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" />
+                                <TextField fx:id="txtIProductName" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" />
                                 <TextField fx:id="txtSerialNumber" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="1" />
                                 <TextField fx:id="txtWarranty" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="2" />
                                 <Label text="Name:" />
                                 <Label prefHeight="17.0" prefWidth="55.0" text="Serial No:" GridPane.rowIndex="1" />
                                 <Label prefHeight="17.0" prefWidth="55.0" text="Warranty:" GridPane.rowIndex="2" />
                                 <Label prefHeight="17.0" prefWidth="60.0" text="Price:" GridPane.columnIndex="2" />
-                                <Label prefHeight="17.0" prefWidth="60.0" text="Discount:" GridPane.columnIndex="2" GridPane.rowIndex="1" />
-                                <Label prefWidth="60.0" text="Final Price:" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                                <Label prefHeight="17.0" prefWidth="60.0" text="Discount:" GridPane.columnIndex="2" GridPane.rowIndex="2" />
+                                <Label prefWidth="60.0" text="Final Price:" GridPane.columnIndex="2" GridPane.rowIndex="3" />
                                 <TextField fx:id="txtPrice" alignment="CENTER_RIGHT" prefHeight="25.0" prefWidth="100.0" promptText="0.00" GridPane.columnIndex="3" />
-                                <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="5.0" GridPane.columnIndex="3" GridPane.rowIndex="1">
+                                <HBox alignment="CENTER_LEFT" prefHeight="100.0" prefWidth="200.0" spacing="5.0" GridPane.columnIndex="3" GridPane.rowIndex="2">
                                     <children>
                                         <TextField fx:id="txtDisPercentage" alignment="CENTER_RIGHT" prefHeight="25.0" prefWidth="50.0" promptText="0 %" />
                                         <TextField fx:id="txtDiscount" alignment="CENTER_RIGHT" prefHeight="25.0" prefWidth="86.0" promptText="0.00" />
                                     </children>
                                 </HBox>
-                                <TextField fx:id="txtFinalPrice" alignment="CENTER_RIGHT" editable="false" prefHeight="25.0" prefWidth="100.0" promptText="0.00" GridPane.columnIndex="3" GridPane.rowIndex="2" />
+                                <TextField fx:id="txtFinalPrice" alignment="CENTER_RIGHT" editable="false" prefHeight="25.0" prefWidth="100.0" promptText="0.00" GridPane.columnIndex="3" GridPane.rowIndex="3" />
+                        <ComboBox fx:id="cmbCondition" promptText="Select Condition" style="-fx-background-color: white;" GridPane.columnIndex="1" GridPane.hgrow="ALWAYS" GridPane.rowIndex="3">
+                           <cursor>
+                              <Cursor fx:constant="HAND" />
+                           </cursor>
+                        </ComboBox>
+                        <Label prefHeight="17.0" prefWidth="55.0" text="Condition:" GridPane.rowIndex="3" />
+                        <TextField fx:id="txtItemQty" alignment="CENTER_RIGHT" prefHeight="25.0" prefWidth="100.0" promptText="0" GridPane.columnIndex="3" GridPane.rowIndex="1" />
+                        <Label prefHeight="17.0" prefWidth="60.0" text="Qty:" GridPane.columnIndex="2" GridPane.rowIndex="1" />
                             </children>
                         </GridPane>
                         <Separator prefWidth="200.0" />
@@ -290,9 +299,10 @@
                         <TableView fx:id="tblCart" prefHeight="197.0" prefWidth="425.0" stylesheets="@../css/SalesTableStyle.css" VBox.vgrow="ALWAYS">
                             <columns>
                                 <TableColumn fx:id="colCartItem" prefWidth="146.0" text="Item" />
-                                <TableColumn fx:id="colCartSerial" prefWidth="64.0" text="Serial" />
-                                <TableColumn fx:id="colCartPrice" prefWidth="80.0" text="Price" />
-                                <TableColumn fx:id="colCartDiscount" prefWidth="70.0" text="Disc." />
+                                <TableColumn fx:id="colCartSerial" prefWidth="144.0" text="Serial" />
+                                <TableColumn fx:id="colCartPrice" prefWidth="116.0" text="Price" />
+                        <TableColumn fx:id="colCartQty" prefWidth="65.66668701171875" text="Qty" />
+                                <TableColumn fx:id="colCartDiscount" prefWidth="82.33331298828125" text="Disc." />
                                 <TableColumn fx:id="colCartTotal" prefWidth="90.0" text="Total" />
                             </columns>
                             <columnResizePolicy>

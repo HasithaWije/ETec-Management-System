@@ -2,13 +2,15 @@ package lk.ijse.etecmanagementsystem.model;
 
 import lk.ijse.etecmanagementsystem.db.DBConnection;
 import lk.ijse.etecmanagementsystem.dto.InventoryItemDTO;
-import lk.ijse.etecmanagementsystem.dto.ItemCartDTO;
 import lk.ijse.etecmanagementsystem.dto.SalesDTO;
+import lk.ijse.etecmanagementsystem.dto.tm.ItemCartTM;
 import lk.ijse.etecmanagementsystem.util.CrudUtil;
+import lk.ijse.etecmanagementsystem.util.ProductCondition;
 
 import java.sql.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
 public class SalesModel {
 
@@ -21,7 +23,7 @@ public class SalesModel {
 
         // We join ProductItem with Product to get the Name (from Product) and Price (sell_price)
         String sql = "SELECT pi.item_id, p.name AS product_name, pi.serial_number, " +
-                "p.warranty_months, p.sell_price, pi.status " +
+                "p.warranty_months, p.sell_price, p.p_condition " +
                 "FROM ProductItem pi " +
                 "JOIN Product p ON pi.stock_id = p.stock_id " +
                 "WHERE pi.status = 'AVAILABLE'";
@@ -35,7 +37,7 @@ public class SalesModel {
                     rs.getString("serial_number"),
                     rs.getInt("warranty_months"), // Default warranty from Product definition
                     rs.getDouble("sell_price"),
-                    rs.getString("status")
+                    ProductCondition.fromString(rs.getString("p_condition"))
             );
             itemList.add(item);
         }
@@ -49,7 +51,7 @@ public class SalesModel {
      * 3. Updates Inventory Status to SOLD
      * 4. Records the Transaction (Payment)
      */
-    public boolean placeOrder(SalesDTO salesDTO, List<ItemCartDTO> cartItems) throws SQLException {
+    public boolean placeOrder(SalesDTO salesDTO, List<ItemCartTM> cartItems) throws SQLException {
         Connection con = null;
         try {
             con = DBConnection.getInstance().getConnection();
@@ -112,7 +114,7 @@ public class SalesModel {
             PreparedStatement pstmSalesItem = con.prepareStatement(sqlSalesItem);
             PreparedStatement pstmUpdateItem = con.prepareStatement(sqlUpdateProductItem);
 
-            for (ItemCartDTO item : cartItems) {
+            for (ItemCartTM item : cartItems) {
                 // A. Add to SalesItem Table
                 pstmSalesItem.setInt(1, saleId);
                 pstmSalesItem.setInt(2, item.getItemId());
