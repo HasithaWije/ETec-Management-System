@@ -25,6 +25,11 @@ public class LoginController {
     private Button loginBtn;
     @FXML
     private ImageView backgroundImage;
+    @FXML
+    private HBox userNameBox;
+    @FXML
+    private HBox passwordBox;
+
 
     @FXML
     private AnchorPane rootNode;
@@ -35,15 +40,36 @@ public class LoginController {
     @FXML
     private void initialize() {
 
-        backgroundImage.setVisible(false);
+
+        userNameField.focusedProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue) {
+                // Text field IS focused -> Add the glow class to parent
+                userNameBox.getStyleClass().add("input-box-focused");
+            } else {
+                // Text field LOST focus -> Remove the glow class from parent
+                userNameBox.getStyleClass().remove("input-box-focused");
+            }
+        });
+
+        passwordField.focusedProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue) {
+                // Text field IS focused -> Add the glow class to parent
+                passwordBox.getStyleClass().add("input-box-focused");
+            } else {
+                // Text field LOST focus -> Remove the glow class from parent
+                passwordBox.getStyleClass().remove("input-box-focused");
+            }
+        });
+
+//        backgroundImage.setVisible(false);
 
 
 
-        setBackground((rootNode));
+//        setBackground((rootNode));
 
 
 
-        loginButtonStyle();
+//        loginButtonStyle();
     }
 
     public void setBackground(Region rootPane) {

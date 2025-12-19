@@ -63,9 +63,9 @@ public class SalesModel {
             // STEP 2: Insert into Sales Table
             // ---------------------------------------------------------------------------------
             String sqlSales = "INSERT INTO Sales " +
-                    "(customer_id, user_id, qty, sale_date, sub_total, discount, grand_total, " +
-                    "customer_warranty_months, payment_status, description) " +
-                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+                    "(customer_id, user_id, sale_date, sub_total, discount, grand_total, " +
+                    "payment_status, description) " +
+                    "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
             PreparedStatement pstmSales = con.prepareStatement(sqlSales, Statement.RETURN_GENERATED_KEYS);
 
@@ -77,14 +77,13 @@ public class SalesModel {
             }
 
             pstmSales.setInt(2, salesDTO.getUserId());
-            pstmSales.setInt(3, salesDTO.getQty());
-            pstmSales.setTimestamp(4, new Timestamp(new java.util.Date().getTime())); // Current Time
-            pstmSales.setDouble(5, salesDTO.getSubtotal());
-            pstmSales.setDouble(6, salesDTO.getDiscount());
-            pstmSales.setDouble(7, salesDTO.getGrandTotal());
-            pstmSales.setInt(8, salesDTO.getCustomerWarrantyMonths());
-            pstmSales.setString(9, salesDTO.getPaymentStatus().toString()); // Enum to String
-            pstmSales.setString(10, salesDTO.getDescription());
+            pstmSales.setTimestamp(3, new Timestamp(new java.util.Date().getTime())); // Current Time
+            pstmSales.setDouble(4, salesDTO.getSubtotal());
+            pstmSales.setDouble(5, salesDTO.getDiscount());
+            pstmSales.setDouble(6, salesDTO.getGrandTotal());
+
+            pstmSales.setString(7, salesDTO.getPaymentStatus().toString()); // Enum to String
+            pstmSales.setString(8, salesDTO.getDescription());
 
             int affectedRows = pstmSales.executeUpdate();
             if (affectedRows == 0) {
@@ -106,7 +105,8 @@ public class SalesModel {
             // ---------------------------------------------------------------------------------
             // STEP 3: Process Items (Insert SalesItem + Update ProductItem)
             // ---------------------------------------------------------------------------------
-            String sqlSalesItem = "INSERT INTO SalesItem (sale_id, item_id) VALUES (?, ?)";
+            String sqlSalesItem = "INSERT INTO SalesItem (sale_id, item_id, qty, customer_warranty_months, "+
+                    "unit_price, discount, total) VALUES (?, ?, ?, ?, ?, ?, ?)";
 
             String sqlUpdateProductItem = "UPDATE ProductItem SET status = 'SOLD', sold_date = ?, " +
                     "customer_warranty_mo = ? WHERE item_id = ?";
@@ -118,6 +118,11 @@ public class SalesModel {
                 // A. Add to SalesItem Table
                 pstmSalesItem.setInt(1, saleId);
                 pstmSalesItem.setInt(2, item.getItemId());
+                pstmSalesItem.setInt(3, item.getQuantity());
+                pstmSalesItem.setInt(4, salesDTO.getCustomerWarrantyMonths()); // Using SalesDTO warranty for all items
+                pstmSalesItem.setDouble(5, item.getUnitPrice());
+                pstmSalesItem.setDouble(6, item.getDiscount());
+                pstmSalesItem.setDouble(7, item.getTotal());
                 pstmSalesItem.addBatch();
 
                 // B. Update ProductItem Table (Mark as SOLD)
@@ -171,9 +176,11 @@ public class SalesModel {
                     con.rollback();
                 } catch (SQLException ex) {
                     ex.printStackTrace();
+                    System.out.println("Rollback failed: " + ex.getMessage());
                 }
             }
             e.printStackTrace();
+            System.out.println("Transaction failed: " + e.getMessage());
             return false;
         } finally {
             if (con != null) {
@@ -181,6 +188,7 @@ public class SalesModel {
                     con.setAutoCommit(true);
                 } catch (SQLException e) {
                     e.printStackTrace();
+                    System.out.println("Failed to reset auto-commit: " + e.getMessage());
                 }
             }
         }

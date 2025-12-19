@@ -381,7 +381,7 @@ public class SalesController {
         // Inside SalesController.java -> handleCheckoutAction()
 
         try {
-            FXMLLoader loader = new FXMLLoader(getClass().getResource("view/salesCheckout.fxml")); // Check path
+            FXMLLoader loader = new FXMLLoader(App.class.getResource("view/salesCheckout.fxml")); // Check path
             Parent root = loader.load();
 
             SalesCheckoutController controller = loader.getController();

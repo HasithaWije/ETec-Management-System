@@ -1,0 +1,86 @@
+                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                                            /* style.css - Blue Theme */
+
+.root {
+    -fx-font-family: "Segoe UI", sans-serif;
+    -fx-background-color: white;
+}
+
+/* --- Input Field Containers --- */
+.input-box {
+    -fx-background-color: #F0F2F5;
+    -fx-background-radius: 30;
+    -fx-border-radius: 30;
+    -fx-border-color: transparent;
+    -fx-border-width: 2px;
+    -fx-transition: all 0.3s;
+}
+
+/* Focused State: Bright Cyan Glow */
+.input-box-focused {
+    -fx-background-color: #FFFFFF;
+    -fx-border-color: #00c6ff; /* Cyan border */
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 198, 255, 0.3), 10, 0, 0, 0);
+}
+
+.text-field {
+    -fx-background-color: transparent;
+    -fx-text-fill: #333333;
+    -fx-prompt-text-fill: #9CA3AF;
+    -fx-font-size: 14px;
+}
+
+/* --- The "LOGIN" Button (Blue Gradient) --- */
+.login-btn {
+    /* Gradient: Bright Cyan to Deep Blue */
+    -fx-background-color: linear-gradient(to right, #00c6ff 0%, #0072ff 100%);
+    -fx-background-radius: 30;
+    -fx-text-fill: white;
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-cursor: hand;
+    
+    /* Blue glowing shadow */
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 114, 255, 0.4), 15, 0, 0, 5);
+}
+
+/* Hover State: Brighter and lifts up */
+.login-btn:hover {
+    -fx-background-color: linear-gradient(to right, #4cdbff 0%, #2b8cff 100%);
+    -fx-effect: dropshadow(three-pass-box, rgba(0, 114, 255, 0.6), 20, 0, 0, 8);
+    -fx-scale-x: 1.02;
+    -fx-scale-y: 1.02;
+}
+
+/* Pressed State: Deep Ocean Blue and presses down */
+.login-btn:pressed {
+    -fx-background-color: linear-gradient(to right, #009ac7 0%, #0056bf 100%);
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 5, 0, 0, 2);
+    -fx-scale-x: 0.98;
+    -fx-scale-y: 0.98;
+    -fx-translate-y: 1; 
+}
+
+/* --- Hyperlinks --- */
+.hyperlink {
+    -fx-text-fill: #999999;
+    -fx-border-color: transparent;
+    -fx-underline: false;
+}
+.hyperlink:hover {
+    -fx-text-fill: #0072ff; /* Blue hover text */
+}
+
+/* --- Checkbox --- */
+.check-box .box {
+    -fx-background-radius: 4px;
+    -fx-background-color: #F0F2F5;
+    -fx-border-color: #cccccc;
+    -fx-border-radius: 4px;
+}
+.check-box:selected .mark {
+    -fx-background-color: white;
+}
+.check-box:selected .box {
+    -fx-background-color: #0072ff; /* Blue checkbox */
+    -fx-border-color: #0072ff;
+}                                                                                                                                                                                                                                                                                                         
