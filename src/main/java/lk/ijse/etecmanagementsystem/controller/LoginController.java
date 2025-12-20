@@ -9,10 +9,12 @@ import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import lk.ijse.etecmanagementsystem.App;
-import lk.ijse.etecmanagementsystem.util.Login;
+import lk.ijse.etecmanagementsystem.model.LoginModel;
+import lk.ijse.etecmanagementsystem.util.LoginUtil;
 import lk.ijse.etecmanagementsystem.service.ButtonStyle;
 
 import java.net.URL;
+import java.sql.SQLException;
 
 
 public class LoginController {
@@ -35,6 +37,7 @@ public class LoginController {
     private AnchorPane rootNode;
 
     ButtonStyle buttonStyle = new ButtonStyle();
+    LoginModel loginModel = new LoginModel();
 
 
     @FXML
@@ -44,6 +47,7 @@ public class LoginController {
         userNameField.focusedProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue) {
                 // Text field IS focused -> Add the glow class to parent
+                userNameBox.getStyleClass().remove("input-box-error");
                 userNameBox.getStyleClass().add("input-box-focused");
             } else {
                 // Text field LOST focus -> Remove the glow class from parent
@@ -54,6 +58,7 @@ public class LoginController {
         passwordField.focusedProperty().addListener((observable, oldValue, newValue) -> {
             if (newValue) {
                 // Text field IS focused -> Add the glow class to parent
+                passwordBox.getStyleClass().remove("input-box-error");
                 passwordBox.getStyleClass().add("input-box-focused");
             } else {
                 // Text field LOST focus -> Remove the glow class from parent
@@ -61,15 +66,6 @@ public class LoginController {
             }
         });
 
-//        backgroundImage.setVisible(false);
-
-
-
-//        setBackground((rootNode));
-
-
-
-//        loginButtonStyle();
     }
 
     public void setBackground(Region rootPane) {
@@ -106,30 +102,81 @@ public class LoginController {
 
     @FXML
     private void onLoginButtonClick() {
-        String username = userNameField.getText();
-        String password = passwordField.getText();
+        String username = userNameField.getText() == null ? "" : userNameField.getText().trim();
+        String password = passwordField.getText() == null ? "" : passwordField.getText().trim();
+        int userId = -1;
 
-        if ("admin".equals(username) && "password".equals(password)) {
+        if (checkIsEmpty(username, userNameBox)) return;
+        if (checkIsEmpty(password, passwordBox)) return;
 
-            Login.setUserName(username);
-            try {
-                App.setupPrimaryStageScene("layout");
-            } catch (Exception e) {
-                e.printStackTrace();
+
+        try{
+            if (loginModel.validateCredentials(username, password)) {
+
+                LoginUtil.setUserName(username);
+                userId = loginModel.getUserId(username);
+
+                if(userId == -1) {
+                    System.out.println("Failed to retrieve user ID for " + username);
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Login Error");
+                    alert.setHeaderText(null);
+                    alert.setContentText("An error occurred while retrieving user information. Please try again later.");
+                    alert.showAndWait();
+                    return;
+                }
+
+                LoginUtil.setUserId(userId);
+                System.out.println("Login successful for user: " + username + " with ID: " + userId);
+
+                try {
+                    App.setupPrimaryStageScene("layout");
+                } catch (Exception e) {
+                    System.out.println("Error loading main layout: " + e.getMessage());
+                    Alert alert = new Alert(Alert.AlertType.ERROR);
+                    alert.setTitle("Loading Error");
+                    alert.setHeaderText(null);
+                    alert.setContentText("An error occurred while loading the main layout. Please try again later.");
+                    alert.showAndWait();
+                }
+            } else {
+
+                System.out.println("Invalid username or password");
+
+                Alert alert = new Alert(Alert.AlertType.ERROR);
+                alert.setTitle("Login Failed");
+                alert.setHeaderText(null);
+                alert.setContentText("Invalid username or password. Please try again.");
+                alert.showAndWait();
+
+
+                userNameField.clear();
+                passwordField.clear();
             }
-        } else {
-
-            System.out.println("Invalid username or password");
-
+        } catch (SQLException e) {
+            System.out.println("Database error: " + e.getMessage());
             Alert alert = new Alert(Alert.AlertType.ERROR);
-            alert.setTitle("Login Failed");
+            alert.setTitle("Database Error");
             alert.setHeaderText(null);
-            alert.setContentText("Invalid username or password. Please try again.");
+            alert.setContentText("An error occurred while connecting to the database. Please try again later.");
             alert.showAndWait();
-
-            userNameField.clear();
-            passwordField.clear();
         }
+
+
+
+    }
+
+    private boolean checkIsEmpty(String username, HBox userNameBox) {
+        if(username.isEmpty()) {
+            userNameBox.getStyleClass().add("input-box-error");
+            Alert alert = new Alert(Alert.AlertType.WARNING);
+            alert.setTitle("Input Required");
+            alert.setHeaderText(null);
+            alert.setContentText("Please enter both username and password.");
+            alert.showAndWait();
+            return true;
+        }
+        return false;
     }
 
     private void loginButtonStyle() {

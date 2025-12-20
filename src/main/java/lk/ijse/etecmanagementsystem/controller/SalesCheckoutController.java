@@ -13,7 +13,7 @@ import lk.ijse.etecmanagementsystem.dto.CustomerDTO;
 import lk.ijse.etecmanagementsystem.dto.SalesDTO;
 import lk.ijse.etecmanagementsystem.dto.tm.ItemCartTM;
 import lk.ijse.etecmanagementsystem.model.SalesModel;
-import lk.ijse.etecmanagementsystem.util.Login;
+import lk.ijse.etecmanagementsystem.util.LoginUtil;
 import lk.ijse.etecmanagementsystem.util.PaymentStatus;
 
 import java.sql.SQLException;
@@ -73,8 +73,8 @@ public class SalesCheckoutController {
         setupTable();
 
         // 1. Set current user
-        if (Login.getUserName() != null) {
-            lblEmployee.setText(Login.getUserName());
+        if (LoginUtil.getUserName() != null) {
+            lblEmployee.setText(LoginUtil.getUserName());
         } else {
             lblEmployee.setText("Admin");
         }
@@ -150,7 +150,7 @@ public class SalesCheckoutController {
         // 2. Prepare Sales Data
         int totalQty = cartItems.stream().mapToInt(ItemCartTM::getQuantity).sum();
         int customerId = (customer != null) ? customer.getId() : 0; // 0 represents NULL in your logic
-        int userId = Login.getUserId(); // Ensure Login class has getUserId(), or use 1 for default Admin
+        int userId = LoginUtil.getUserId(); // Ensure Login class has getUserId(), or use 1 for default Admin
 
         // NOTE: Your SalesModel applies this single warranty value to ALL items.
         // Ideally, warranty should be per-item, but we must follow your SalesDTO structure.

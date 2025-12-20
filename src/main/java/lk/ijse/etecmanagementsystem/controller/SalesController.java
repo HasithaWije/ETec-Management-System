@@ -3,7 +3,6 @@ package lk.ijse.etecmanagementsystem.controller;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
@@ -152,8 +151,8 @@ public class SalesController {
 
     @FXML
     public void initialize() {
-        if (Login.getUserName() != null) {
-            lblCashierName.setText("Cashier: " + Login.getUserName());
+        if (LoginUtil.getUserName() != null) {
+            lblCashierName.setText("Cashier: " + LoginUtil.getUserName());
         }
         lblDate.setText(LocalDate.now().toString());
 
@@ -378,7 +377,6 @@ public class SalesController {
             return;
         }
         System.out.println("Opening Payment Modal...");
-        // Inside SalesController.java -> handleCheckoutAction()
 
         try {
             FXMLLoader loader = new FXMLLoader(App.class.getResource("view/salesCheckout.fxml")); // Check path
@@ -394,8 +392,6 @@ public class SalesController {
             // Find the current customer object
             CustomerDTO currentCus = null;
             if (comboCustomer.getValue() != null) {
-                // Logic to find customer object from list based on ID/Name
-                // ...
 
                 String selectedKey = comboCustomer.getValue();
                 currentCus = customerList.stream()

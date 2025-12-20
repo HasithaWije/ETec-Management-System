@@ -2,46 +2,52 @@ package lk.ijse.etecmanagementsystem.controller;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
+import javafx.scene.control.ScrollPane;
+import javafx.scene.image.Image;
+import javafx.scene.layout.*;
 import lk.ijse.etecmanagementsystem.service.MenuBar;
-import lk.ijse.etecmanagementsystem.util.Login;
-import lk.ijse.etecmanagementsystem.service.ThreadService;
+
+import java.net.URL;
 
 
 public class DashboardController {
-
-    // Inject all buttons from FXML
-    @FXML private Button btnDashboard;
-    @FXML private Button btnInventory;
-    @FXML private Button btnRepairs;
-    @FXML private Button btnSuppliers;
-    @FXML private Button btnCustomers;
-    @FXML private Button btnTransactions;
-    @FXML private Button btnWarranty;
-    @FXML private Button btnSettings;
-    @FXML private Button btnUser;
-
-MenuBar menuBar = new MenuBar();
+    
+    @FXML
+    private Pane rootPane;
 
     @FXML
     public void initialize() {
+        setBackground();
+    }
+    public void setBackground() {
+        // 1. Load the image from resources (Portable path)
+        // This looks inside 'src/main/resources' for the path
+        String imagePath = "/lk/ijse/etecmanagementsystem/images/Background03.png";
+        URL imageUrl = getClass().getResource(imagePath);
 
-//        menuBar.setActive(btnDashboard);
-//
-//        menuBar.setupButton(btnDashboard);
-//        menuBar.setupButton(btnInventory);
-//        menuBar.setupButton(btnRepairs);
-//        menuBar.setupButton(btnSuppliers);
-//        menuBar.setupButton(btnCustomers);
-//        menuBar.setupButton(btnTransactions);
-//        menuBar.setupButton(btnWarranty);
-//        menuBar.setupButton(btnSettings);
-//        menuBar.setupButton(btnUser);
+        // Safety check to prevent crashing if path is wrong
+        if (imageUrl == null) {
+            System.out.println("Error: Image not found at " + imagePath);
+            return;
+        }
+        Image image = new Image(imageUrl.toExternalForm());
 
 
-//        String username = Login.getUserName();
-//        btnUser.setText(username);
+        // 2. Define the "Cover" behavior
+        // Width=1.0, Height=1.0, AsPercentage=true, Contain=false, Cover=true
+        // width=1.0 (100%), height=1.0 (100%), asPercentage=true, contain=false, cover=false
+        BackgroundSize backgroundSize = new BackgroundSize(1.0, 1.0, true, true, false, false);
 
-//        System.out.println("is loadingThead deamon: "+ThreadService.getInventoryLoadingThread().isDaemon());
-//        System.out.println("is loadingThead alive: "+ThreadService.getInventoryLoadingThread().isAlive());
+        // 3. Create the BackgroundImage
+        BackgroundImage bgImage = new BackgroundImage(
+                image,
+                BackgroundRepeat.NO_REPEAT,  // Don't repeat horizontally
+                BackgroundRepeat.NO_REPEAT,  // Don't repeat vertically
+                BackgroundPosition.CENTER,   // Center the image
+                backgroundSize
+        );
+
+        // 4. Apply it to your pane (e.g., anchorPane, stackPane)
+        rootPane.setBackground(new Background(bgImage));
     }
 }

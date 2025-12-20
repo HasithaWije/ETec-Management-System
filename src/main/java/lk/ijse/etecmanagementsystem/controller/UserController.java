@@ -3,8 +3,7 @@ package lk.ijse.etecmanagementsystem.controller;
 import javafx.fxml.FXML;
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
-import lk.ijse.etecmanagementsystem.util.Login;
-import lk.ijse.etecmanagementsystem.service.MenuBar;
+import lk.ijse.etecmanagementsystem.util.LoginUtil;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -27,7 +26,7 @@ public class UserController {
 
 
 
-        String username = Login.getUserName();
+        String username = LoginUtil.getUserName();
         userPageTitle.setText(username);
 
     }

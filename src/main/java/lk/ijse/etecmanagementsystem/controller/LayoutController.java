@@ -6,7 +6,7 @@ import javafx.scene.layout.StackPane;
 import lk.ijse.etecmanagementsystem.App;
 import lk.ijse.etecmanagementsystem.service.MenuBar;
 import lk.ijse.etecmanagementsystem.service.ThreadService;
-import lk.ijse.etecmanagementsystem.util.Login;
+import lk.ijse.etecmanagementsystem.util.LoginUtil;
 
 import java.io.IOException;
 
@@ -38,7 +38,7 @@ public class LayoutController {
 
 
 
-        String username = Login.getUserName();
+        String username = LoginUtil.getUserName();
         btnUser.setText(username);
 
         System.out.println("is loadingThead deamon: "+ ThreadService.getInventoryLoadingThread().isDaemon());

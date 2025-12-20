@@ -12,7 +12,7 @@ import java.io.IOException;
 public class App extends Application {
     private static Scene scene;
     private static Stage primaryStage;
-    private static Scene secondaryScene;
+
 
     @Override
     public void start(Stage stage) throws IOException {
@@ -37,19 +37,8 @@ public class App extends Application {
         primaryStage.setResizable(true);
         primaryStage.setMinHeight(656);
         primaryStage.setMinWidth(1016);
+        primaryStage.setMaximized(true);
         primaryStage.show();
-    }
-
-    public static void setupSecondaryStageScene(String fxmlFileName,String title) throws Exception {
-        Stage secondaryStage = new Stage();
-        secondaryScene = new Scene(loadFXML(fxmlFileName), 1000, 700);
-        secondaryStage.setScene(secondaryScene);
-        secondaryStage.setTitle(title);
-        secondaryStage.setResizable(true);
-        secondaryStage.setAlwaysOnTop(false);
-        secondaryStage.initModality(Modality.WINDOW_MODAL);
-        secondaryStage.initOwner(primaryStage);
-        secondaryStage.show();
     }
 
     public static Parent loadFXML(String fxml) throws IOException {
@@ -63,10 +52,6 @@ public class App extends Application {
 
     public static  Stage getPrimaryStage() {
         return primaryStage;
-    }
-
-    public static Stage getSecondaryStage() {
-        return  (Stage) secondaryScene.getWindow();
     }
 
     public static void main(String[] args) {

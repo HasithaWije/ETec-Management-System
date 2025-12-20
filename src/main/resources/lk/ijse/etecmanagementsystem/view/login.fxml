@@ -48,7 +48,7 @@
                         <Font size="16.0" />
                      </font>
                   </Label>
-                  <Region prefHeight="169.0" prefWidth="460.0" />
+                  <Region prefHeight="128.0" prefWidth="520.0" />
                </children>
             </VBox>
          </children>
