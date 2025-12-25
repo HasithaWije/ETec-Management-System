@@ -1,0 +1,281 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- Created with Jaspersoft Studio version 7.0.3.final using JasperReports Library version 7.0.3-41034ca841d452f3305ba55b9042260aaa1ab5dd  -->
+<jasperReport name="ETec_Receipt" language="java" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="4eedbb89-b4f6-4469-9ab6-f642a1688cf7" ignorePagination="true">
+    <property name="com.jaspersoft.studio.data.defaultdataadapter" value="MYSQL"/>
+    <property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+
+    <parameter name="saleId" class="java.lang.Integer"/>
+    <parameter name="amountPaid" class="java.math.BigDecimal"/>
+
+    <query language="SQL"><![CDATA[SELECT
+    s.sale_date,
+    u.name as cashier,
+    c.name as customer_name,
+    c.number as customer_contact,
+    c.email as customer_email,
+    c.address as customer_address,
+    p.name as product_name,
+    pi.serial_number,
+    p.warranty_months,
+    si.qty,
+    si.total as line_total,
+    s.sub_total,
+    s.discount,
+    s.grand_total
+FROM Sales s
+LEFT JOIN Customer c ON s.customer_id = c.cus_id
+JOIN User u ON s.user_id = u.user_id
+JOIN SalesItem si ON s.sale_id = si.sale_id
+JOIN ProductItem pi ON si.item_id = pi.item_id
+JOIN Product p ON pi.stock_id = p.stock_id
+WHERE s.sale_id = $P{saleId}]]></query>
+
+    <field name="sale_date" class="java.sql.Timestamp">
+        <property name="com.jaspersoft.studio.field.name" value="sale_date"/>
+        <property name="com.jaspersoft.studio.field.label" value="sale_date"/>
+        <property name="com.jaspersoft.studio.field.tree.path" value="sales"/>
+    </field>
+    <field name="cashier" class="java.lang.String">
+        <property name="com.jaspersoft.studio.field.name" value="name"/>
+        <property name="com.jaspersoft.studio.field.label" value="cashier"/>
+        <property name="com.jaspersoft.studio.field.tree.path" value="user"/>
+    </field>
+    <field name="customer_name" class="java.lang.String">
+        <property name="com.jaspersoft.studio.field.name" value="name"/>
+        <property name="com.jaspersoft.studio.field.label" value="customer_name"/>
+        <property name="com.jaspersoft.studio.field.tree.path" value="customer"/>
+    </field>
+    <field name="customer_contact" class="java.lang.String">
+        <property name="com.jaspersoft.studio.field.name" value="number"/>
+        <property name="com.jaspersoft.studio.field.label" value="customer_contact"/>
+        <property name="com.jaspersoft.studio.field.tree.path" value="customer"/>
+    </field>
+    <field name="customer_address" class="java.lang.String">
+        <property name="com.jaspersoft.studio.field.name" value="address"/>
+        <property name="com.jaspersoft.studio.field.label" value="customer_address"/>
+        <property name="com.jaspersoft.studio.field.tree.path" value="customer"/>
+    </field>
+    <field name="product_name" class="java.lang.String">
+        <property name="com.jaspersoft.studio.field.name" value="name"/>
+        <property name="com.jaspersoft.studio.field.label" value="product_name"/>
+        <property name="com.jaspersoft.studio.field.tree.path" value="product"/>
+    </field>
+    <field name="serial_number" class="java.lang.String">
+        <property name="com.jaspersoft.studio.field.name" value="serial_number"/>
+        <property name="com.jaspersoft.studio.field.label" value="serial_number"/>
+        <property name="com.jaspersoft.studio.field.tree.path" value="productitem"/>
+    </field>
+    <field name="warranty_months" class="java.lang.Integer">
+        <property name="com.jaspersoft.studio.field.name" value="warranty_months"/>
+        <property name="com.jaspersoft.studio.field.label" value="warranty_months"/>
+        <property name="com.jaspersoft.studio.field.tree.path" value="product"/>
+    </field>
+    <field name="qty" class="java.lang.Integer">
+        <property name="com.jaspersoft.studio.field.name" value="qty"/>
+        <property name="com.jaspersoft.studio.field.label" value="qty"/>
+        <property name="com.jaspersoft.studio.field.tree.path" value="salesitem"/>
+    </field>
+    <field name="line_total" class="java.math.BigDecimal">
+        <property name="com.jaspersoft.studio.field.name" value="total"/>
+        <property name="com.jaspersoft.studio.field.label" value="line_total"/>
+        <property name="com.jaspersoft.studio.field.tree.path" value="salesitem"/>
+    </field>
+    <field name="sub_total" class="java.math.BigDecimal">
+        <property name="com.jaspersoft.studio.field.name" value="sub_total"/>
+        <property name="com.jaspersoft.studio.field.label" value="sub_total"/>
+        <property name="com.jaspersoft.studio.field.tree.path" value="sales"/>
+    </field>
+    <field name="discount" class="java.math.BigDecimal">
+        <property name="com.jaspersoft.studio.field.name" value="discount"/>
+        <property name="com.jaspersoft.studio.field.label" value="discount"/>
+        <property name="com.jaspersoft.studio.field.tree.path" value="sales"/>
+    </field>
+    <field name="grand_total" class="java.math.BigDecimal">
+        <property name="com.jaspersoft.studio.field.name" value="grand_total"/>
+        <property name="com.jaspersoft.studio.field.label" value="grand_total"/>
+        <property name="com.jaspersoft.studio.field.tree.path" value="sales"/>
+    </field>
+
+    <variable name="balance" class="java.math.BigDecimal">
+        <expression><![CDATA[$P{amountPaid}.subtract($F{grand_total} == null ? java.math.BigDecimal.ZERO : $F{grand_total})]]></expression>
+    </variable>
+
+    <background splitType="Stretch"/>
+
+    <!-- Title Section -->
+    <title height="90" splitType="Stretch">
+        <element kind="staticText" uuid="d8624266-348f-4d64-9669-1b545d470501" x="0" y="0" width="555" height="30" fontName="Courier New" fontSize="22.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+            <text><![CDATA[ETec Computers]]></text>
+        </element>
+        <element kind="staticText" uuid="1010375a-f938-466d-9653-568434751336" x="0" y="30" width="555" height="20" fontName="Courier New" fontSize="12.0" hTextAlign="Center">
+            <text><![CDATA[123 Tech Street, Colombo 07]]></text>
+        </element>
+        <element kind="staticText" uuid="983c2763-7e27-4632-a637-29d0f4773809" x="0" y="50" width="555" height="20" fontName="Courier New" fontSize="12.0" hTextAlign="Center">
+            <text><![CDATA[Tel: +94 77 123 4567]]></text>
+        </element>
+        <element kind="line" uuid="59798485-6b5d-4f81-8178-5e9672618991" x="0" y="80" width="555" height="1" forecolor="#CCCCCC"/>
+    </title>
+
+    <!-- Page Header Section -->
+    <pageHeader height="120" splitType="Stretch">
+        <element kind="staticText" uuid="a1705609-8472-4687-9200-a52140884d64" x="0" y="0" width="60" height="20" forecolor="#737791" fontName="Courier New" fontSize="10.0" vTextAlign="Middle">
+            <text><![CDATA[Date:]]></text>
+        </element>
+        <element kind="textField" uuid="b2803610-9143-4123-8123-b12340995d75" x="60" y="0" width="120" height="20" fontName="Courier New" fontSize="10.0" pattern="yyyy-MM-dd" bold="true" vTextAlign="Middle">
+            <expression><![CDATA[$F{sale_date}]]></expression>
+        </element>
+
+        <element kind="staticText" uuid="c3904620-1234-4567-8901-c23450995d86" x="0" y="20" width="60" height="20" forecolor="#737791" fontName="Courier New" fontSize="10.0" vTextAlign="Middle">
+            <text><![CDATA[Cashier:]]></text>
+        </element>
+        <element kind="textField" uuid="d4105630-2345-5678-9012-d34560995d97" x="60" y="20" width="100" height="20" fontName="Courier New" fontSize="10.0" bold="true" vTextAlign="Middle">
+            <expression><![CDATA[$F{cashier}]]></expression>
+        </element>
+
+        <element kind="staticText" uuid="e5206640-3456-6789-0123-e45670995e08" x="350" y="0" width="60" height="20" forecolor="#737791" fontName="Courier New" fontSize="10.0" vTextAlign="Middle">
+            <text><![CDATA[Time:]]></text>
+        </element>
+        <element kind="textField" uuid="f6307650-4567-7890-1234-f56780995f19" x="410" y="0" width="100" height="20" fontName="Courier New" fontSize="10.0" pattern="hh:mm:ss a" bold="true" vTextAlign="Middle">
+            <expression><![CDATA[$F{sale_date}]]></expression>
+        </element>
+
+        <element kind="line" uuid="07408660-5678-8901-2345-06789099602a" x="0" y="45" width="555" height="1" forecolor="#CCCCCC"/>
+
+        <element kind="staticText" uuid="18509670-6789-9012-3456-17890099613b" x="0" y="50" width="150" height="15" forecolor="#5D6C7B" fontName="Courier New" fontSize="10.0">
+            <text><![CDATA[CUSTOMER DETAILS]]></text>
+        </element>
+        <element kind="staticText" uuid="29600680-7890-0123-4567-28901099624c" x="0" y="65" width="60" height="15" forecolor="#737791" fontName="Courier New">
+            <text><![CDATA[Name:]]></text>
+        </element>
+        <element kind="textField" uuid="30701690-8901-1234-5678-39012099635d" x="60" y="65" width="200" height="15" fontName="Courier New" bold="true">
+            <expression><![CDATA[$F{customer_name} == null ? "Walk-in Customer" : $F{customer_name}]]></expression>
+        </element>
+        <element kind="staticText" uuid="41802700-9012-2345-6789-40123099646e" x="0" y="80" width="60" height="15" forecolor="#737791" fontName="Courier New">
+            <text><![CDATA[Contact:]]></text>
+        </element>
+        <element kind="textField" uuid="52903710-0123-3456-7890-51234099657f" x="60" y="80" width="200" height="15" fontName="Courier New">
+            <expression><![CDATA[$F{customer_contact} == null ? "-" : $F{customer_contact}]]></expression>
+        </element>
+        <element kind="staticText" uuid="63004720-1234-4567-8901-623450996680" x="0" y="95" width="60" height="15" forecolor="#737791" fontName="Courier New">
+            <text><![CDATA[Address:]]></text>
+        </element>
+        <element kind="textField" uuid="74105730-2345-5678-9012-734560996791" x="60" y="95" width="300" height="15" fontName="Courier New">
+            <expression><![CDATA[$F{customer_address} == null ? "-" : $F{customer_address}]]></expression>
+        </element>
+    </pageHeader>
+
+    <!-- Column Header Section -->
+    <columnHeader height="25" splitType="Stretch">
+        <element kind="rectangle" uuid="85206740-3456-6789-0123-845670996802" x="0" y="0" width="555" height="25" backcolor="#E0F7FA">
+            <pen lineWidth="1.0" lineColor="#00AEEF"/>
+        </element>
+        <element kind="staticText" uuid="96307750-4567-7890-1234-956780996913" x="5" y="0" width="195" height="25" fontName="Courier New" bold="true" hTextAlign="Left" vTextAlign="Middle">
+            <text><![CDATA[Item]]></text>
+            <box>
+                <rightPen lineWidth="1.0" lineColor="#00AEEF"/>
+            </box>
+        </element>
+        <element kind="staticText" uuid="07408760-5678-8901-2345-067890997024" x="200" y="0" width="150" height="25" fontName="Courier New" bold="true" hTextAlign="Center" vTextAlign="Middle">
+            <text><![CDATA[Serial]]></text>
+            <box>
+                <rightPen lineWidth="1.0" lineColor="#00AEEF"/>
+            </box>
+        </element>
+        <element kind="staticText" uuid="18509770-6789-9012-3456-178900997135" x="350" y="0" width="80" height="25" fontName="Courier New" bold="true" hTextAlign="Center" vTextAlign="Middle">
+            <text><![CDATA[Wty(M)]]></text>
+            <box>
+                <rightPen lineWidth="1.0" lineColor="#00AEEF"/>
+            </box>
+        </element>
+        <element kind="staticText" uuid="29600780-7890-0123-4567-289010997246" x="430" y="0" width="50" height="25" fontName="Courier New" bold="true" hTextAlign="Center" vTextAlign="Middle">
+            <text><![CDATA[Qty]]></text>
+            <box>
+                <rightPen lineWidth="1.0" lineColor="#00AEEF"/>
+            </box>
+        </element>
+        <element kind="staticText" uuid="30701790-8901-1234-5678-390120997357" x="480" y="0" width="70" height="25" fontName="Courier New" bold="true" hTextAlign="Right" vTextAlign="Middle">
+            <paragraph rightIndent="5"/>
+            <text><![CDATA[Amount]]></text>
+        </element>
+    </columnHeader>
+
+    <!-- Detail Section -->
+    <detail>
+        <band height="20" splitType="Stretch">
+            <element kind="rectangle" uuid="41802800-9012-2345-6789-401230997468" stretchType="ContainerHeight" x="0" y="0" width="555" height="20" backcolor="rgba(255, 255, 255, 0.0)">
+                <pen lineWidth="1.0" lineColor="#00AEEF"/>
+            </element>
+            <element kind="textField" uuid="52903810-0123-3456-7890-512340997579" x="5" y="0" width="195" height="20" fontName="Courier New" textAdjust="StretchHeight" vTextAlign="Middle">
+                <expression><![CDATA[$F{product_name}]]></expression>
+                <box>
+                    <rightPen lineWidth="0.5" lineColor="#E0E0E0"/>
+                </box>
+            </element>
+            <element kind="textField" uuid="63004820-1234-4567-8901-623450997680" x="200" y="0" width="150" height="20" fontName="Courier New" hTextAlign="Center" vTextAlign="Middle">
+                <expression><![CDATA[$F{serial_number}]]></expression>
+                <box>
+                    <rightPen lineWidth="0.5" lineColor="#E0E0E0"/>
+                </box>
+            </element>
+            <element kind="textField" uuid="74105830-2345-5678-9012-734560997791" x="350" y="0" width="80" height="20" fontName="Courier New" hTextAlign="Center" vTextAlign="Middle">
+                <expression><![CDATA[$F{warranty_months}]]></expression>
+                <box>
+                    <rightPen lineWidth="0.5" lineColor="#E0E0E0"/>
+                </box>
+            </element>
+            <element kind="textField" uuid="85206840-3456-6789-0123-845670997802" x="430" y="0" width="50" height="20" fontName="Courier New" hTextAlign="Center" vTextAlign="Middle">
+                <expression><![CDATA[$F{qty}]]></expression>
+                <box>
+                    <rightPen lineWidth="0.5" lineColor="#E0E0E0"/>
+                </box>
+            </element>
+            <element kind="textField" uuid="96307850-4567-7890-1234-956780997913" x="480" y="0" width="70" height="20" fontName="Courier New" pattern="#,##0.00" hTextAlign="Right" vTextAlign="Middle">
+                <paragraph rightIndent="5"/>
+                <expression><![CDATA[$F{line_total}]]></expression>
+            </element>
+        </band>
+    </detail>
+
+    <!-- Summary Section -->
+    <summary height="150" splitType="Stretch">
+        <element kind="line" uuid="07408860-5678-8901-2345-067890998024" x="0" y="10" width="555" height="1" forecolor="#00AEEF"/>
+
+        <element kind="staticText" uuid="18509870-6789-9012-3456-178900998135" x="350" y="20" width="100" height="20" forecolor="#737791" fontName="Courier New" fontSize="12.0" hTextAlign="Right">
+            <text><![CDATA[Sub Total:]]></text>
+        </element>
+        <element kind="textField" uuid="29600880-7890-0123-4567-289010998246" x="455" y="20" width="100" height="20" fontName="Courier New" fontSize="12.0" pattern="#,##0.00" bold="true" hTextAlign="Right">
+            <expression><![CDATA[$F{sub_total}]]></expression>
+        </element>
+
+        <element kind="staticText" uuid="30701890-8901-1234-5678-390120998357" x="350" y="40" width="100" height="20" forecolor="#737791" fontName="Courier New" fontSize="12.0" hTextAlign="Right">
+            <text><![CDATA[Discount:]]></text>
+        </element>
+        <element kind="textField" uuid="41802900-9012-2345-6789-401230998468" x="455" y="40" width="100" height="20" forecolor="#FF5B5B" fontName="Courier New" fontSize="12.0" pattern="#,##0.00" bold="true" hTextAlign="Right">
+            <expression><![CDATA[$F{discount}]]></expression>
+        </element>
+
+        <element kind="staticText" uuid="52903910-0123-3456-7890-512340998579" x="300" y="70" width="150" height="25" fontName="Courier New" fontSize="16.0" bold="true" hTextAlign="Right">
+            <text><![CDATA[GRAND TOTAL:]]></text>
+        </element>
+        <element kind="textField" uuid="63004920-1234-4567-8901-623450998680" x="455" y="70" width="100" height="25" fontName="Courier New" fontSize="16.0" pattern="#,##0.00" bold="true" hTextAlign="Right">
+            <expression><![CDATA[$F{grand_total}]]></expression>
+        </element>
+
+        <element kind="line" uuid="74105930-2345-5678-9012-734560998791" x="300" y="100" width="255" height="1" forecolor="#CCCCCC">
+            <pen lineStyle="Dashed"/>
+        </element>
+        <element kind="staticText" uuid="85206940-3456-6789-0123-845670998802" x="350" y="105" width="100" height="20" forecolor="#5D6C7B" fontName="Courier New" fontSize="12.0" hTextAlign="Right">
+            <text><![CDATA[Paid Amount:]]></text>
+        </element>
+        <element kind="textField" uuid="96307950-4567-7890-1234-956780998913" x="455" y="105" width="100" height="20" fontName="Courier New" fontSize="12.0" pattern="#,##0.00" hTextAlign="Right">
+            <expression><![CDATA[$P{amountPaid}]]></expression>
+        </element>
+
+        <element kind="staticText" uuid="07408960-5678-8901-2345-067890999024" x="350" y="125" width="100" height="20" forecolor="#5D6C7B" fontName="Courier New" fontSize="12.0" hTextAlign="Right">
+            <text><![CDATA[Balance/Due:]]></text>
+        </element>
+        <element kind="textField" uuid="18509970-6789-9012-3456-178900999135" x="455" y="125" width="100" height="20" fontName="Courier New" fontSize="12.0" pattern="#,##0.00" bold="true" hTextAlign="Right">
+            <expression><![CDATA[$V{balance}]]></expression>
+        </element>
+    </summary>
+</jasperReport>

@@ -121,6 +121,9 @@ public class UnitManagementModel {
             // 1. Check if an Empty Slot (Placeholder) exists for this Product
             String findSql = "SELECT item_id FROM ProductItem WHERE stock_id = ? AND serial_number LIKE 'PENDING-%' LIMIT 1 FOR UPDATE";
             int existingId = -1;
+            if(dto.getSerialNumber().isEmpty()){
+                dto.setSerialNumber(null);
+            }
 
             try (PreparedStatement findPstm = conn.prepareStatement(findSql)) {
                 findPstm.setInt(1, dto.getStockId());
@@ -295,7 +298,7 @@ public class UnitManagementModel {
             if (supName == null) supName = "No Supplier";
 
             list.add(new ProductItemDTO(
-                    rs.getString("serial_number"),
+                    rs.getString("serial_number") == null ? "" : rs.getString("serial_number"),
                     productName,
                     supName,
                     rs.getInt("supplier_warranty_mo"),
@@ -326,7 +329,8 @@ public class UnitManagementModel {
 
         if (rs.next()) {
              productItemDTO = new ProductItemDTO(
-                    rs.getString("serial_number"), rs.getString("product_name"), rs.getString("supplier_name"),
+                    rs.getString("serial_number") == null ? "" : rs.getString("serial_number"),
+                     rs.getString("product_name"), rs.getString("supplier_name"),
                     rs.getInt("supplier_warranty_mo"), rs.getInt("customer_warranty_mo"),
                     rs.getString("status"), rs.getDate("added_date"), rs.getDate("sold_date")
             );

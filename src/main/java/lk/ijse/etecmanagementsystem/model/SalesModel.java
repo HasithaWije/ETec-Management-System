@@ -34,7 +34,7 @@ public class SalesModel {
             InventoryItemDTO item = new InventoryItemDTO(
                     rs.getInt("item_id"),
                     rs.getString("product_name"),
-                    rs.getString("serial_number"),
+                    rs.getString("serial_number") == null ? "" : rs.getString("serial_number"),
                     rs.getInt("warranty_months"), // Default warranty from Product definition
                     rs.getDouble("sell_price"),
                     ProductCondition.fromString(rs.getString("p_condition"))

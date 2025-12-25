@@ -5,6 +5,7 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.fxml.Initializable;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -14,6 +15,7 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
 import lk.ijse.etecmanagementsystem.App;
+import lk.ijse.etecmanagementsystem.db.DBConnection;
 import lk.ijse.etecmanagementsystem.dto.*;
 import lk.ijse.etecmanagementsystem.model.CustomersModel;
 import lk.ijse.etecmanagementsystem.model.ProductModel;
@@ -23,21 +25,24 @@ import lk.ijse.etecmanagementsystem.model.UnitManagementModel;
 import lk.ijse.etecmanagementsystem.server.BarcodeServer;
 import lk.ijse.etecmanagementsystem.util.*;
 import net.sf.jasperreports.engine.*;
+import net.sf.jasperreports.engine.design.JasperDesign;
+import net.sf.jasperreports.engine.util.JRLoader;
+import net.sf.jasperreports.engine.xml.JRXmlLoader;
 import net.sf.jasperreports.view.JasperViewer;
 
 import java.io.IOException;
 import java.io.InputStream;
+import java.math.BigDecimal;
+import java.net.URL;
+import java.sql.Connection;
 import java.sql.Date;
 import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.time.LocalDate;
-import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.List;
-import java.util.Map;
+import java.util.*;
 import java.util.stream.Collectors;
 
-public class SalesController {
+public class SalesController implements Initializable {
 
     @FXML
     private Label lblDate;
@@ -157,7 +162,7 @@ public class SalesController {
     private final UnitManagementModel unitManagementModel = new UnitManagementModel();
 
     @FXML
-    public void initialize() {
+    public void initialize(URL location, ResourceBundle resources) {
 
         if (LoginUtil.getUserName() != null) {
             lblCashierName.setText("Cashier: " + LoginUtil.getUserName());
@@ -506,9 +511,6 @@ public class SalesController {
             stage.setTitle("Checkout");
             stage.centerOnScreen();
             stage.showAndWait(); // Use show() or showAndWait()
-            generateReport();
-
-
 
 
         } catch (IOException e) {
@@ -517,38 +519,38 @@ public class SalesController {
 
     }
 
-    public void generateReport() {
-        try {
-            // 1. Load the report template from your resources
-            // Note: The path must start with a slash /
-            InputStream reportStream = App.class.getResourceAsStream("reports/hello_etec.jrxml");
-
-            if (reportStream == null) {
-                System.out.println("File not found! Check the path.");
-                return;
-            }
-
-            // 2. Compile the report (from .jrxml to .jasper)
-            JasperReport jasperReport = JasperCompileManager.compileReport(reportStream);
-
-            // 3. Create parameters (Empty for now, we will use this later for titles/dates)
-            Map<String, Object> parameters = new HashMap<>();
-
-            // 4. Create an empty data source (Just to test the layout)
-            // JREmptyDataSource(1) means "fake 1 row of data so the report prints once"
-            JREmptyDataSource dataSource = new JREmptyDataSource(1);
-
-            // 5. Fill the report (Combine Template + Data)
-            JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, dataSource);
-
-            // 6. View the report (Opens a separate window with the PDF preview)
-            // 'false' means: Close the report window ONLY, not the whole app, when you click X
-            JasperViewer.viewReport(jasperPrint, false);
-
-        } catch (JRException e) {
-            e.printStackTrace();
-        }
-    }
+//    public void generateReport() {
+//        try {
+//            // 1. Load the report template from your resources
+//            // Note: The path must start with a slash /
+//            InputStream reportStream = App.class.getResourceAsStream("reports/salesReceipt.jrxml");
+//
+//            if (reportStream == null) {
+//                System.out.println("File not found! Check the path.");
+//                return;
+//            }
+//
+//            // 2. Compile the report (from .jrxml to .jasper)
+//            JasperReport jasperReport = JasperCompileManager.compileReport(reportStream);
+//
+//            // 3. Create parameters (Empty for now, we will use this later for titles/dates)
+//            Map<String, Object> parameters = new HashMap<>();
+//
+//            // 4. Create an empty data source (Just to test the layout)
+//            // JREmptyDataSource(1) means "fake 1 row of data so the report prints once"
+//            JREmptyDataSource dataSource = new JREmptyDataSource(1);
+//
+//            // 5. Fill the report (Combine Template + Data)
+//            JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, dataSource);
+//
+//            // 6. View the report (Opens a separate window with the PDF preview)
+//            // 'false' means: Close the report window ONLY, not the whole app, when you click X
+//            JasperViewer.viewReport(jasperPrint, false);
+//
+//        } catch (JRException e) {
+//            e.printStackTrace();
+//        }
+//    }
 
     private boolean handleCustomerAction() {
         CustomerDTO selectedCustomer = null;
@@ -751,6 +753,10 @@ public class SalesController {
 
         // Logic to prevent Serial Number + Multiple Quantity conflict
         txtSerialNumber.textProperty().addListener((obs, old, newVal) -> {
+            if(newVal == null || newVal.isEmpty()){
+                txtWarranty.setText("0");
+                return;
+            }
             if (!safeGetText(txtItemQty).equals("1") && !newVal.isEmpty()) {
                 Alert alert = new Alert(Alert.AlertType.CONFIRMATION,
                         "Serial Number entered with Quantity more than 1. Resetting Quantity to 1.",

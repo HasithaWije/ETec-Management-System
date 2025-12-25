@@ -9,19 +9,32 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import javafx.util.Duration;
+import lk.ijse.etecmanagementsystem.App;
+import lk.ijse.etecmanagementsystem.db.DBConnection;
 import lk.ijse.etecmanagementsystem.dto.CustomerDTO;
 import lk.ijse.etecmanagementsystem.dto.SalesDTO;
 import lk.ijse.etecmanagementsystem.dto.tm.ItemCartTM;
 import lk.ijse.etecmanagementsystem.model.SalesModel;
 import lk.ijse.etecmanagementsystem.util.LoginUtil;
 import lk.ijse.etecmanagementsystem.util.PaymentStatus;
+import net.sf.jasperreports.engine.JRException;
+import net.sf.jasperreports.engine.JasperFillManager;
+import net.sf.jasperreports.engine.JasperPrint;
+import net.sf.jasperreports.engine.JasperReport;
+import net.sf.jasperreports.engine.util.JRLoader;
+import net.sf.jasperreports.view.JasperViewer;
 
+import java.io.InputStream;
+import java.math.BigDecimal;
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 public class SalesCheckoutController {
 
@@ -246,7 +259,41 @@ public class SalesCheckoutController {
     }
 
     private void printBill(int saleId, double cash, double balance) {
+
         // Implement JasperReports logic here using the 'saleId'
+        generateInvoice(saleId, cash);
         System.out.println("Printing Bill for Sale ID: " + saleId);
+
+    }
+
+    public void generateInvoice(int saleId, double amountPaid) {
+        try {
+
+            String path = "reports/salesInvoice.jasper";
+
+            InputStream reportStream = App.class.getResourceAsStream(path);
+
+            if (reportStream == null) {
+                System.err.println("Error: Could not find salesReceipt.jasper at " + path);
+                return;
+            }
+
+            JasperReport jasperReport = (JasperReport) JRLoader.loadObject(reportStream);
+
+            Map<String, Object> parameters = new HashMap<>();
+
+            parameters.put("saleId", saleId);
+
+            parameters.put("amountPaid", BigDecimal.valueOf(amountPaid));
+
+            Connection connection = DBConnection.getInstance().getConnection();
+
+            JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, connection);
+
+            JasperViewer.viewReport(jasperPrint, false); // false = Don't close app on exit
+
+        } catch (JRException | java.sql.SQLException e) {
+            e.printStackTrace();
+        }
     }
 }
