@@ -60,31 +60,26 @@ public class UpdateRepairTicketController {
         this.currentJob = job;
         this.mainController = mainController;
 
-        lblJobId.setText("JOB #" + job.repairIdProperty().get());
+        // UPDATED: Using Standard Getters (POJO Style)
+        lblJobId.setText("JOB #" + job.getRepairId());
 
         // 1. FILL DEVICE DETAILS
-        txtDeviceName.setText(job.deviceNameProperty().get());
-        txtSerial.setText(job.serialNumberProperty().get());
-        txtProblem.setText(job.problemDescriptionProperty().get());
+        txtDeviceName.setText(job.getDeviceName());
+        txtSerial.setText(job.getSerialNumber());
+        txtProblem.setText(job.getProblemDescription());
 
         // 2. FILL CURRENT CUSTOMER (PREVIEW)
-        // We assume the TM has basic details. In real app, consider fetching DTO from DB by ID.
-        lblCusName.setText(job.customerNameProperty().get());
-        lblCusContact.setText(job.contactNumberProperty().get());
+        lblCusName.setText(job.getCustomerName());
+        lblCusContact.setText(job.getContactNumber());
 
         // If your TM/DTO has ID, set it.
-        // If your TM has email/address, set them. Otherwise leave blank or fetch.
         if (job.getOriginalDto() != null) {
             selectedCustomerId = job.getOriginalDto().getCusId();
             lblCusId.setText(String.valueOf(selectedCustomerId));
 
-            // Set Email/Address from DTO if available
-            // lblCusEmail.setText(job.getOriginalDto().getEmail());
-            // lblCusAddress.setText(job.getOriginalDto().getAddress());
-
             // Set ComboBox Text to current name
             isCodeUpdate = true;
-            cmbCustomer.getEditor().setText(job.customerNameProperty().get());
+            cmbCustomer.getEditor().setText(job.getCustomerName());
             isCodeUpdate = false;
         }
     }
@@ -190,16 +185,18 @@ public class UpdateRepairTicketController {
 
         try {
             RepairJobDTO jobDTO = new RepairJobDTO();
-            jobDTO.setRepairId(currentJob.repairIdProperty().get());
+            // UPDATED: Using Standard Getter
+            jobDTO.setRepairId(currentJob.getRepairId());
 
             // UPDATE: Use the selected ID (User might have changed it via Search)
             jobDTO.setCusId(selectedCustomerId);
 
             jobDTO.setDeviceName(txtDeviceName.getText());
-            jobDTO.setDevice_sn(txtSerial.getText());
-            jobDTO.setProblem_desc(txtProblem.getText());
+            // UPDATED: CamelCase
+            jobDTO.setDeviceSn(txtSerial.getText());
+            jobDTO.setProblemDesc(txtProblem.getText());
 
-            // TODO: Call DAO Update
+            // TODO: Call RepairJobModel.update(jobDTO)
             boolean success = true;
 
             if (success) {
@@ -217,7 +214,8 @@ public class UpdateRepairTicketController {
     @FXML
     private void handleDelete() {
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setHeaderText("Delete Job #" + currentJob.repairIdProperty().get() + "?");
+        // UPDATED: Using Standard Getter
+        alert.setHeaderText("Delete Job #" + currentJob.getRepairId() + "?");
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
             // TODO: Call DAO Delete

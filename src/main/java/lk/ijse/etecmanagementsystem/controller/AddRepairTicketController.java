@@ -60,7 +60,7 @@ public class AddRepairTicketController {
         customerMap.clear();
         originalList.clear();
 
-        // Mock Data
+        // Mock Data (Ideally replace with CustomerModel.getAll())
         addMockCustomer(1, "Kamal Perera", "0771234567", "kamal@gmail.com", "Colombo 5");
         addMockCustomer(2, "Kamal Perera", "0718889999", "kamal.p@yahoo.com", "Kandy");
         addMockCustomer(3, "Nimal Siripala", "0751112222", "nimal@test.com", "Galle");
@@ -194,13 +194,15 @@ public class AddRepairTicketController {
             RepairJobDTO newJob = new RepairJobDTO();
             newJob.setCusId(selectedCustomerId);
             newJob.setDeviceName(txtDeviceName.getText());
-            newJob.setDevice_sn(txtSerial.getText());
-            newJob.setProblem_desc(txtProblem.getText());
+            // UPDATED: CamelCase to match DTO
+            newJob.setDeviceSn(txtSerial.getText());
+            newJob.setProblemDesc(txtProblem.getText());
+
             newJob.setStatus(RepairStatus.PENDING);
             newJob.setDateIn(new Date());
             newJob.setUserId(1);
 
-            // Mock Save
+            // TODO: Call RepairJobModel.save(newJob)
             boolean isSaved = true;
 
             if (isSaved) {

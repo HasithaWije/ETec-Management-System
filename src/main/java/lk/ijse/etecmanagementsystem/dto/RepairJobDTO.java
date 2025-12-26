@@ -2,7 +2,6 @@ package lk.ijse.etecmanagementsystem.dto;
 
 import lk.ijse.etecmanagementsystem.util.PaymentStatus;
 import lk.ijse.etecmanagementsystem.util.RepairStatus;
-
 import java.util.Date;
 
 public class RepairJobDTO {
@@ -10,171 +9,71 @@ public class RepairJobDTO {
     private int cusId;
     private int userId;
     private String deviceName;
-    private String device_sn;
-    private String problem_desc;
-    private RepairStatus status;       //  ENUM ('PENDING', 'DIAGNOSIS', 'WAITING_PARTS', 'COMPLETED', 'DELIVERED', 'CANCELLED') DEFAULT 'PENDING',
-
+    private String deviceSn;      // Changed to camelCase (DB: device_sn)
+    private String problemDesc;   // Changed to camelCase (DB: problem_desc)
+    private RepairStatus status;
     private Date dateIn;
     private Date dateOut;
-
     private double laborCost;
     private double partsCost;
-    private double totalCost;
-
-    private PaymentStatus paymentStatus; // ('PENDING', 'PARTIAL', 'PAID')
+    private double totalAmount;   // Changed to match DB column (DB: total_amount)
+    private PaymentStatus paymentStatus;
 
     public RepairJobDTO() {}
 
-    public RepairJobDTO(int repairId, int cusId, int userId, String deviceName, String device_sn, String problem_desc, RepairStatus status, Date dateIn, Date dateOut, double laborCost, double partsCost, double totalCost, PaymentStatus paymentStatus) {
+    public RepairJobDTO(int repairId, int cusId, int userId, String deviceName, String deviceSn, String problemDesc, RepairStatus status, Date dateIn, Date dateOut, double laborCost, double partsCost, double totalAmount, PaymentStatus paymentStatus) {
         this.repairId = repairId;
         this.cusId = cusId;
         this.userId = userId;
         this.deviceName = deviceName;
-        this.device_sn = device_sn;
-        this.problem_desc = problem_desc;
+        this.deviceSn = deviceSn;
+        this.problemDesc = problemDesc;
         this.status = status;
         this.dateIn = dateIn;
         this.dateOut = dateOut;
         this.laborCost = laborCost;
         this.partsCost = partsCost;
-        this.totalCost = totalCost;
+        this.totalAmount = totalAmount;
         this.paymentStatus = paymentStatus;
     }
 
-    public RepairJobDTO(int repairId, String deviceName, String device_sn, String problem_desc, RepairStatus status, Date dateIn, Date dateOut, double laborCost, double partsCost, double totalCost, PaymentStatus paymentStatus) {
-        this.repairId = repairId;
-        this.deviceName = deviceName;
-        this.device_sn = device_sn;
-        this.problem_desc = problem_desc;
-        this.status = status;
-        this.dateIn = dateIn;
-        this.dateOut = dateOut;
-        this.laborCost = laborCost;
-        this.partsCost = partsCost;
-        this.totalCost = totalCost;
-        this.paymentStatus = paymentStatus;
-    }
+    // Getters and Setters
+    public int getRepairId() { return repairId; }
+    public void setRepairId(int repairId) { this.repairId = repairId; }
 
-    public int getRepairId() {
-        return repairId;
-    }
+    public int getCusId() { return cusId; }
+    public void setCusId(int cusId) { this.cusId = cusId; }
 
-    public void setRepairId(int repairId) {
-        this.repairId = repairId;
-    }
+    public int getUserId() { return userId; }
+    public void setUserId(int userId) { this.userId = userId; }
 
-    public int getCusId() {
-        return cusId;
-    }
+    public String getDeviceName() { return deviceName; }
+    public void setDeviceName(String deviceName) { this.deviceName = deviceName; }
 
-    public void setCusId(int cusId) {
-        this.cusId = cusId;
-    }
+    public String getDeviceSn() { return deviceSn; }
+    public void setDeviceSn(String deviceSn) { this.deviceSn = deviceSn; }
 
-    public int getUserId() {
-        return userId;
-    }
+    public String getProblemDesc() { return problemDesc; }
+    public void setProblemDesc(String problemDesc) { this.problemDesc = problemDesc; }
 
-    public void setUserId(int userId) {
-        this.userId = userId;
-    }
+    public RepairStatus getStatus() { return status; }
+    public void setStatus(RepairStatus status) { this.status = status; }
 
-    public String getDeviceName() {
-        return deviceName;
-    }
+    public Date getDateIn() { return dateIn; }
+    public void setDateIn(Date dateIn) { this.dateIn = dateIn; }
 
-    public void setDeviceName(String deviceName) {
-        this.deviceName = deviceName;
-    }
+    public Date getDateOut() { return dateOut; }
+    public void setDateOut(Date dateOut) { this.dateOut = dateOut; }
 
-    public String getDevice_sn() {
-        return device_sn;
-    }
+    public double getLaborCost() { return laborCost; }
+    public void setLaborCost(double laborCost) { this.laborCost = laborCost; }
 
-    public void setDevice_sn(String device_sn) {
-        this.device_sn = device_sn;
-    }
+    public double getPartsCost() { return partsCost; }
+    public void setPartsCost(double partsCost) { this.partsCost = partsCost; }
 
-    public String getProblem_desc() {
-        return problem_desc;
-    }
+    public double getTotalAmount() { return totalAmount; }
+    public void setTotalAmount(double totalAmount) { this.totalAmount = totalAmount; }
 
-    public void setProblem_desc(String problem_desc) {
-        this.problem_desc = problem_desc;
-    }
-
-    public RepairStatus getStatus() {
-        return status;
-    }
-
-    public void setStatus(RepairStatus status) {
-        this.status = status;
-    }
-
-    public Date getDateIn() {
-        return dateIn;
-    }
-
-    public void setDateIn(Date dateIn) {
-        this.dateIn = dateIn;
-    }
-
-    public Date getDateOut() {
-        return dateOut;
-    }
-
-    public void setDateOut(Date dateOut) {
-        this.dateOut = dateOut;
-    }
-
-    public double getLaborCost() {
-        return laborCost;
-    }
-
-    public void setLaborCost(double laborCost) {
-        this.laborCost = laborCost;
-    }
-
-    public double getPartsCost() {
-        return partsCost;
-    }
-
-    public void setPartsCost(double partsCost) {
-        this.partsCost = partsCost;
-    }
-
-    public double getTotalCost() {
-        return totalCost;
-    }
-
-    public void setTotalCost(double totalCost) {
-        this.totalCost = totalCost;
-    }
-
-    public PaymentStatus getPaymentStatus() {
-        return paymentStatus;
-    }
-
-    public void setPaymentStatus(PaymentStatus paymentStatus) {
-        this.paymentStatus = paymentStatus;
-    }
-
-    @Override
-    public String toString() {
-        return "RepairJobDTO{" +
-                "repairId=" + repairId +
-                ", cusId=" + cusId +
-                ", userId=" + userId +
-                ", deviceName='" + deviceName + '\'' +
-                ", device_sn='" + device_sn + '\'' +
-                ", problem_desc='" + problem_desc + '\'' +
-                ", status=" + status +
-                ", dateIn=" + dateIn +
-                ", dateOut=" + dateOut +
-                ", laborCost=" + laborCost +
-                ", partsCost=" + partsCost +
-                ", totalCost=" + totalCost +
-                ", paymentStatus=" + paymentStatus +
-                '}';
-    }
+    public PaymentStatus getPaymentStatus() { return paymentStatus; }
+    public void setPaymentStatus(PaymentStatus paymentStatus) { this.paymentStatus = paymentStatus; }
 }
