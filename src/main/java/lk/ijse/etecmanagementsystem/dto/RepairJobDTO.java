@@ -10,7 +10,9 @@ public class RepairJobDTO {
     private int userId;
     private String deviceName;
     private String deviceSn;      // Changed to camelCase (DB: device_sn)
-    private String problemDesc;   // Changed to camelCase (DB: problem_desc)
+    private String problemDesc;   // Tab 1: Intake
+    private String diagnosisDesc; // Tab 2: Diagnosis (NEW)
+    private String repairResults; // Tab 3: Results (NEW)
     private RepairStatus status;
     private Date dateIn;
     private Date dateOut;
@@ -21,13 +23,15 @@ public class RepairJobDTO {
 
     public RepairJobDTO() {}
 
-    public RepairJobDTO(int repairId, int cusId, int userId, String deviceName, String deviceSn, String problemDesc, RepairStatus status, Date dateIn, Date dateOut, double laborCost, double partsCost, double totalAmount, PaymentStatus paymentStatus) {
+    public RepairJobDTO(int repairId, int cusId, int userId, String deviceName, String deviceSn, String problemDesc,String diagnosisDesc,String repairResults, RepairStatus status, Date dateIn, Date dateOut, double laborCost, double partsCost, double totalAmount, PaymentStatus paymentStatus) {
         this.repairId = repairId;
         this.cusId = cusId;
         this.userId = userId;
         this.deviceName = deviceName;
         this.deviceSn = deviceSn;
         this.problemDesc = problemDesc;
+        this.diagnosisDesc = diagnosisDesc;
+        this.repairResults = repairResults;
         this.status = status;
         this.dateIn = dateIn;
         this.dateOut = dateOut;
@@ -76,4 +80,10 @@ public class RepairJobDTO {
 
     public PaymentStatus getPaymentStatus() { return paymentStatus; }
     public void setPaymentStatus(PaymentStatus paymentStatus) { this.paymentStatus = paymentStatus; }
+
+    public String getDiagnosisDesc() { return diagnosisDesc; }
+    public void setDiagnosisDesc(String diagnosisDesc) { this.diagnosisDesc = diagnosisDesc; }
+
+    public String getRepairResults() { return repairResults; }
+    public void setRepairResults(String repairResults) { this.repairResults = repairResults; }
 }

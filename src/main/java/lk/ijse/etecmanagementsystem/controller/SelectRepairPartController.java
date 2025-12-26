@@ -1,9 +1,5 @@
 package lk.ijse.etecmanagementsystem.controller;
 
-
-import javafx.beans.property.SimpleDoubleProperty;
-import javafx.beans.property.SimpleIntegerProperty;
-import javafx.beans.property.SimpleStringProperty;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
@@ -11,8 +7,10 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
-import lk.ijse.etecmanagementsystem.util.ProductCondition; // <--- Import Enum
 import lk.ijse.etecmanagementsystem.dto.tm.RepairPartTM;
+import lk.ijse.etecmanagementsystem.model.RepairPartsModel; // Import Model
+import java.sql.SQLException;
+import java.util.List;
 
 public class SelectRepairPartController {
 
@@ -21,11 +19,14 @@ public class SelectRepairPartController {
     @FXML private TableColumn<RepairPartTM, Integer> colId;
     @FXML private TableColumn<RepairPartTM, String> colName;
     @FXML private TableColumn<RepairPartTM, String> colSerial;
-    @FXML private TableColumn<RepairPartTM, String> colCondition; // <--- NEW INJECTION
+    @FXML private TableColumn<RepairPartTM, String> colCondition;
     @FXML private TableColumn<RepairPartTM, Double> colPrice;
 
     private RepairDashboardController mainController;
-    private ObservableList<RepairPartTM> stockList = FXCollections.observableArrayList();
+    private final ObservableList<RepairPartTM> stockList = FXCollections.observableArrayList();
+
+    // Model Instance
+    private final RepairPartsModel repairPartsModel = new RepairPartsModel();
 
     public void setMainController(RepairDashboardController mainController) {
         this.mainController = mainController;
@@ -33,14 +34,17 @@ public class SelectRepairPartController {
 
     @FXML
     public void initialize() {
+        // Setup Columns
         colId.setCellValueFactory(new PropertyValueFactory<>("itemId"));
         colName.setCellValueFactory(new PropertyValueFactory<>("itemName"));
         colSerial.setCellValueFactory(new PropertyValueFactory<>("serialNumber"));
         colPrice.setCellValueFactory(new PropertyValueFactory<>("unitPrice"));
         colCondition.setCellValueFactory(new PropertyValueFactory<>("condition"));
 
+        // Load Real Data
         loadAvailableStock();
 
+        // Setup Search Filter
         FilteredList<RepairPartTM> filteredList = new FilteredList<>(stockList, p -> true);
         tblStock.setItems(filteredList);
 
@@ -55,13 +59,15 @@ public class SelectRepairPartController {
     }
 
     private void loadAvailableStock() {
-        stockList.clear();
+        try {
+            stockList.clear();
+            List<RepairPartTM> dbList = repairPartsModel.getAllAvailableParts();
+            stockList.addAll(dbList);
 
-        // MOCK DATA UPDATED WITH CONDITION
-        stockList.add(new RepairPartTM(501, "iPhone X Display", "SN-LCD-001", ProductCondition.BRAND_NEW, 15000.00));
-        stockList.add(new RepairPartTM(502, "iPhone X Battery", "SN-BAT-009", ProductCondition.USED, 5000.00));
-        stockList.add(new RepairPartTM(503, "Dell 15 Ram 8GB", "SN-RAM-888", ProductCondition.BRAND_NEW, 8500.00));
-        stockList.add(new RepairPartTM(504, "SSD 256GB Samsung", "SN-SSD-256", ProductCondition.USED, 12000.00));
+        } catch (SQLException e) {
+            e.printStackTrace();
+            new Alert(Alert.AlertType.ERROR, "Failed to load stock: " + e.getMessage()).show();
+        }
     }
 
     @FXML

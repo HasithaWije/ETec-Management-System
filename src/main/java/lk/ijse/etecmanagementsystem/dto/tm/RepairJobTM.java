@@ -13,6 +13,8 @@ public class RepairJobTM {
     private String deviceName;
     private String serialNumber;
     private String problemDescription;
+    private String diagnosisDescription; // NEW
+    private String repairResults;        // NEW
     private RepairStatus status;
     private String dateInFormatted;
 
@@ -28,6 +30,8 @@ public class RepairJobTM {
         this.deviceName = dto.getDeviceName();
         this.serialNumber = dto.getDeviceSn();
         this.problemDescription = dto.getProblemDesc();
+        this.diagnosisDescription = dto.getDiagnosisDesc(); // Map from DTO
+        this.repairResults = dto.getRepairResults();        // Map from DTO
         this.status = dto.getStatus();
 
         // Format Date string once
@@ -69,6 +73,26 @@ public class RepairJobTM {
         return status;
     }
 
+    // --- Add Getters & Setters ---
+    public String getDiagnosisDescription() { return diagnosisDescription; }
+    public void setDiagnosisDescription(String diagnosisDescription) {
+        this.diagnosisDescription = diagnosisDescription;
+    }
+
+    public String getRepairResults() { return repairResults; }
+    public void setRepairResults(String repairResults) {
+        this.repairResults = repairResults;
+    }
+
+
+    public RepairJobDTO getOriginalDto() {
+        // IMPORTANT: Sync back to DTO before saving
+        originalDto.setProblemDesc(this.problemDescription);
+        originalDto.setDiagnosisDesc(this.diagnosisDescription);
+        originalDto.setRepairResults(this.repairResults);
+        return originalDto;
+    }
+
     public void setStatus(RepairStatus status) {
         this.status = status;
         // Sync with original DTO immediately
@@ -81,9 +105,4 @@ public class RepairJobTM {
         return dateInFormatted;
     }
 
-    public RepairJobDTO getOriginalDto() {
-        // Sync text fields back to DTO before saving
-        originalDto.setProblemDesc(this.problemDescription);
-        return originalDto;
-    }
 }

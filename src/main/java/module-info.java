@@ -13,6 +13,7 @@ module lk.ijse.etecmanagementsystem {
     requires net.sf.jasperreports.core;
 
 
+
     exports lk.ijse.etecmanagementsystem;
     opens lk.ijse.etecmanagementsystem to javafx.fxml;
 

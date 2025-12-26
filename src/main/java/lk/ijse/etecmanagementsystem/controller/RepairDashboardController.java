@@ -21,6 +21,7 @@ import lk.ijse.etecmanagementsystem.util.RepairStatus;
 
 import java.io.IOException;
 import java.sql.SQLException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -59,6 +60,7 @@ public class RepairDashboardController {
     @FXML private TableColumn<RepairPartTM, String> colPartCondition;
 
 
+
     @FXML private Button btnUpdateJob;
 
     // =========================================================
@@ -68,7 +70,11 @@ public class RepairDashboardController {
     private final ObservableList<RepairJobTM> masterData = FXCollections.observableArrayList();
     private FilteredList<RepairJobTM> filteredData;
     private RepairJobTM currentSelection;
-    private final ObservableList<RepairPartTM> usedPartsList = FXCollections.observableArrayList();
+
+
+    // --- DATA LISTS ---
+    private final ObservableList<RepairPartTM> usedPartsList = FXCollections.observableArrayList(); // Visible in Table
+    private final List<RepairPartTM> partsToReturnList = new ArrayList<>(); // Hidden list for removed items (Restocking)
 
 
     // Model Instance
@@ -89,6 +95,16 @@ public class RepairDashboardController {
         filteredData = new FilteredList<>(masterData, p -> true);
         listRepairJobs.setItems(filteredData);
         setupListeners();
+
+        // --- LINK DATA ---
+        tblParts.setItems(usedPartsList);
+
+        // --- ENABLE RIGHT-CLICK REMOVE ---
+        ContextMenu contextMenu = new ContextMenu();
+        MenuItem deleteItem = new MenuItem("Remove Part");
+        deleteItem.setOnAction(event -> handleRemovePart()); // Links to the remove method
+        contextMenu.getItems().add(deleteItem);
+        tblParts.setContextMenu(contextMenu);
     }
 
     @FXML
@@ -131,42 +147,67 @@ public class RepairDashboardController {
 
     @FXML
     private void handleSaveChanges() {
-        if (currentSelection == null) return;
+        // 1. Validation
+        if (currentSelection == null) {
+            showAlert(Alert.AlertType.WARNING, "Selection Error", "Please select a repair job first.");
+            return;
+        }
 
         try {
-            // 1. Calculate Costs
-            double totalPartsCost = 0.0;
-            for (RepairPartTM part : usedPartsList) {
-                totalPartsCost += part.getUnitPrice();
-            }
-
-            // 2. Prepare Data to Update
+            // --- GATHER DATA ---
             int repairId = currentSelection.getRepairId();
             String intake = txtIntake.getText();
             String diagnosis = txtDiagnosis.getText();
             String resolution = txtResolution.getText();
 
-            // 3. TODO: CALL TRANSACTIONAL DAO METHOD
-            // This method should do 3 things in one transaction:
-            // a) Update RepairJob (problem_desc, and custom diagnosis fields if you added them)
-            // b) Update RepairJob (parts_cost = totalPartsCost)
-            // c) Loop through usedPartsList and insert into 'RepairSale' or lock them in 'ProductItem'
+            // --- CALCULATE COSTS ---
+            // Get base labor cost (from DTO)
+            double laborCost = currentSelection.getOriginalDto().getLaborCost();
 
-            /*
-             * Example BO Logic:
-             * repairJobBO.updateRepairDetails(repairId, intake, diagnosis, resolution, totalPartsCost, usedPartsList);
-             */
+            // Sum part costs from the table
+            double partsCost = 0.0;
+            for (RepairPartTM part : usedPartsList) {
+                partsCost += part.getUnitPrice();
+            }
 
-            // 4. Update UI Model (for immediate feedback)
-            // If you had cost columns in your main list, update them here
-            // currentSelection.setTotalCost(totalPartsCost + laborCost);
+            double totalAmount = laborCost + partsCost;
 
-            showAlert(Alert.AlertType.INFORMATION, "Saved",
-                    "Notes saved and " + usedPartsList.size() + " parts linked.\nTotal Parts Cost: " + totalPartsCost);
+            // --- CALL MODEL (TRANSACTION) ---
+            boolean isSuccess = repairModel.updateRepairJobDetails(
+                    repairId,
+                    intake,
+                    diagnosis,
+                    resolution,
+                    laborCost,
+                    partsCost,
+                    totalAmount,
+                    new ArrayList<>(usedPartsList), // Active Parts (Link & Mark Sold)
+                    partsToReturnList               // Returned Parts (Unlink & Mark Available)
+            );
 
-        } catch (Exception e) {
+            // --- UPDATE UI ON SUCCESS ---
+            if (isSuccess) {
+                // Update Memory Object so list updates without refresh
+                currentSelection.setProblemDescription(intake);
+                currentSelection.setDiagnosisDescription(diagnosis);
+                currentSelection.setRepairResults(resolution);
+
+                // Update DTO Financials
+                currentSelection.getOriginalDto().setPartsCost(partsCost);
+                currentSelection.getOriginalDto().setTotalAmount(totalAmount);
+
+                // Clear Return Queue (DB has processed them)
+                partsToReturnList.clear();
+
+                showAlert(Alert.AlertType.INFORMATION, "Saved Successfully",
+                        "Job Updated.\nParts Cost: " + partsCost + "\nTotal: " + totalAmount);
+            } else {
+                showAlert(Alert.AlertType.ERROR, "Save Failed", "Database update failed.");
+            }
+
+        } catch (SQLException e) {
             e.printStackTrace();
-            showAlert(Alert.AlertType.ERROR, "Error", "Failed to save changes.");
+            showAlert(Alert.AlertType.ERROR, "Database Error", e.getMessage());
         }
     }
 
@@ -240,13 +281,45 @@ public class RepairDashboardController {
         lblContact.setText(job.getContactNumber());
         lblDeviceName.setText(job.getDeviceName());
         lblSerial.setText(job.getSerialNumber());
-        txtIntake.setText(job.getProblemDescription());
-
-        // Clear unused fields for now
-        txtDiagnosis.setText("");
-        txtResolution.setText("");
+        txtIntake.setText(job.getProblemDescription());   // Tab 1
+        txtDiagnosis.setText(job.getDiagnosisDescription()); // Tab 2
+        txtResolution.setText(job.getRepairResults());       // Tab 3
 
         refreshStatusUI(job.getStatus());
+
+        // --- LOAD PARTS FROM DB ---
+        try {
+            // 1. Clear previous selection data
+            usedPartsList.clear();
+            partsToReturnList.clear();
+
+            // 2. Fetch saved parts for this specific job
+            List<RepairPartTM> dbParts = repairModel.getUsedParts(job.getRepairId());
+            usedPartsList.addAll(dbParts);
+
+        } catch (SQLException e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Error", "Could not load parts: " + e.getMessage());
+        }
+    }
+
+    @FXML
+    private void handleRemovePart() {
+        RepairPartTM selectedPart = tblParts.getSelectionModel().getSelectedItem();
+        if (selectedPart == null) return;
+
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION,
+                "Remove " + selectedPart.getItemName() + "?\n(Item will be restocked upon Save)",
+                ButtonType.YES, ButtonType.NO);
+        alert.showAndWait();
+
+        if (alert.getResult() == ButtonType.YES) {
+            // 1. Add to return list (so Model knows to set it back to 'AVAILABLE')
+            partsToReturnList.add(selectedPart);
+
+            // 2. Remove from UI immediately
+            usedPartsList.remove(selectedPart);
+        }
     }
 
     @FXML
