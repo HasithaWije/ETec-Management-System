@@ -421,6 +421,8 @@ public class InventoryController {
         cmbCategory.getSelectionModel().select("All Categories");
     }
 
+
+
     @FXML
     private void handleReset(){
         txtSearch.clear();

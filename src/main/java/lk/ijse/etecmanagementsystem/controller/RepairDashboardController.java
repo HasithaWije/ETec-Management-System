@@ -31,44 +31,74 @@ public class RepairDashboardController {
     // FXML INJECTIONS
     // =========================================================
 
-    @FXML private TextField txtSearch;
-    @FXML private ComboBox<RepairStatus> comboStatusFilter;
-    @FXML private Button btnAddTicket;
-    @FXML private ListView<RepairJobTM> listRepairJobs;
-    @FXML private VBox detailsPane;
+    @FXML
+    private TextField txtSearch;
+    @FXML
+    private ComboBox<RepairStatus> comboStatusFilter;
+    @FXML
+    private Button btnAddTicket;
+    @FXML
+    private ListView<RepairJobTM> listRepairJobs;
+    @FXML
+    private VBox detailsPane;
+    @FXML
+    private Button btnReset;
 
     // Labels
-    @FXML private Label lblJobId;
-    @FXML private Label lblStatusBadge;
-    @FXML private Label lblDate;
-    @FXML private Label lblCustomerName;
-    @FXML private Label lblContact;
-    @FXML private Label lblEmail;
-    @FXML private Label lblAddress;
-    @FXML private Label lblDeviceName;
-    @FXML private Label lblSerial;
+    @FXML
+    private Label lblJobId;
+    @FXML
+    private Label lblStatusBadge;
+    @FXML
+    private Label lblDate;
+    @FXML
+    private Label lblCustomerName;
+    @FXML
+    private Label lblContact;
+    @FXML
+    private Label lblEmail;
+    @FXML
+    private Label lblAddress;
+    @FXML
+    private Label lblDeviceName;
+    @FXML
+    private Label lblSerial;
 
-    @FXML private ProgressBar progressWorkflow;
+    @FXML
+    private ProgressBar progressWorkflow;
 
-    @FXML private TextArea txtIntake;
-    @FXML private TextArea txtDiagnosis;
-    @FXML private TextArea txtResolution;
-    @FXML private TextField txtLaborCost;
-    @FXML private TextField txtTotalCost;
+    @FXML
+    private TextArea txtIntake;
+    @FXML
+    private TextArea txtDiagnosis;
+    @FXML
+    private TextArea txtResolution;
+    @FXML
+    private TextField txtLaborCost;
+    @FXML
+    private TextField txtTotalCost;
 
     // --- PARTS TABLE INJECTIONS ---
-    @FXML private TableView<RepairPartTM> tblParts;
-    @FXML private TableColumn<RepairPartTM, String> colPartName;
-    @FXML private TableColumn<RepairPartTM, Double> colPartPrice;
-    @FXML private TableColumn<RepairPartTM, String> colPartSN; // Used for Serial
-    @FXML private TableColumn<RepairPartTM, String> colPartCondition;
+    @FXML
+    private TableView<RepairPartTM> tblParts;
+    @FXML
+    private TableColumn<RepairPartTM, String> colPartName;
+    @FXML
+    private TableColumn<RepairPartTM, Double> colPartPrice;
+    @FXML
+    private TableColumn<RepairPartTM, String> colPartSN; // Used for Serial
+    @FXML
+    private TableColumn<RepairPartTM, String> colPartCondition;
 
 
-
-    @FXML private Button btnUpdateJob;
-    @FXML private Button btnSaveChanges; // <--- ADD THIS
-    @FXML private Button btnUnclaimed;   // <--- ADD THIS
-    @FXML private Button btnCheckout;    // <--- ADD THIS (If you want to disable Checkout too)
+    @FXML
+    private Button btnUpdateJob;
+    @FXML
+    private Button btnSaveChanges; // <--- ADD THIS
+    @FXML
+    private Button btnUnclaimed;   // <--- ADD THIS
+    @FXML
+    private Button btnCheckout;    // <--- ADD THIS (If you want to disable Checkout too)
 
     // =========================================================
     // DATA & INITIALIZATION
@@ -97,7 +127,6 @@ public class RepairDashboardController {
 
         // 3. Load Data from DB
         loadDataFromDB();
-
 
 
         // 4. Setup Filtering
@@ -143,6 +172,7 @@ public class RepairDashboardController {
             stage.setResizable(false);
             stage.showAndWait();
 
+            setupListView();
             resetSelectedJob();
 
         } catch (IOException e) {
@@ -167,7 +197,6 @@ public class RepairDashboardController {
             stage.setScene(new Scene(root));
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.showAndWait();
-
 
 
         } catch (IOException e) {
@@ -265,7 +294,8 @@ public class RepairDashboardController {
                 }
 
 
-resetSelectedJob();
+                setupListView();
+                resetSelectedJob();
 
             } else {
                 showAlert(Alert.AlertType.ERROR, "Save Failed", "Database update failed.");
@@ -356,6 +386,9 @@ resetSelectedJob();
 
             return matchesText && matchesStatus;
         });
+        //  Reset selection and details
+        setupListView();
+
     }
 
     private void showDetails(RepairJobTM job) {
@@ -424,7 +457,6 @@ resetSelectedJob();
         if (currentSelection == null) return;
 
 
-
         RepairStatus current = currentSelection.getStatus();
         int nextOrdinal = current.ordinal() + 1;
 
@@ -440,14 +472,15 @@ resetSelectedJob();
                     return; // User cancelled
                 }
 
-                if(nextStatus == RepairStatus.DELIVERED){
+                if (nextStatus == RepairStatus.DELIVERED) {
                     Alert alert = new Alert(Alert.AlertType.CONFIRMATION,
-                            "Marking as DELIVERED is final. Are you sure?"+
+                            "Marking as DELIVERED is final. Are you sure?" +
                                     "Do you want to check out now?",
                             ButtonType.YES, ButtonType.NO);
                     alert.showAndWait();
                     if (alert.getResult() == ButtonType.YES) {
                         handleCheckout();
+                        return;
                     } else {
                         return; // User cancelled
                     }
@@ -464,14 +497,14 @@ resetSelectedJob();
 
         int prevOrdinal = currentSelection.getStatus().ordinal() - 1;
         if (prevOrdinal >= 0) {
-            if(currentSelection.getStatus().equals(RepairStatus.DELIVERED)) {
+            if (currentSelection.getStatus().equals(RepairStatus.DELIVERED)) {
                 showAlert(Alert.AlertType.WARNING, "Invalid Action", "Cannot move back from DELIVERED status.");
                 return;
-            }else if(currentSelection.getStatus().equals(RepairStatus.PENDING)) {
+            } else if (currentSelection.getStatus().equals(RepairStatus.PENDING)) {
                 showAlert(Alert.AlertType.WARNING, "Invalid Action", "Cannot move back from PENDING status.");
                 return;
-            }else if(currentSelection.getStatus().equals(RepairStatus.CANCELLED)) {
-                updateStatus(RepairStatus.values()[prevOrdinal-1]);
+            } else if (currentSelection.getStatus().equals(RepairStatus.CANCELLED)) {
+                updateStatus(RepairStatus.values()[prevOrdinal - 1]);
                 return;
             }
             updateStatus(RepairStatus.values()[prevOrdinal]);
@@ -489,8 +522,12 @@ resetSelectedJob();
             boolean isUpdated = repairModel.updateStatus(currentSelection.getRepairId(), newStatus);
             if (isUpdated) {
                 currentSelection.setStatus(newStatus);
-                refreshStatusUI(newStatus);
-                listRepairJobs.refresh();
+
+                setupListView();
+                resetSelectedJob();
+//                refreshStatusUI(newStatus);
+//                listRepairJobs.refresh();
+
             } else {
                 showAlert(Alert.AlertType.ERROR, "Error", "Failed to update status in Database");
             }
@@ -528,9 +565,10 @@ resetSelectedJob();
             stage.showAndWait();
 
             // Refresh list in case data changed
+            setupListView();
             resetSelectedJob();
 
-            if(currentSelection != null) showDetails(currentSelection);
+            if (currentSelection != null) showDetails(currentSelection);
 
         } catch (IOException e) {
             e.printStackTrace();
@@ -552,6 +590,7 @@ resetSelectedJob();
             stage.showAndWait();
 
             // Refresh list after adding new ticket
+            setupListView();
             resetSelectedJob();
 
 
@@ -590,7 +629,7 @@ resetSelectedJob();
 
         double max = RepairStatus.DELIVERED.ordinal();
         double current = status.ordinal();
-        if(current > max) current = 0;
+        if (current > max) current = 0;
         progressWorkflow.setProgress(current / max);
     }
 
@@ -627,6 +666,7 @@ resetSelectedJob();
     }
 
     private void setupListView() {
+
         listRepairJobs.setCellFactory(param -> new ListCell<>() {
             @Override
             protected void updateItem(RepairJobTM item, boolean empty) {
@@ -636,10 +676,33 @@ resetSelectedJob();
                     setGraphic(null);
                 } else {
                     VBox vBox = new VBox(3);
+                    switch (item.getStatus()) {
+                        case COMPLETED:
+                            setStyle("-fx-background-color: #d1ecf1;"); // Light blue
+                            break;
+                        case DIAGNOSIS, WAITING_PARTS:
+                            setStyle("-fx-background-color: #f0f0f0;"); // Light gray
+                            break;
+                        case DELIVERED:
+                            setStyle("-fx-background-color: #d4edda;"); // Light green
+
+                            break;
+                        case PENDING:
+                            setStyle("-fx-background-color: #fff3cd;"); // Light yellow
+
+                            break;
+                        case CANCELLED:
+                            setStyle("-fx-background-color: #f8d7da;"); // Light red
+                            break;
+                        default:
+                            setStyle(""); // Default
+                    }
                     Label name = new Label(item.getCustomerName() + " - " + item.getDeviceName());
                     name.setStyle("-fx-font-weight: bold;");
+
                     Label status = new Label("Status: " + item.getStatus());
                     status.setStyle("-fx-text-fill: #7f8c8d; -fx-font-size: 11px;");
+
 
                     vBox.getChildren().addAll(name, status);
                     setGraphic(vBox);
@@ -658,6 +721,8 @@ resetSelectedJob();
         tblParts.setItems(usedPartsList);
     }
 
+
+
     private void showAlert(Alert.AlertType type, String title, String msg) {
         Alert alert = new Alert(type);
         alert.setTitle(title);
@@ -671,7 +736,7 @@ resetSelectedJob();
         usedPartsList.clear();
     }
 
-    private void resetSelectedJob(){
+    private void resetSelectedJob() {
         RepairJobTM selectedJob = listRepairJobs.getSelectionModel().getSelectedItem();
         if (selectedJob != null) {
             loadDataFromDB();
@@ -684,5 +749,13 @@ resetSelectedJob();
                             .orElse(null)
             );
         }
+    }
+
+    @FXML
+    private void resetSelectedJobSimple() {
+        listRepairJobs.getSelectionModel().clearSelection();
+        comboStatusFilter.getSelectionModel().clearSelection();
+        setupListView();
+        txtSearch.clear();
     }
 }

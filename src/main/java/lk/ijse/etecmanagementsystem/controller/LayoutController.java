@@ -1,7 +1,12 @@
 package lk.ijse.etecmanagementsystem.controller;
 
 import javafx.fxml.FXML;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
+import javafx.scene.control.Dialog;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import lk.ijse.etecmanagementsystem.App;
 import lk.ijse.etecmanagementsystem.service.MenuBar;
@@ -9,6 +14,7 @@ import lk.ijse.etecmanagementsystem.service.ThreadService;
 import lk.ijse.etecmanagementsystem.util.LoginUtil;
 
 import java.io.IOException;
+import java.util.Objects;
 
 public class LayoutController {
 
@@ -21,8 +27,8 @@ public class LayoutController {
     @FXML private Button btnSuppliers;
     @FXML private Button btnCustomers;
     @FXML private Button btnTransactions;
-    @FXML private Button btnWarranty;
-    @FXML private Button btnSettings;
+    @FXML private Button btnReports;
+    @FXML private Button btnLogout;
     @FXML private Button btnUser;
 
     @FXML private StackPane contentArea;
@@ -121,8 +127,8 @@ public class LayoutController {
     }
 
     @FXML
-    private void btnWarrantyClicked()  {
-        menuBar.setActive(btnWarranty);
+    private void btnReportsClicked()  {
+        menuBar.setActive(btnReports);
         try {
             contentArea.getChildren().setAll(App.loadFXML("reports"));
         } catch (IOException e) {
@@ -130,10 +136,19 @@ public class LayoutController {
         }
     }
     @FXML
-    private void btnSettingsClicked()  {
-        menuBar.setActive(btnSettings);
+    private void btnLogoutClicked()  {
+        menuBar.setActive(btnLogout);
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "", ButtonType.YES, ButtonType.NO);
+        alert.setTitle("Logout Confirmation");
+        alert.setHeaderText("Are you sure you want to logout?");
+        alert.setGraphic(new ImageView(new Image(Objects.requireNonNull(App.class.getResourceAsStream("images/logout_icon.png")))));
+        alert.showAndWait();
+        if (alert.getResult() != ButtonType.YES) {
+            return;
+        }
+
         try {
-            contentArea.getChildren().setAll(App.loadFXML("settings"));
+            App.setupLoginStageScene("login");
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -157,8 +172,8 @@ public class LayoutController {
         menuBar.setupButton(btnSuppliers);
         menuBar.setupButton(btnCustomers);
         menuBar.setupButton(btnTransactions);
-        menuBar.setupButton(btnWarranty);
-        menuBar.setupButton(btnSettings);
+        menuBar.setupButton(btnReports);
+        menuBar.setupButton(btnLogout);
         menuBar.setupButton(btnUser);
     }
 

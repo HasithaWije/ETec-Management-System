@@ -40,17 +40,14 @@ public class UrgentRepairListCell extends ListCell<UrgentRepairTM> {
 
             // 2. Middle Text (Device Name & Status)
             VBox vBox = new VBox(3);
-            Label idLbl = new Label("#"+String.valueOf(item.getId()));
-            idLbl.setTextFill(Color.BLACK);
-            idLbl.setFont(Font.font("System", FontWeight.BOLD, 14));
-
-            Label deviceLbl = new Label(item.getDevice());
+            String repairID = ("#"+String.valueOf(item.getId()));
+            Label deviceLbl = new Label(item.getDevice()+" " + repairID);
             deviceLbl.setFont(Font.font("System", FontWeight.BOLD, 14));
             deviceLbl.setTextFill(Color.web("#2c3e50"));
 
             Label statusLbl = new Label(item.getStatus());
             statusLbl.setStyle("-fx-text-fill: #7f8c8d; -fx-font-size: 11px;");
-            vBox.getChildren().addAll(idLbl, deviceLbl, statusLbl);
+            vBox.getChildren().addAll(deviceLbl, statusLbl);
 
             // 3. Spacer (pushes Date to right)
             Region spacer = new Region();

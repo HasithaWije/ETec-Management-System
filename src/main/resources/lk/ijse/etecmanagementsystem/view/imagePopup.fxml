@@ -3,13 +3,15 @@
 <?import javafx.geometry.Insets?>
 <?import javafx.scene.control.Button?>
 <?import javafx.scene.control.Label?>
+<?import javafx.scene.image.Image?>
 <?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.HBox?>
+<?import javafx.scene.layout.Pane?>
 <?import javafx.scene.layout.StackPane?>
 <?import javafx.scene.text.Font?>
 
-<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="400.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="lk.ijse.etecmanagementsystem.controller.ImagePopupController">
+<BorderPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity" prefHeight="450.0" prefWidth="500.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="lk.ijse.etecmanagementsystem.controller.ImagePopupController">
    <top>
       <HBox alignment="CENTER_LEFT" prefHeight="50.0" style="-fx-background-color: #34495e;" BorderPane.alignment="CENTER">
          <children>
@@ -26,18 +28,25 @@
    </top>
    
    <center>
-      <StackPane prefHeight="150.0" prefWidth="200.0" style="-fx-background-color: #ecf0f1;" BorderPane.alignment="CENTER">
+      <StackPane prefHeight="150.0" prefWidth="200.0" style="-fx-background-color: #abe2e8;" BorderPane.alignment="CENTER">
          <children>
             <Label fx:id="lblPlaceholder" text="No Image Selected" textFill="#95a5a6">
                <font>
                   <Font size="16.0" />
                </font>
             </Label>
-            <ImageView fx:id="imgPreview" fitHeight="250.0" fitWidth="400.0" pickOnBounds="true" preserveRatio="true" />
+            <ImageView fx:id="imageViewBack" fitHeight="340.0" fitWidth="500.0" pickOnBounds="true">
+               <image>
+                  <Image url="@../images/Logo2.png" />
+               </image>
+            </ImageView>
+            <HBox alignment="CENTER" prefHeight="340.0" prefWidth="340.0">
+               <children>
+                  <Pane fx:id="paneImageBack" prefHeight="340.0" prefWidth="340.0" style="-fx-background-color: WHITE;" visible="false" />
+               </children>
+            </HBox>
+            <ImageView fx:id="imgPreview" fitHeight="340.0" fitWidth="340.0" pickOnBounds="true" />
          </children>
-         <padding>
-            <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
-         </padding>
       </StackPane>
    </center>
    
@@ -47,17 +56,17 @@
             <Insets right="20.0" />
          </padding>
          <children>
-            <Button fx:id="btnBrowse" mnemonicParsing="false" prefHeight="30.0" style="-fx-background-color: #e67e22;" text="Browse Computer..." textFill="WHITE">
+            <Button fx:id="btnBrowse" mnemonicParsing="false" onAction="#onProcessImageClick" prefHeight="30.0" style="-fx-background-color: #e67e22;" text="Browse Computer..." textFill="WHITE">
                <font>
                   <Font name="System Bold" size="12.0" />
                </font>
             </Button>
-            <Button fx:id="btnSaveImage" mnemonicParsing="false" prefHeight="30.0" prefWidth="100.0" style="-fx-background-color: #27ae60;" text="Confirm" textFill="WHITE">
+            <Button fx:id="btnSaveImage" mnemonicParsing="false" onAction="#handleConfirmButtonClick" prefHeight="30.0" prefWidth="100.0" style="-fx-background-color: #27ae60;" text="Confirm" textFill="WHITE">
                <font>
                   <Font name="System Bold" size="12.0" />
                </font>
             </Button>
-            <Button fx:id="btnCancel" mnemonicParsing="false" prefHeight="30.0" prefWidth="80.0" style="-fx-background-color: #7f8c8d;" text="Cancel" textFill="WHITE" />
+            <Button fx:id="btnCancel" mnemonicParsing="false" onAction="#handleBtnCancel" prefHeight="30.0" prefWidth="80.0" style="-fx-background-color: #7f8c8d;" text="Cancel" textFill="WHITE" />
          </children>
       </HBox>
    </bottom>

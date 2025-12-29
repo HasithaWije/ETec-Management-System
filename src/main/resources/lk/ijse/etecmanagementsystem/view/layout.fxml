@@ -18,7 +18,7 @@
          <children>
             <VBox alignment="CENTER">
                <children>
-                  <ImageView fitHeight="76.0" fitWidth="151.0" pickOnBounds="true" preserveRatio="true">
+                  <ImageView fitHeight="56.0" fitWidth="101.0" pickOnBounds="true" preserveRatio="true">
                      <image>
                         <Image url="@../images/logo.png" />
                      </image>
@@ -97,7 +97,7 @@
                   <Font size="14.0" />
                </font>
                <graphic>
-                  <Label text="🧑‍🤝‍🧑" textFill="#cbd5e1" />
+                  <Label text="👥" textFill="#cbd5e1" />
                </graphic>
             </Button>
             <Button fx:id="btnTransactions" alignment="BASELINE_LEFT" graphicTextGap="15.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#btnTransactionsClicked" style="-fx-background-color: transparent; -fx-cursor: hand;" text="Transactions" textFill="#cbd5e1">
@@ -111,7 +111,7 @@
                   <Label text="💲" textFill="#cbd5e1" />
                </graphic>
             </Button>
-            <Button fx:id="btnWarranty" alignment="BASELINE_LEFT" graphicTextGap="15.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#btnWarrantyClicked" style="-fx-background-color: transparent; -fx-cursor: hand;" text="Warranty" textFill="#cbd5e1">
+            <Button fx:id="btnReports" alignment="BASELINE_LEFT" graphicTextGap="15.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#btnReportsClicked" style="-fx-background-color: transparent; -fx-cursor: hand;" text="Reports" textFill="#cbd5e1">
                <padding>
                   <Insets bottom="12.0" left="20.0" right="20.0" top="12.0" />
                </padding>
@@ -119,21 +119,10 @@
                   <Font size="14.0" />
                </font>
                <graphic>
-                  <Label text="✅" textFill="#cbd5e1" />
+                  <Label text="📝" textFill="#cbd5e1" />
                </graphic>
             </Button>
             <Region VBox.vgrow="ALWAYS" />
-            <Button fx:id="btnSettings" alignment="BASELINE_LEFT" graphicTextGap="15.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#btnSettingsClicked" style="-fx-background-color: transparent; -fx-cursor: hand;" text="Settings" textFill="#cbd5e1">
-               <padding>
-                  <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
-               </padding>
-               <font>
-                  <Font size="14.0" />
-               </font>
-               <graphic>
-                  <Label text="⚙️" textFill="#cbd5e1" />
-               </graphic>
-            </Button>
             <Button fx:id="btnUser" alignment="BASELINE_LEFT" graphicTextGap="15.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#btnUserClicked" style="-fx-background-color: transparent; -fx-cursor: hand;" text="User" textFill="#cbd5e1">
                <padding>
                   <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
@@ -147,6 +136,20 @@
                         <Insets right="15.0" />
                      </padding>
                   </Label>
+               </graphic>
+            </Button>
+            <Button fx:id="btnLogout" alignment="BASELINE_LEFT" graphicTextGap="15.0" maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#btnLogoutClicked" style="-fx-background-color: transparent; -fx-cursor: hand;" text="Logout" textFill="#cbd5e1">
+               <padding>
+                  <Insets bottom="10.0" left="20.0" right="20.0" top="10.0" />
+               </padding>
+               <font>
+                  <Font size="14.0" />
+               </font>
+               <graphic>
+                  <Label text="⚙" textFill="#cbd5e1">
+                     <padding>
+                        <Insets right="15.0" />
+                     </padding></Label>
                </graphic>
             </Button>
             <Region prefHeight="10.0" prefWidth="259.0" />

@@ -34,7 +34,9 @@ public class DebtListCell extends ListCell<DebtTM> {
 
             // 2. Customer Name & ID
             VBox vBox = new VBox(3);
-            Label nameLbl = new Label(item.getCustomer() + " (#" + item.getId() + ")");
+            String cusName =  item.getCustomer() == null ? " - " : item.getCustomer();
+            String cusName2 = cusName.length() > 20 ? cusName.substring(0, 17) + "..." : cusName;
+            Label nameLbl = new Label(cusName2 + " (#" + item.getId() + ")");
             nameLbl.setFont(Font.font("System", FontWeight.BOLD, 14));
             nameLbl.setTextFill(Color.web("#2c3e50"));
 

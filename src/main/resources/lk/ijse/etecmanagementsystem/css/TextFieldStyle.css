@@ -8,7 +8,7 @@
     -fx-border-radius: 6px;           /* Modern rounded corners */
     -fx-background-radius: 6px;
 
-    -fx-padding: 10px 12px;           /* More breathing room (Modern feel) */
+    -fx-padding: 5px 6px;           /* More breathing room (Modern feel) */
 
     -fx-text-fill: #212529;           /* Dark gray text (High contrast) */
     -fx-font-family: "Segoe UI", sans-serif;

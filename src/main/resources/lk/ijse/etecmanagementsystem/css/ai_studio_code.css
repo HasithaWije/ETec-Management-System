@@ -1,0 +1,36 @@
+.custom-list-view {
+    -fx-background-color: #f4f6f9; /* Light gray background for the container */
+    -fx-padding: 10px;
+}
+
+.custom-list-view .list-cell {
+    /* Make the cell look like a card */
+    -fx-background-color: white;
+    -fx-background-radius: 5px;
+    -fx-background-insets: 2px 5px 2px 5px; /* Creates gaps between cells */
+    -fx-padding: 10px 15px;
+
+    /* Text Styling */
+    -fx-text-fill: #495057;
+    -fx-font-family: "Verdana", sans-serif;
+
+    /* Subtle shadow for the card look */
+    -fx-effect: dropshadow(one-pass-box, rgba(0,0,0,0.1), 3, 0, 0, 1);
+}
+
+.custom-list-view .list-cell:filled:hover {
+    -fx-background-color: white;
+    -fx-translate-y: -2; /* Moves the card up slightly on hover! */
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.2), 6, 0, 0, 2);
+}
+
+.custom-list-view .list-cell:filled:selected {
+    -fx-background-color: #6c5ce7; /* Trendy Purple */
+    -fx-text-fill: white;
+    -fx-effect: dropshadow(three-pass-box, rgba(108, 92, 231, 0.4), 8, 0, 0, 3);
+}
+
+.custom-list-view .list-cell:empty {
+    -fx-background-color: transparent;
+    -fx-effect: null;
+}

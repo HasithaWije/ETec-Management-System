@@ -4,7 +4,9 @@ package lk.ijse.etecmanagementsystem.controller;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
+import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
@@ -51,6 +53,8 @@ public class ProductController implements Initializable {
     private TextField txtQty;
     @FXML
     private TextArea txtDescription;
+    @FXML
+    private TextField txtImagePath;
 
     @FXML
     private Button btnAdd;
@@ -85,6 +89,7 @@ public class ProductController implements Initializable {
     private TableColumn<ProductDTO, Integer> colQty;
     @FXML
     private TableColumn<ProductDTO, String> colDesc;
+
 
 
     private final ObservableList<ProductDTO> productList = FXCollections.observableArrayList();
@@ -571,6 +576,7 @@ public class ProductController implements Initializable {
         txtQty.setText("");
         txtDescription.setText("");
         selectedImagePath = "";
+        txtImagePath.setText("");
         tableProducts.getSelectionModel().clearSelection();
     }
 
@@ -646,14 +652,24 @@ public class ProductController implements Initializable {
     }
 
     private void openImagePopup() {
+        if(txtName.getText() == null || txtName.getText().isEmpty()){
+            showAlert(Alert.AlertType.ERROR, "Validation Error", "Please enter the Product Name before selecting an image.");
+            return;
+        }
         try {
+
+            FXMLLoader loader = new FXMLLoader(App.class.getResource("view/imagePopup.fxml"));
+            Parent root = loader.load();
+
+            ImagePopupController controller = loader.getController();
+            controller.setProductDetails(txtName.getText(), this);
 
 
             Stage stage = new Stage();
             stage.initModality(Modality.APPLICATION_MODAL);
             stage.setResizable(false);
             stage.setTitle("Select Image");
-            stage.setScene(new Scene(App.loadFXML("imagePopup"), 500, 400));
+            stage.setScene(new Scene(root));
             stage.showAndWait();
 
             // Logic to retrieve the selected file would go here if using a shared model/controller logic
@@ -661,6 +677,16 @@ public class ProductController implements Initializable {
         } catch (IOException e) {
             e.printStackTrace();
             showAlert(Alert.AlertType.ERROR, "Error", "Could not open image popup.");
+        }
+    }
+
+    protected void setSelectedImagePath(String path) {
+        this.selectedImagePath = path;
+        if (this.selectedImagePath != null) {
+            txtImagePath.setText(this.selectedImagePath);
+        }else {
+            selectedImagePath = "";
+            txtImagePath.setText("null");
         }
     }
 

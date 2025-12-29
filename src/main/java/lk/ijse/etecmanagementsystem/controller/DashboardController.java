@@ -32,10 +32,15 @@ public class DashboardController {
     // --- Initialization ---
     public void initialize() {
 
+
+        try{
         listUrgentRepairs.setCellFactory(param -> new UrgentRepairListCell());
         listUnpaid.setCellFactory(param -> new DebtListCell());
 
         loadAllData();
+        } catch (Exception e){
+            System.out.println(e.getMessage());
+        }
     }
 
     private void loadAllData() {

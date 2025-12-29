@@ -7,8 +7,12 @@ import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import javafx.scene.layout.VBox;
 import javafx.scene.text.TextAlignment;
+import lk.ijse.etecmanagementsystem.App;
 import lk.ijse.etecmanagementsystem.dto.ProductDTO;
+import lk.ijse.etecmanagementsystem.util.ImageUtils;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Objects;
 
 
@@ -40,14 +44,31 @@ public class ProductCard extends StackPane {
         imgProduct.setPreserveRatio(false);
 
         try {
-            String imagePath = "/lk/ijse/etecmanagementsystem/images/" + p.getImagePath();
-            if (getClass().getResource(imagePath) != null) {
-                imgProduct.setImage(new Image(getClass().getResource(imagePath).toExternalForm()));
+            // 1. Construct the full path to the file on disk
+            String fullPath = ImageUtils.getImagesDirectoryPath() + p.getImagePath();
+            File file = new File(fullPath);
+
+            // 2. Check if the file actually exists on the computer
+            if (file.exists()) {
+                // 3. Convert the file path to a URL format JavaFX understands (file:///C:/...)
+                String imageUri = file.toURI().toString();
+
+                // 4. Set the image
+                imgProduct.setImage(new Image(imageUri));
+
+                System.out.println("Loaded image from: " + fullPath);
+            } else {
+                // If the file is missing from Documents, throw exception to trigger the catch block
+                // or handle the placeholder logic here directly.
+                System.out.println("File not found: " + fullPath);
+                throw new IOException("File not found");
             }
+
         } catch (Exception e) {
-            String imagePath = "/lk/ijse/etecmanagementsystem/images/" + "placeholder.png";
-            if (getClass().getResource(imagePath) != null) {
-                imgProduct.setImage(new Image(Objects.requireNonNull(getClass().getResource(imagePath)).toExternalForm()));
+            // Keep your existing catch block for the placeholder
+            String placeholderPath = "/lk/ijse/etecmanagementsystem/images/placeholder.png";
+            if (getClass().getResource(placeholderPath) != null) {
+                imgProduct.setImage(new Image(getClass().getResource(placeholderPath).toExternalForm()));
             }
         }
 

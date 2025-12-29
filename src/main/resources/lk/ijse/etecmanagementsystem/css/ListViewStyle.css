@@ -1,0 +1,71 @@
+/* 1. Main List View Container */
+.list-view {
+    -fx-background-color: #F3F4F6; /* Modern light grey background */
+    -fx-background-insets: 0;
+    -fx-padding: 10px; /* Space around the whole list */
+    -fx-effect: null; /* Remove default JavaFX depth effects */
+}
+
+/* 2. The List Cells (The Rows) */
+.list-cell {
+    -fx-background-color: white;
+    -fx-background-insets: 0 0 8px 0; /* Creates the gap between items */
+    -fx-padding: 12px 15px; /* Internal padding for "breathing room" */
+    -fx-background-radius: 4px; /* Slight rounded corners */
+    -fx-border-radius: 4px;
+
+    /* subtle shadow for depth */
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.05), 5, 0, 0, 1);
+
+    -fx-font-family: "Segoe UI", "Helvetica", sans-serif;
+    -fx-text-fill: #1f2937; /* Dark grey, softer than pure black */
+}
+
+/* 3. Empty rows (at the bottom) */
+.list-cell:empty {
+    -fx-background-color: transparent;
+    -fx-effect: null;
+}
+
+/* 4. Hover State */
+.list-cell:filled:hover {
+    -fx-background-color: #ffffff;
+    -fx-translate-y: -1px; /* Slight lift effect */
+    -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.1), 8, 0, 0, 2);
+    -fx-cursor: hand;
+}
+
+/* 5. Selected State */
+.list-cell:filled:selected {
+    /*-fx-background-color: #EBF5FF; !* Very light blue background *!*/
+    /*-fx-text-fill: #1f2937; !* Keep text dark *!*/
+}
+
+/* --- TEXT STYLING --- */
+/* You need to add these style classes to your Labels in Java code */
+
+.title-text {
+    -fx-font-size: 14px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #111827;
+}
+
+.subtitle-text {
+    -fx-font-size: 12px;
+    -fx-text-fill: #6B7280; /* Muted grey for device names/IDs */
+}
+
+/* --- STATUS INDICATORS (The Left Stripe) --- */
+/* Apply these classes conditionally in your CellFactory based on status */
+
+.status-pending {
+    /* Yellow/Orange Stripe on the left */
+    -fx-border-color: transparent transparent transparent #F59E0B;
+    -fx-border-width: 0 0 0 4px;
+}
+
+.status-delivered {
+    /* Green Stripe on the left */
+    -fx-border-color: transparent transparent transparent #10B981;
+    -fx-border-width: 0 0 0 4px;
+}

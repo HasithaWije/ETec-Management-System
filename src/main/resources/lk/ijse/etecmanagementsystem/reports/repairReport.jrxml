@@ -1,0 +1,56 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports"
+              name="Repair_Report" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20">
+
+    <parameter name="fromDate" class="java.sql.Timestamp"/>
+    <parameter name="toDate" class="java.sql.Timestamp"/>
+    <parameter name="id" class="java.lang.Integer">
+        <defaultValueExpression><![CDATA[null]]></defaultValueExpression>
+    </parameter>
+    <parameter name="limit" class="java.lang.Integer">
+        <defaultValueExpression><![CDATA[100]]></defaultValueExpression>
+    </parameter>
+
+    <queryString>
+        <![CDATA[
+        SELECT repair_id, cus_id, device_name, status, date_in, total_amount
+        FROM RepairJob
+        WHERE (date_in BETWEEN $P{fromDate} AND $P{toDate})
+        AND ($P{id} IS NULL OR repair_id = $P{id})
+        LIMIT $P{limit}
+        ]]>
+    </queryString>
+
+    <field name="repair_id" class="java.lang.Integer"/>
+    <field name="cus_id" class="java.lang.Integer"/>
+    <field name="device_name" class="java.lang.String"/>
+    <field name="status" class="java.lang.String"/>
+    <field name="date_in" class="java.sql.Timestamp"/>
+    <field name="total_amount" class="java.math.BigDecimal"/>
+
+    <title>
+        <band height="50">
+            <staticText><reportElement x="0" y="0" width="555" height="30"/><textElement textAlignment="Center" verticalAlignment="Middle"><font size="18" isBold="true"/></textElement><text><![CDATA[Repair Report]]></text></staticText>
+        </band>
+    </title>
+    <columnHeader>
+        <band height="30">
+            <staticText><reportElement x="0" y="0" width="50" height="30"/><text><![CDATA[ID]]></text></staticText>
+            <staticText><reportElement x="50" y="0" width="50" height="30"/><text><![CDATA[Cus ID]]></text></staticText>
+            <staticText><reportElement x="100" y="0" width="150" height="30"/><text><![CDATA[Device]]></text></staticText>
+            <staticText><reportElement x="250" y="0" width="100" height="30"/><text><![CDATA[Status]]></text></staticText>
+            <staticText><reportElement x="350" y="0" width="100" height="30"/><text><![CDATA[Date In]]></text></staticText>
+            <staticText><reportElement x="450" y="0" width="100" height="30"/><text><![CDATA[Amount]]></text></staticText>
+        </band>
+    </columnHeader>
+    <detail>
+        <band height="30">
+            <textField><reportElement x="0" y="0" width="50" height="30"/><textFieldExpression><![CDATA[$F{repair_id}]]></textFieldExpression></textField>
+            <textField><reportElement x="50" y="0" width="50" height="30"/><textFieldExpression><![CDATA[$F{cus_id}]]></textFieldExpression></textField>
+            <textField><reportElement x="100" y="0" width="150" height="30"/><textFieldExpression><![CDATA[$F{device_name}]]></textFieldExpression></textField>
+            <textField><reportElement x="250" y="0" width="100" height="30"/><textFieldExpression><![CDATA[$F{status}]]></textFieldExpression></textField>
+            <textField><reportElement x="350" y="0" width="100" height="30"/><textFieldExpression><![CDATA[$F{date_in}]]></textFieldExpression></textField>
+            <textField><reportElement x="450" y="0" width="100" height="30"/><textFieldExpression><![CDATA[$F{total_amount}]]></textFieldExpression></textField>
+        </band>
+    </detail>
+</jasperReport>

@@ -16,6 +16,8 @@
 <?import javafx.scene.control.TableView?>
 <?import javafx.scene.control.TextArea?>
 <?import javafx.scene.control.TextField?>
+<?import javafx.scene.image.Image?>
+<?import javafx.scene.image.ImageView?>
 <?import javafx.scene.layout.BorderPane?>
 <?import javafx.scene.layout.ColumnConstraints?>
 <?import javafx.scene.layout.GridPane?>
@@ -56,18 +58,31 @@
                         <Insets bottom="5.0" left="5.0" right="5.0" top="5.0" />
                     </padding>
                     <children>
-                        <TextField fx:id="txtSearch" promptText="Filter by Name, Device or ID..." />
-                        <HBox spacing="5.0">
-                            <ComboBox fx:id="comboStatusFilter" prefWidth="150.0" promptText="All Status" />
+                        <TextField fx:id="txtSearch" promptText="Filter by Name, Device or ID..." stylesheets="@../css/TextFieldStyle.css" />
+                        <HBox alignment="CENTER_LEFT" spacing="5.0">
+                            <ComboBox fx:id="comboStatusFilter" prefWidth="150.0" promptText="All Status" stylesheets="@../css/CmbBoxStyle.css" />
+                     <Region HBox.hgrow="ALWAYS" />
+                     <Button fx:id="btnReset" mnemonicParsing="false" onAction="#resetSelectedJobSimple" style="-fx-background-color: none;">
+                        <graphic>
+                           <ImageView fitHeight="22.0" fitWidth="27.0" pickOnBounds="true" preserveRatio="true">
+                              <image>
+                                 <Image url="@../images/reset-3215.png" />
+                              </image>
+                           </ImageView>
+                        </graphic>
+                        <HBox.margin>
+                           <Insets />
+                        </HBox.margin>
+                     </Button>
                         </HBox>
-                        <ListView fx:id="listRepairJobs" VBox.vgrow="ALWAYS" />
+                        <ListView fx:id="listRepairJobs" stylesheets="@../css/ListViewStyle.css" VBox.vgrow="ALWAYS" />
                     </children>
                 </VBox>
 
                 <!-- RIGHT SIDE: DETAILS -->
                 <ScrollPane fitToWidth="true" style="-fx-background-color: transparent;">
                     <content>
-                        <VBox fx:id="detailsPane" spacing="15.0" visible="false">
+                        <VBox fx:id="detailsPane" spacing="15.0">
                             <padding>
                                 <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
                             </padding>
@@ -157,10 +172,13 @@
                                             <children>
                                                 <Label styleClass="section-header" text="Parts Used" />
                                                 <Region HBox.hgrow="ALWAYS" />
-                                                <Button onAction="#handleAddPart" text="+ Add Part" />
+                                                <Button onAction="#handleAddPart" style="-fx-background-color: none;" text="+ Add Part" textFill="#0388d0">
+                                       <font>
+                                          <Font name="System Bold" size="12.0" />
+                                       </font></Button>
                                             </children>
                                         </HBox>
-                                        <TableView fx:id="tblParts" prefHeight="150.0">
+                                        <TableView fx:id="tblParts" prefHeight="150.0" stylesheets="@../css/TableStyle.css">
                                             <columns>
                                                 <TableColumn fx:id="colPartName" prefWidth="200.0" text="Item Name" />
                                                 <TableColumn fx:id="colPartCondition" prefWidth="100.0" text="Condition" />
@@ -174,7 +192,7 @@
                               <HBox alignment="CENTER_RIGHT" spacing="50.0" VBox.vgrow="ALWAYS">
                                  <children>
                                     <Label text="Labor Cost:" />
-                                    <TextField fx:id="txtLaborCost" alignment="CENTER_RIGHT" prefHeight="28.0" prefWidth="138.0" promptText="0.0" />
+                                    <TextField fx:id="txtLaborCost" alignment="CENTER_RIGHT" prefHeight="28.0" prefWidth="138.0" promptText="0.0" stylesheets="@../css/TextFieldStyle.css" />
                                  </children>
                                  <padding>
                                     <Insets left="20.0" right="20.0" />
@@ -183,7 +201,7 @@
                               <HBox alignment="CENTER_RIGHT" spacing="50.0">
                                  <children>
                                     <Label text="Total Cost :" />
-                                    <TextField fx:id="txtTotalCost" alignment="CENTER_RIGHT" editable="false" prefHeight="28.0" prefWidth="138.0" promptText="0.0" />
+                                    <TextField fx:id="txtTotalCost" alignment="CENTER_RIGHT" editable="false" prefHeight="28.0" prefWidth="138.0" promptText="0.0" stylesheets="@../css/TextFieldStyle.css" />
                                  </children>
                                  <padding>
                                     <Insets left="20.0" right="20.0" />
