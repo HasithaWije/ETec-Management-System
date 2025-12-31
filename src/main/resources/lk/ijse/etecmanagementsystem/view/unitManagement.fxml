@@ -91,7 +91,7 @@
                                                 </Label>
                                              </children>
                                           </HBox>
-                                                        <ComboBox fx:id="cmbProduct" maxWidth="1.7976931348623157E308" prefHeight="35.0" promptText="Choose Product..." style="-fx-background-color: #f8fafc; -fx-border-color: #e2e8f0; -fx-border-radius: 4;" />
+                                                        <ComboBox fx:id="cmbProduct" maxWidth="1.7976931348623157E308" prefHeight="35.0" promptText="Choose Product..." style="-fx-background-color: #f8fafc; -fx-border-color: #e2e8f0; -fx-border-radius: 4;" stylesheets="@../css/CmbBoxStyle.css" />
                                                     </children>
                                                 </VBox>
                                                 <VBox spacing="5.0" HBox.hgrow="ALWAYS">
@@ -99,7 +99,7 @@
                                                         <Label text="Select Supplier" textFill="#64748b"><font><Font name="System Bold" size="12.0" /></font></Label>
                                                         <HBox spacing="5.0">
                                                             <children>
-                                                                <ComboBox fx:id="cmbSupplier" maxWidth="1.7976931348623157E308" prefHeight="35.0" promptText="Choose Supplier..." style="-fx-background-color: #f8fafc; -fx-border-color: #e2e8f0; -fx-border-radius: 4;" HBox.hgrow="ALWAYS" />
+                                                                <ComboBox fx:id="cmbSupplier" maxWidth="1.7976931348623157E308" prefHeight="35.0" promptText="Choose Supplier..." style="-fx-background-color: #f8fafc; -fx-border-color: #e2e8f0; -fx-border-radius: 4;" stylesheets="@../css/CmbBoxStyle.css" HBox.hgrow="ALWAYS" />
                                                                 <Button mnemonicParsing="false" onAction="#handleClearSupplier" prefHeight="35.0" prefWidth="35.0" style="-fx-background-color: #e2e8f0; -fx-cursor: hand;" text="X" textFill="#64748b"><font><Font name="System Bold" size="12.0" /></font><tooltip><Tooltip text="Clear Supplier Selection" /></tooltip></Button>
                                                             </children>
                                                         </HBox>
@@ -199,7 +199,7 @@
                                             <VBox spacing="5.0" HBox.hgrow="ALWAYS">
                                                 <children>
                                                     <Label text="Product" textFill="#94a3b8" />
-                                                    <ComboBox fx:id="cmbFixProduct" maxWidth="1.7976931348623157E308" style="-fx-background-color: #f8fafc; -fx-border-color: #e2e8f0;" />
+                                                    <ComboBox fx:id="cmbFixProduct" maxWidth="1.7976931348623157E308" style="-fx-background-color: #f8fafc; -fx-border-color: #e2e8f0;" stylesheets="@../css/CmbBoxStyle.css" />
                                                 </children>
                                             </VBox>
                                         </HBox>
@@ -207,7 +207,7 @@
                                             <VBox spacing="5.0" HBox.hgrow="ALWAYS">
                                                 <children>
                                                     <Label text="Supplier" textFill="#94a3b8" />
-                                                    <ComboBox fx:id="cmbFixSupplier" maxWidth="1.7976931348623157E308" style="-fx-background-color: #f8fafc; -fx-border-color: #e2e8f0;" />
+                                                    <ComboBox fx:id="cmbFixSupplier" maxWidth="1.7976931348623157E308" style="-fx-background-color: #f8fafc; -fx-border-color: #e2e8f0;" stylesheets="@../css/CmbBoxStyle.css" />
                                                 </children>
                                             </VBox>
                                             <VBox spacing="5.0" HBox.hgrow="ALWAYS">
@@ -262,7 +262,7 @@
 
                                         <Separator />
                                         <Label text="Select New Action" textFill="#64748b"><font><Font name="System Bold" size="12.0" /></font></Label>
-                                        <ComboBox fx:id="cmbNewStatus" maxWidth="1.7976931348623157E308" prefHeight="40.0" style="-fx-font-size: 14; -fx-background-color: #f0fdf4; -fx-border-color: #e2e8f0;" />
+                                        <ComboBox fx:id="cmbNewStatus" maxWidth="1.7976931348623157E308" prefHeight="40.0" style="-fx-font-size: 14; -fx-background-color: #f0fdf4; -fx-border-color: #e2e8f0;" stylesheets="@../css/CmbBoxStyle.css" />
                                         <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false" onAction="#handleStatusSave" prefHeight="45.0" style="-fx-background-color: #f39c12; -fx-cursor: hand;" text="UPDATE STATUS" textFill="WHITE"><font><Font name="System Bold" size="14.0" /></font></Button>
                                     </children>
                                     <padding><Insets bottom="30.0" left="30.0" right="30.0" top="30.0" /></padding>

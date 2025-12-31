@@ -8,7 +8,9 @@ import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import lk.ijse.etecmanagementsystem.model.ReportsModel;
 import lk.ijse.etecmanagementsystem.util.GenerateInvoice;
+import lk.ijse.etecmanagementsystem.util.GenerateReports;
 
+import java.sql.Date;
 import java.sql.SQLException;
 import java.time.LocalDate;
 import java.time.temporal.TemporalAdjusters;
@@ -288,8 +290,11 @@ public class ReportsController {
 
     @FXML
     void btnGenerateReportSaleOnAction(ActionEvent event) {
-        // Prepare params: FromDate, ToDate, Limit
-        String limit = txtRLimitSales.getText();
+
+        Date fromDate = Date.valueOf(dpFromDate.getValue());
+        Date toDate = Date.valueOf(dpToDate.getValue());
+
+        GenerateReports.generateReport(dpFromDate.getValue(), dpToDate.getValue(),"sales_report");
         System.out.println("Generating Sales Report...");
     }
 

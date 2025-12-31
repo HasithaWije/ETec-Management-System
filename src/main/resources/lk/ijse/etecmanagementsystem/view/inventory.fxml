@@ -220,10 +220,10 @@
                   <HBox alignment="CENTER_LEFT" spacing="10.0" VBox.vgrow="ALWAYS">
                       <children>
 
-                          <javafx.scene.control.ComboBox fx:id="cmbCategory" minWidth="150.0" promptText="All Categories" style="-fx-font-size: 14px; -fx-background-color: white; -fx-padding: 2;" HBox.hgrow="ALWAYS" />
+                          <javafx.scene.control.ComboBox fx:id="cmbCategory" minWidth="150.0" promptText="All Categories" style="-fx-font-size: 14px; -fx-background-color: white; -fx-padding: 2;" stylesheets="@../css/CmbBoxStyle.css" HBox.hgrow="ALWAYS" />
                           <HBox alignment="CENTER" prefHeight="34.0" prefWidth="463.0" HBox.hgrow="ALWAYS">
                               <children>
-                                  <TextField fx:id="txtSearch" maxWidth="700.0" promptText="🔍 Search Product Name" HBox.hgrow="ALWAYS">
+                                  <TextField fx:id="txtSearch" maxWidth="700.0" promptText="🔍 Search Product Name" stylesheets="@../css/TextFieldStyle.css" HBox.hgrow="ALWAYS">
                            <cursor>
                               <Cursor fx:constant="TEXT" />
                            </cursor>
@@ -231,8 +231,8 @@
                               </children>
                           </HBox>
                   <Button fx:id="btnReset" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="54.0" onAction="#handleReset" prefHeight="29.0" prefWidth="54.0" style="-fx-background-color: ffffff; -fx-cursor: hand; -fx-border-color: #13dadd;" text="RESET" />
-                  <ComboBox fx:id="cmbCondition" minWidth="130.0" promptText="NOT SET" style="-fx-background-color: white; -fx-text-style: bold; -fx-padding: 2; -fx-font-size: 12;" HBox.hgrow="ALWAYS" />
-                  <ComboBox fx:id="cmbStock" minWidth="111.0" prefHeight="34.0" prefWidth="114.0" promptText="STOCK-ALL" style="-fx-background-color: white; -fx-text-style: Bold; -fx-padding: 2; -fx-font-size: 12;" />
+                  <ComboBox fx:id="cmbCondition" minWidth="130.0" promptText="NOT SET" style="-fx-background-color: white; -fx-text-style: bold; -fx-padding: 2; -fx-font-size: 12;" stylesheets="@../css/CmbBoxStyle.css" HBox.hgrow="ALWAYS" />
+                  <ComboBox fx:id="cmbStock" minWidth="111.0" prefHeight="24.0" prefWidth="114.0" promptText="STOCK-ALL" style="-fx-background-color: white; -fx-text-style: Bold; -fx-padding: 2; -fx-font-size: 12;" stylesheets="@../css/CmbBoxStyle.css" />
                           <Region HBox.hgrow="ALWAYS" />
                           <Button fx:id="gridViewButton" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="64.0" onAction="#switchToGridView" prefHeight="29.0" prefWidth="64.0" style="-fx-background-color: ffffff; -fx-cursor: hand; -fx-border-color: #13dadd;" text="Grid View">
                      <padding>

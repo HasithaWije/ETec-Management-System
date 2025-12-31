@@ -90,7 +90,7 @@
                                           <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="10.0">
                                              <children>
                                                 <Label text="Record Limit:" />
-                                                <TextField fx:id="txtRLimitSales" promptText="Enter Record Limit" />
+                                                <TextField fx:id="txtRLimitSales" promptText="Enter Record Limit" stylesheets="@../css/TextFieldStyle.css" />
                                              </children>
                                           </HBox>
                                           <HBox alignment="CENTER" prefHeight="107.0" prefWidth="1000.0" spacing="20.0">
@@ -127,7 +127,7 @@
                                     <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="10.0">
                                        <children>
                                           <Label text="Sales Id:" />
-                                          <TextField fx:id="txtSalesId" promptText="Enter Sales Id" />
+                                          <TextField fx:id="txtSalesId" promptText="Enter Sales Id" stylesheets="@../css/TextFieldStyle.css" />
                                        </children>
                                     </HBox>
                                     <HBox alignment="CENTER">
@@ -207,7 +207,7 @@
                                           <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="10.0">
                                              <children>
                                                 <Label text="Record Limit:" />
-                                                <TextField fx:id="txtRLimitRepair" promptText="Enter Record Limit" />
+                                                <TextField fx:id="txtRLimitRepair" promptText="Enter Record Limit" stylesheets="@../css/TextFieldStyle.css" />
                                              </children>
                                           </HBox>
                                           <HBox alignment="CENTER" prefHeight="107.0" prefWidth="1000.0" spacing="20.0">
@@ -243,7 +243,7 @@
                                     <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="10.0">
                                        <children>
                                           <Label text="Repair Id:" />
-                                          <TextField fx:id="txtRepairId" promptText="Enter Repair Id" />
+                                          <TextField fx:id="txtRepairId" promptText="Enter Repair Id" stylesheets="@../css/TextFieldStyle.css" />
                                        </children>
                                     </HBox>
                                     <HBox alignment="CENTER">
@@ -323,7 +323,7 @@
                                           <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="10.0">
                                              <children>
                                                 <Label text="Record Limit:" />
-                                                <TextField fx:id="txtRLimitTransf" promptText="Enter Record Limit" />
+                                                <TextField fx:id="txtRLimitTransf" promptText="Enter Record Limit" stylesheets="@../css/TextFieldStyle.css" />
                                              </children>
                                           </HBox>
                                           <HBox alignment="CENTER" prefHeight="107.0" prefWidth="1000.0" spacing="20.0">
@@ -397,7 +397,7 @@
                                           <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="10.0">
                                              <children>
                                                 <Label text="Record Limit:" />
-                                                <TextField fx:id="txtRLimitInven" promptText="Enter Record Limit" />
+                                                <TextField fx:id="txtRLimitInven" promptText="Enter Record Limit" stylesheets="@../css/TextFieldStyle.css" />
                                              </children>
                                           </HBox>
                                           <HBox alignment="CENTER" prefHeight="107.0" prefWidth="1000.0" spacing="20.0">
@@ -471,7 +471,7 @@
                                           <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="10.0">
                                              <children>
                                                 <Label text="Record Limit:" />
-                                                <TextField fx:id="txtRLimitSup" promptText="Enter Record Limit" />
+                                                <TextField fx:id="txtRLimitSup" promptText="Enter Record Limit" stylesheets="@../css/TextFieldStyle.css" />
                                              </children>
                                           </HBox>
                                           <HBox alignment="CENTER" prefHeight="107.0" prefWidth="1000.0" spacing="20.0">
@@ -545,7 +545,7 @@
                                           <HBox alignment="CENTER" prefHeight="100.0" prefWidth="1000.0" spacing="10.0">
                                              <children>
                                                 <Label text="Record Limit:" />
-                                                <TextField fx:id="txtRLimitCus" promptText="Enter Record Limit" />
+                                                <TextField fx:id="txtRLimitCus" promptText="Enter Record Limit" stylesheets="@../css/TextFieldStyle.css" />
                                              </children>
                                           </HBox>
                                           <HBox alignment="CENTER" prefHeight="107.0" prefWidth="1000.0" spacing="20.0">
@@ -590,7 +590,7 @@
                               <Font size="10.0" fx:id="x3" />
                            </font>
                                 </Label>
-                                <ComboBox fx:id="cmbDatePreset" prefWidth="120.0" promptText="This Month" />
+                                <ComboBox fx:id="cmbDatePreset" prefWidth="120.0" promptText="This Month" stylesheets="@../css/CmbBoxStyle.css" />
                             </children>
                         </VBox>
 

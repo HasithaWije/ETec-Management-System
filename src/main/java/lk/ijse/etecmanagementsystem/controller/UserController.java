@@ -171,9 +171,10 @@ public class UserController {
         txtUserName.setText("");
         txtPassword.setText("");
         cmbRole.getSelectionModel().clearSelection();
-        txtSearchByID.setText("");
+        tblUser.getSelectionModel().clearSelection();
         txtSearch.setText("");
         loadUsers();
+        tblUser.setItems(userObservableList);
     }
 
     private void loadUsers() {

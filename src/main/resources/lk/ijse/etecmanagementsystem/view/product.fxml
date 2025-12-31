@@ -74,7 +74,7 @@
                   <Label text="Category:" GridPane.rowIndex="2" />
 
                   <Label text="Condition:" GridPane.rowIndex="3" />
-                  <ComboBox fx:id="cmbCondition" prefWidth="200.0" promptText="Select Condition" GridPane.columnIndex="1" GridPane.rowIndex="3">
+                  <ComboBox fx:id="cmbCondition" prefWidth="200.0" promptText="Select Condition" stylesheets="@../css/CmbBoxStyle.css" GridPane.columnIndex="1" GridPane.rowIndex="3">
                      <items>
                         <FXCollections fx:factory="observableArrayList">
                            <String fx:value="Brand New" />
@@ -105,7 +105,7 @@
                   <TextArea fx:id="txtDescription" maxHeight="136.0" prefHeight="68.0" prefWidth="190.0" promptText="Product details..." wrapText="true" GridPane.columnIndex="1" GridPane.rowIndex="8" GridPane.valignment="TOP" GridPane.vgrow="ALWAYS" />
                   <HBox alignment="CENTER_LEFT" spacing="5.0" GridPane.columnIndex="1" GridPane.rowIndex="2">
                      <children>
-                        <ComboBox fx:id="cmbCategory" prefWidth="170.0" promptText="Select Category" />
+                        <ComboBox fx:id="cmbCategory" prefWidth="170.0" promptText="Select Category" stylesheets="@../css/CmbBoxStyle.css" />
                         <Button fx:id="btnNewCategory" mnemonicParsing="false" style="-fx-background-color: #3498db;" text="+" textFill="WHITE">
                            <font>
                               <Font name="System Bold" size="12.0" />

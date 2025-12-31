@@ -11,8 +11,7 @@
 <?import javafx.scene.layout.RowConstraints?>
 <?import javafx.scene.layout.VBox?>
 
-<VBox spacing="15.0" xmlns="http://javafx.com/javafx/17" xmlns:fx="http://javafx.com/fxml/1"
-      fx:controller="lk.ijse.etecmanagementsystem.controller.ManualTransactionController">
+<VBox spacing="15.0" xmlns="http://javafx.com/javafx/25" xmlns:fx="http://javafx.com/fxml/1" fx:controller="lk.ijse.etecmanagementsystem.controller.ManualTransactionController">
     <padding>
         <Insets bottom="20.0" left="20.0" right="20.0" top="20.0" />
     </padding>
@@ -26,13 +25,13 @@
         </columnConstraints>
 
         <Label text="Type:" GridPane.columnIndex="0" GridPane.rowIndex="0" />
-        <ComboBox fx:id="cmbType" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.rowIndex="0" />
+        <ComboBox fx:id="cmbType" maxWidth="1.7976931348623157E308" stylesheets="@../css/CmbBoxStyle.css" GridPane.columnIndex="1" GridPane.rowIndex="0" />
 
         <Label text="Amount:" GridPane.columnIndex="0" GridPane.rowIndex="1" />
         <TextField fx:id="txtAmount" promptText="0.00" GridPane.columnIndex="1" GridPane.rowIndex="1" />
 
         <Label text="Method:" GridPane.columnIndex="0" GridPane.rowIndex="2" />
-        <ComboBox fx:id="cmbMethod" maxWidth="1.7976931348623157E308" GridPane.columnIndex="1" GridPane.rowIndex="2" />
+        <ComboBox fx:id="cmbMethod" maxWidth="1.7976931348623157E308" stylesheets="@../css/CmbBoxStyle.css" GridPane.columnIndex="1" GridPane.rowIndex="2" />
 
         <Label text="Note/Ref:" GridPane.columnIndex="0" GridPane.rowIndex="3" />
         <TextField fx:id="txtNote" promptText="e.g. Bill payment" GridPane.columnIndex="1" GridPane.rowIndex="3" />
