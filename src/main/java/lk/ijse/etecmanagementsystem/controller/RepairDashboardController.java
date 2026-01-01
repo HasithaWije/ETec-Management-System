@@ -23,13 +23,9 @@ import java.io.IOException;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Optional;
+
 
 public class RepairDashboardController {
-
-    // =========================================================
-    // FXML INJECTIONS
-    // =========================================================
 
     @FXML
     private TextField txtSearch;
@@ -44,7 +40,7 @@ public class RepairDashboardController {
     @FXML
     private Button btnReset;
 
-    // Labels
+
     @FXML
     private Label lblJobId;
     @FXML
@@ -94,58 +90,46 @@ public class RepairDashboardController {
     @FXML
     private Button btnUpdateJob;
     @FXML
-    private Button btnSaveChanges; // <--- ADD THIS
+    private Button btnSaveChanges;
     @FXML
-    private Button btnUnclaimed;   // <--- ADD THIS
+    private Button btnUnclaimed;
     @FXML
-    private Button btnCheckout;    // <--- ADD THIS (If you want to disable Checkout too)
-
-    // =========================================================
-    // DATA & INITIALIZATION
-    // =========================================================
+    private Button btnCheckout;
+    @FXML
+    private Button btnRemovePart;
 
     private final ObservableList<RepairJobTM> masterData = FXCollections.observableArrayList();
     private FilteredList<RepairJobTM> filteredData;
     private RepairJobTM currentSelection;
 
-
-    // --- DATA LISTS ---
     private final ObservableList<RepairPartTM> usedPartsList = FXCollections.observableArrayList(); // Visible in Table
     private final List<RepairPartTM> partsToReturnList = new ArrayList<>(); // Hidden list for removed items (Restocking)
 
-
-    // Model Instance
     private final RepairJobModel repairModel = new RepairJobModel();
 
     @FXML
     public void initialize() {
-        // 1. Setup Status Filter
+
         comboStatusFilter.getItems().setAll(RepairStatus.values());
 
-        // 2. Setup List View Appearance
         setupListView();
 
-        // 3. Load Data from DB
         loadDataFromDB();
 
-
-        // 4. Setup Filtering
         filteredData = new FilteredList<>(masterData, p -> true);
         listRepairJobs.setItems(filteredData);
         setupListeners();
 
-        // --- LINK DATA ---
         tblParts.setItems(usedPartsList);
 
-        // 5. Hide Details Pane Initially
         detailsPane.setVisible(false);
 
-        // --- ENABLE RIGHT-CLICK REMOVE ---
-        ContextMenu contextMenu = new ContextMenu();
-        MenuItem deleteItem = new MenuItem("Remove Part");
-        deleteItem.setOnAction(event -> handleRemovePart()); // Links to the remove method
-        contextMenu.getItems().add(deleteItem);
-        tblParts.setContextMenu(contextMenu);
+        btnRemovePart.setVisible(false);
+        btnRemovePart.setDisable(true);
+        tblParts.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+            btnRemovePart.setVisible(newValue != null);// Show button only when a part is selected
+            btnRemovePart.setDisable(newValue == null);// Disable button when no part is selected
+        });
     }
 
     @FXML
@@ -207,7 +191,6 @@ public class RepairDashboardController {
         }
     }
 
-    // Called by SelectPartController
     public void addPartToTable(RepairPartTM part) {
         // Check for duplicates
         for (RepairPartTM p : usedPartsList) {
@@ -219,10 +202,6 @@ public class RepairDashboardController {
         usedPartsList.add(part);
     }
 
-    // =========================================================
-    // SAVE CHANGES LOGIC (The "Update" Feature)
-    // =========================================================
-
     @FXML
     private void handleSaveChanges() {
         // 1. Validation
@@ -232,13 +211,11 @@ public class RepairDashboardController {
         }
 
         try {
-            // --- GATHER DATA ---
             int repairId = currentSelection.getRepairId();
             String intake = txtIntake.getText();
             String diagnosis = txtDiagnosis.getText();
             String resolution = txtResolution.getText();
 
-            // --- CHANGED: Get Labor Cost from TextField ---
             double laborCost = 0.0;
             try {
                 if (!txtLaborCost.getText().isEmpty()) {
@@ -257,7 +234,6 @@ public class RepairDashboardController {
 
             double totalAmount = laborCost + partsCost;
 
-            // --- CALL MODEL (TRANSACTION) ---
             boolean isSuccess = repairModel.updateRepairJobDetails(
                     repairId,
                     intake,
@@ -270,20 +246,17 @@ public class RepairDashboardController {
                     partsToReturnList               // Returned Parts (Unlink & Mark Available)
             );
 
-            // --- UPDATE UI ON SUCCESS ---
             if (isSuccess) {
-                // Update Memory Object so list updates without refresh
+
                 currentSelection.setProblemDescription(intake);
                 currentSelection.setDiagnosisDescription(diagnosis);
                 currentSelection.setRepairResults(resolution);
 
-                // Update DTO Financials
                 currentSelection.getOriginalDto().setLaborCost(laborCost); // <--- Update Memory
                 currentSelection.getOriginalDto().setPartsCost(partsCost);
                 currentSelection.getOriginalDto().setTotalAmount(totalAmount);
                 txtTotalCost.setText(Double.toString(totalAmount));
 
-                // Clear Return Queue (DB has processed them)
                 partsToReturnList.clear();
 
                 if (currentSelection.getStatus() == RepairStatus.PENDING) {
@@ -310,10 +283,6 @@ public class RepairDashboardController {
         }
     }
 
-    // =========================================================
-    // DATABASE LOADING
-    // =========================================================
-
     private void loadDataFromDB() {
         try {
             List<RepairJobTM> dbList = repairModel.getAllRepairJobs();
@@ -329,14 +298,9 @@ public class RepairDashboardController {
     public void refreshList() {
         loadDataFromDB();
 
-        // Clear selection details if needed
         detailsPane.setVisible(false);
         currentSelection = null;
     }
-
-    // =========================================================
-    // LOGIC & EVENTS
-    // =========================================================
 
     private void setupListeners() {
         // Search
@@ -354,7 +318,6 @@ public class RepairDashboardController {
         });
         txtLaborCost.textProperty().addListener((obs, oldVal, newVal) -> {
             if (newVal != null && !newVal.equals(oldVal)) {
-                // Recalculate Total Cost
                 double laborCost = 0.0;
                 try {
                     if (!newVal.isEmpty()) {
@@ -389,7 +352,6 @@ public class RepairDashboardController {
 
             return matchesText && matchesStatus;
         });
-        //  Reset selection and details
         setupListView();
 
     }
@@ -412,21 +374,16 @@ public class RepairDashboardController {
         txtDiagnosis.setText(job.getDiagnosisDescription()); // Tab 2
         txtResolution.setText(job.getRepairResults());       // Tab 3
 
-        // --- NEW LINE: Load existing Labor Cost ---
         txtLaborCost.setText(String.valueOf(job.getOriginalDto().getLaborCost()));
         txtTotalCost.setText(String.valueOf(job.getOriginalDto().getTotalAmount()));
 
         refreshStatusUI(job.getStatus());
 
-//        updateButtonStates(job.getStatus());
-
-        // --- LOAD PARTS FROM DB ---
         try {
-            // 1. Clear previous selection data
+
             usedPartsList.clear();
             partsToReturnList.clear();
 
-            // 2. Fetch saved parts for this specific job
             List<RepairPartTM> dbParts = repairModel.getUsedParts(job.getRepairId());
             usedPartsList.addAll(dbParts);
 
@@ -447,12 +404,13 @@ public class RepairDashboardController {
         alert.showAndWait();
 
         if (alert.getResult() == ButtonType.YES) {
-            // 1. Add to return list (so Model knows to set it back to 'AVAILABLE')
             partsToReturnList.add(selectedPart);
 
-            // 2. Remove from UI immediately
             usedPartsList.remove(selectedPart);
+
+
         }
+        tblParts.getSelectionModel().clearSelection();
     }
 
     @FXML
@@ -602,11 +560,6 @@ public class RepairDashboardController {
         }
     }
 
-
-    // =========================================================
-    // UI HELPERS
-    // =========================================================
-
     private void refreshStatusUI(RepairStatus status) {
         lblStatusBadge.setText(status.toString());
         lblStatusBadge.getStyleClass().removeAll("status-pending", "status-warn", "status-done", "status-danger");
@@ -652,17 +605,15 @@ public class RepairDashboardController {
             case DIAGNOSIS:
             case WAITING_PARTS:
             case COMPLETED:
-                // Only Update/Delete Details is disabled
                 btnUpdateJob.setDisable(true);
                 break;
 
             case DELIVERED:
             case CANCELLED:
-                // Disable almost everything (Read-Only mode)
                 btnUpdateJob.setDisable(true);
                 btnSaveChanges.setDisable(true);
                 btnUnclaimed.setDisable(true);
-                // Ideally disable Checkout too if it's already delivered
+
                 if (btnCheckout != null) btnCheckout.setDisable(true);
                 break;
         }
@@ -700,7 +651,7 @@ public class RepairDashboardController {
                         default:
                             setStyle(""); // Default
                     }
-                    Label name = new Label("#"+item.getRepairId()+"_"+item.getCustomerName() + " - " + item.getDeviceName());
+                    Label name = new Label("#" + item.getRepairId() + "_" + item.getCustomerName() + " - " + item.getDeviceName());
                     name.setStyle("-fx-font-weight: bold;");
 
                     Label status = new Label("Status: " + item.getStatus());
@@ -725,7 +676,6 @@ public class RepairDashboardController {
     }
 
 
-
     private void showAlert(Alert.AlertType type, String title, String msg) {
         Alert alert = new Alert(type);
         alert.setTitle(title);
@@ -734,7 +684,6 @@ public class RepairDashboardController {
     }
 
     private void resetDetailForm() {
-        // Clear all fields and reset state
         listRepairJobs.getSelectionModel().clearSelection();
         usedPartsList.clear();
     }

@@ -1,4 +1,4 @@
-package lk.ijse.etecmanagementsystem.service;
+package lk.ijse.etecmanagementsystem.util;
 
 import javafx.scene.control.Button;
 

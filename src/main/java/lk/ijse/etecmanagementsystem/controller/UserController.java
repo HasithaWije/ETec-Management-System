@@ -16,26 +16,44 @@ import java.util.stream.Collectors;
 
 public class UserController {
 
-    @FXML private TextField txtId;
-    @FXML private TextField txtName;
-    @FXML private TextField txtContact;
-    @FXML private TextField txtEmail;
-    @FXML private TextField txtAddress;
-    @FXML private TextField txtUserName;
-    @FXML private PasswordField txtPassword;
-    @FXML private ComboBox<String> cmbRole; // Changed to ComboBox for Role
+    @FXML
+    private TextField txtId;
+    @FXML
+    private TextField txtName;
+    @FXML
+    private TextField txtContact;
+    @FXML
+    private TextField txtEmail;
+    @FXML
+    private TextField txtAddress;
+    @FXML
+    private TextField txtUserName;
+    @FXML
+    private PasswordField txtPassword;
+    @FXML
+    private ComboBox<String> cmbRole; // Changed to ComboBox for Role
 
-    @FXML private TextField txtSearchByID;
-    @FXML private TextField txtSearch;
+    @FXML
+    private TextField txtSearchByID;
+    @FXML
+    private TextField txtSearch;
 
-    @FXML private TableView<UserDTO> tblUser;
-    @FXML private TableColumn<UserDTO, Integer> colId;
-    @FXML private TableColumn<UserDTO, String> colName;
-    @FXML private TableColumn<UserDTO, String> colContact;
-    @FXML private TableColumn<UserDTO, String> colEmail;
-    @FXML private TableColumn<UserDTO, String> colAddress;
-    @FXML private TableColumn<UserDTO, String> colUserName;
-    @FXML private TableColumn<UserDTO, String> colRole;
+    @FXML
+    private TableView<UserDTO> tblUser;
+    @FXML
+    private TableColumn<UserDTO, Integer> colId;
+    @FXML
+    private TableColumn<UserDTO, String> colName;
+    @FXML
+    private TableColumn<UserDTO, String> colContact;
+    @FXML
+    private TableColumn<UserDTO, String> colEmail;
+    @FXML
+    private TableColumn<UserDTO, String> colAddress;
+    @FXML
+    private TableColumn<UserDTO, String> colUserName;
+    @FXML
+    private TableColumn<UserDTO, String> colRole;
 
     private final UserModel userModel = new UserModel();
     private final ObservableList<UserDTO> userObservableList = FXCollections.observableArrayList();
@@ -104,7 +122,7 @@ public class UserController {
         }
         if (!validateFields()) return;
         //TextField txtName, TextField txtContact,TextField txtEmail, TextField txtAddress,TextField txtId, TextField txtUserName, TextField txtPassword
-        if(FieldsValidation.validateUserFields(txtName, txtContact,txtEmail, txtAddress, txtId, txtUserName, txtPassword)) {
+        if (FieldsValidation.validateUserFields(txtName, txtContact, txtEmail, txtAddress, txtId, txtUserName, txtPassword)) {
             return;
         }
 
@@ -220,7 +238,7 @@ public class UserController {
     @FXML
     private void handleSearch() {
         String search = txtSearch.getText().toLowerCase();
-        if (!search.isEmpty() ) {
+        if (!search.isEmpty()) {
             ObservableList<UserDTO> filteredList = userObservableList.stream()
                     .filter(u -> u.getName().toLowerCase().contains(search) ||
                             u.getContact().contains(search) ||

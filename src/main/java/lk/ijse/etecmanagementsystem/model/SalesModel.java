@@ -17,7 +17,7 @@ import java.util.Objects;
 
 public class SalesModel {
 
-    // Helper method to map ResultSet to TM to avoid repetition
+
     private SalesTM getSalesTMFromResultSet(ResultSet resultSet) throws SQLException {
         return new SalesTM(
                 resultSet.getInt("sale_id"),
@@ -34,7 +34,6 @@ public class SalesModel {
     public List<SalesTM> getAllSales() throws SQLException {
         List<SalesTM> salesList = new ArrayList<>();
 
-        // LEFT JOIN used for Customer in case a sale has no linked customer
         String sql = "SELECT s.sale_id, c.name AS customer_name, u.user_name, s.description, " +
                 "s.sub_total, s.discount, s.grand_total, s.paid_amount " +
                 "FROM Sales s " +
@@ -55,7 +54,6 @@ public class SalesModel {
     public List<SalesTM> getSalesByDateRange(LocalDate from, LocalDate to) throws SQLException {
         List<SalesTM> salesList = new ArrayList<>();
 
-        // We cast sale_date to DATE to ignore the time component for filtering
         String sql = "SELECT s.sale_id, c.name AS customer_name, u.user_name, s.description, " +
                 "s.sub_total, s.discount, s.grand_total, s.paid_amount " +
                 "FROM Sales s " +
@@ -77,14 +75,9 @@ public class SalesModel {
         return salesList;
     }
 
-    /**
-     * Loads all items with status 'AVAILABLE' from the database.
-     * Joins ProductItem and Product tables to get Name and Price.
-     */
     public List<InventoryItemDTO> getAllAvailableItems() throws SQLException {
         List<InventoryItemDTO> itemList = new ArrayList<>();
 
-        // We join ProductItem with Product to get the Name (from Product) and Price (sell_price)
         String sql = "SELECT pi.item_id, p.name AS product_name, pi.serial_number, " +
                 "p.warranty_months, p.sell_price, p.p_condition " +
                 "FROM ProductItem pi " +
@@ -110,7 +103,7 @@ public class SalesModel {
     public int getPendingItemCount(int stockId) throws SQLException {
         String sql = "SELECT COUNT(*) AS pending_count FROM ProductItem WHERE stock_id = ? AND serial_number LIKE 'PENDING-%'";
 
-        try(ResultSet rs = CrudUtil.execute(sql, stockId)) {
+        try (ResultSet rs = CrudUtil.execute(sql, stockId)) {
             if (rs.next()) {
                 return rs.getInt("pending_count");
             }
@@ -128,7 +121,7 @@ public class SalesModel {
         String sqlGetStockId = "SELECT stock_id FROM ProductItem WHERE item_id = ?";
         int stockId = -1;
 
-        try(ResultSet rsStock = CrudUtil.execute(sqlGetStockId, cartItem.getItemId())) {
+        try (ResultSet rsStock = CrudUtil.execute(sqlGetStockId, cartItem.getItemId())) {
             if (rsStock.next()) {
                 stockId = rsStock.getInt("stock_id");
             } else {
@@ -136,10 +129,7 @@ public class SalesModel {
             }
         }
 
-        try(ResultSet rs = CrudUtil.execute(sqlSelectPending, stockId, qty)) {
-
-
-
+        try (ResultSet rs = CrudUtil.execute(sqlSelectPending, stockId, qty)) {
 
             while (rs.next()) {
                 int itemId = rs.getInt("item_id");
@@ -164,15 +154,6 @@ public class SalesModel {
 
     }
 
-
-
-    /**
-     * THE MAIN TRANSACTION method.
-     * 1. Saves Sale Header
-     * 2. Saves Sales Items
-     * 3. Updates Inventory Status to SOLD
-     * 4. Records the Transaction (Payment)
-     */
     public boolean placeOrder(SalesDTO salesDTO, List<ItemCartTM> cartItems) throws SQLException {
         Connection con = null;
         try {
@@ -196,9 +177,6 @@ public class SalesModel {
             }
             cartItems = finalItemsToSave;
 
-            // ---------------------------------------------------------------------------------
-            // STEP 2: Insert into Sales Table
-            // ---------------------------------------------------------------------------------
             String sqlSales = "INSERT INTO Sales " +
                     "(customer_id, user_id, sale_date, sub_total, discount, grand_total, paid_amount, " +
                     "payment_status, description) " +
@@ -206,7 +184,6 @@ public class SalesModel {
 
             PreparedStatement pstmSales = con.prepareStatement(sqlSales, Statement.RETURN_GENERATED_KEYS);
 
-            // Handle nullable Customer ID
             if (salesDTO.getCustomerId() == 0) {
                 pstmSales.setNull(1, Types.INTEGER);
             } else {
@@ -230,7 +207,6 @@ public class SalesModel {
                 return false;
             }
 
-            // Get the generated Sale ID
             int saleId = 0;
             ResultSet generatedKeys = pstmSales.getGeneratedKeys();
             if (generatedKeys.next()) {
@@ -241,9 +217,6 @@ public class SalesModel {
                 return false;
             }
 
-            // ---------------------------------------------------------------------------------
-            // STEP 3: Process Items (Insert SalesItem + Update ProductItem)
-            // ---------------------------------------------------------------------------------
             String sqlSalesItem = "INSERT INTO SalesItem (sale_id, item_id, customer_warranty_months, " +
                     "unit_price, discount) VALUES (?, ?, ?, ?, ?)";
 
@@ -260,7 +233,7 @@ public class SalesModel {
             PreparedStatement pstmUpdateProductQty = con.prepareStatement(sqlUpdateProductQuantity);
 
             for (ItemCartTM item : cartItems) {
-                // A. Add to SalesItem Table
+
                 pstmSalesItem.setInt(1, saleId);
                 pstmSalesItem.setInt(2, item.getItemId());
                 pstmSalesItem.setInt(3, item.getWarrantyMonths());
@@ -268,12 +241,10 @@ public class SalesModel {
                 pstmSalesItem.setDouble(5, item.getDiscount());
                 pstmSalesItem.addBatch();
 
-                // B. Update ProductItem Table (Mark as SOLD)
                 pstmUpdateItem.setInt(1, item.getWarrantyMonths());
                 pstmUpdateItem.setInt(2, item.getItemId());
                 pstmUpdateItem.addBatch();
 
-                // C. Update Product Quantity
                 pstmUpdateProductQty.setInt(1, item.getItemId());
                 pstmUpdateProductQty.addBatch();
             }
@@ -282,11 +253,6 @@ public class SalesModel {
             pstmUpdateItem.executeBatch();
             pstmUpdateProductQty.executeBatch();
 
-            // ---------------------------------------------------------------------------------
-            // STEP 4: Record Transaction (Money In)
-            // ---------------------------------------------------------------------------------
-            // Assuming full payment for now based on controller flow.
-            // If Partial, logic needs to adjust 'amount' here.
 
             String sqlTransaction = "INSERT INTO TransactionRecord " +
                     "(transaction_type, payment_method, amount, flow, sale_id, user_id, customer_id, reference_note) " +
@@ -310,9 +276,6 @@ public class SalesModel {
 
             pstmTrans.executeUpdate();
 
-            // ---------------------------------------------------------------------------------
-            // COMMIT
-            // ---------------------------------------------------------------------------------
             con.commit();
             return true;
 

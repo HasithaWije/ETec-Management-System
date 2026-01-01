@@ -263,7 +263,6 @@ public class SalesController implements Initializable {
     }
 
 
-
     @FXML
     private void handleAddToCartAction() {
 
@@ -300,12 +299,12 @@ public class SalesController implements Initializable {
         InventoryItemDTO selectedInventoryItem = tblProductInventory.getSelectionModel().getSelectedItem();
 
         // Validation: Serial Number with Quantity > 1
-        if( serialNumber.isEmpty() && qty > 1) {
+        if (serialNumber.isEmpty() && qty > 1) {
 
-            try{
+            try {
                 int productId = productModel.getIdByName(itemName);
                 int placeholderCount = salesModel.getPendingItemCount(productId);
-                if(qty > placeholderCount) {
+                if (qty > placeholderCount) {
                     ETecAlerts.showAlert(Alert.AlertType.WARNING, "Not enough Quantity", "Insufficient Quantity");
                     return;
                 }
@@ -350,7 +349,7 @@ public class SalesController implements Initializable {
                 if (alert.getResult() == ButtonType.YES) {
 
 
-                    if(!serialNumber.isEmpty() && !selectedInventoryItem.getSerialNumber().equalsIgnoreCase(serialNumber)) {
+                    if (!serialNumber.isEmpty() && !selectedInventoryItem.getSerialNumber().equalsIgnoreCase(serialNumber)) {
 
                         // Serial number mismatch alert
                         Alert serialAlert = getSerialAlert();
@@ -361,19 +360,19 @@ public class SalesController implements Initializable {
                             // Modify existing item in inventory and add to cart
                             modifyAndAddItemToCart(newCartItem);
 
-                        }else if (serialAlert.getResult().getText().equals("ADD AS NEW")) {
+                        } else if (serialAlert.getResult().getText().equals("ADD AS NEW")) {
                             // Add as new item
                             addNewItemToInventory(newCartItem);
                         }
-                    }else if(serialNumber.isEmpty()) {
+                    } else if (serialNumber.isEmpty()) {
                         // No serial number provided, add as new item
                         addNewItemToInventory(newCartItem);
-                    }else {
+                    } else {
                         // Serial number matches, add directly
                         addFieldItemToCart(newCartItem);
                     }
                 }
-            }else {
+            } else {
                 // Exact match, add directly from table
 
                 addFieldItemToCart(newCartItem);
@@ -412,25 +411,24 @@ public class SalesController implements Initializable {
         }
 
 
-
         cartItemList.add(item);
         calculateTotals();
     }
 
-    private void addNewItemToInventory(ItemCartTM cartItem){
+    private void addNewItemToInventory(ItemCartTM cartItem) {
 
         int ProductId = 0;
-        try{
+        try {
             ProductId = productModel.getIdByName(cartItem.getItemName());
 
         } catch (Exception e) {
             showAlert(Alert.AlertType.ERROR, "Failed to retrieve product ID: ");
             System.out.println(e.getMessage());
-            return ;
+            return;
         }
-        if(ProductId <= 0){
+        if (ProductId <= 0) {
             showAlert(Alert.AlertType.ERROR, "Product not found in database. Please add the product first.");
-            return ;
+            return;
         }
         //int stockId, String serialNumber, int customerWarranty, String status, Date addedDate
         ProductItemDTO productItemDTO = new ProductItemDTO(
@@ -439,18 +437,18 @@ public class SalesController implements Initializable {
                 cartItem.getWarrantyMonths()
         );
         int newItemId = 0;
-        try{
+        try {
             newItemId = unitManagementModel.addItemAndGetGeneratedId(productItemDTO);
-            if(newItemId != -1){
+            if (newItemId != -1) {
                 cartItem.setItemId(newItemId);
             } else {
-                ETecAlerts.showAlert(Alert.AlertType.WARNING,"Not Enough Stock","Insufficient Stock to add the item.");
-                return ;
+                ETecAlerts.showAlert(Alert.AlertType.WARNING, "Not Enough Stock", "Insufficient Stock to add the item.");
+                return;
             }
         } catch (Exception e) {
-            if(e.getMessage().contains("Duplicate entry")) {
+            if (e.getMessage().contains("Duplicate entry")) {
                 new Alert(Alert.AlertType.WARNING, "The new serial number already exists. Please use a different serial number.").showAndWait();
-                return ;
+                return;
             }
             new Alert(Alert.AlertType.ERROR, "Failed to add new inventory item: ").show();
             System.out.println(e.getMessage());
@@ -462,14 +460,14 @@ public class SalesController implements Initializable {
         loadProductItems();
     }
 
-    private void modifyAndAddItemToCart(ItemCartTM cartItem){
+    private void modifyAndAddItemToCart(ItemCartTM cartItem) {
 
 
-        try{
+        try {
             int isUpdated = unitManagementModel.updateSerialNumber(cartItem.getItemId(), cartItem.getSerialNo());
-            if(isUpdated <= 0){
+            if (isUpdated <= 0) {
                 new Alert(Alert.AlertType.ERROR, "Failed to update inventory item serial number.").show();
-                return ;
+                return;
             }
 
             cartItemList.add(cartItem);
@@ -477,15 +475,14 @@ public class SalesController implements Initializable {
             loadProductItems();
 
         } catch (Exception e) {
-            if(e.getMessage().contains("Duplicate entry")) {
+            if (e.getMessage().contains("Duplicate entry")) {
                 new Alert(Alert.AlertType.WARNING, "The new serial number already exists. Please use a different serial number.").showAndWait();
-                return ;
+                return;
             }
             new Alert(Alert.AlertType.ERROR, "Failed to modify inventory item: ").show();
             System.out.println(e.getMessage());
         }
     }
-
 
 
     private boolean isItemAlreadyInCart(String serial) {
@@ -677,13 +674,6 @@ public class SalesController implements Initializable {
 
     private void calculateTotals() {
         double subTotal = cartItemList.stream().mapToDouble(ItemCartTM::getTotal).sum(); // Summing TOTALS, not unit prices
-        // Note: Logic adjustment - usually subtotal is sum of (price*qty), discount is sum of discounts.
-        // If ItemCartTM.getTotal() already stores (price*qty - discount), then simply summing that is the Grand Total.
-        // Assuming:
-        // Subtotal = Sum of (UnitPrice * Qty)
-        // TotalDiscount = Sum of (Discount)
-        // GrandTotal = Subtotal - TotalDiscount
-
         double rawSubTotal = 0;
         double totalDiscount = 0;
 
@@ -768,7 +758,7 @@ public class SalesController implements Initializable {
 
         // Logic to prevent Serial Number + Multiple Quantity conflict
         txtSerialNumber.textProperty().addListener((obs, old, newVal) -> {
-            if(newVal == null || newVal.isEmpty()){
+            if (newVal == null || newVal.isEmpty()) {
                 txtWarranty.setText("0");
                 return;
             }
@@ -783,7 +773,7 @@ public class SalesController implements Initializable {
                     calculateFinalPrice();
                     return;
 
-                }else {
+                } else {
                     Platform.runLater(() -> txtSerialNumber.setText(""));
                     txtWarranty.setText("0");
                     calculateFinalPrice();
@@ -800,13 +790,13 @@ public class SalesController implements Initializable {
                         "Serial Number entered with Quantity more than 1. Clearing Serial Number and Warranty.",
                         ButtonType.OK);
                 alert.showAndWait();
-                if(alert.getResult() == ButtonType.OK){
+                if (alert.getResult() == ButtonType.OK) {
 
                     Platform.runLater(() -> txtSerialNumber.setText(""));
                     txtWarranty.setText("0");
                     calculateFinalPrice();
                     return;
-                }else {
+                } else {
                     Platform.runLater(() -> txtItemQty.setText("1"));
                     calculateFinalPrice();
                     return;
@@ -948,7 +938,7 @@ public class SalesController implements Initializable {
             if (qty <= 0) qty = 1;
 
             if (price > 0) {
-                txtDisPercentage.setText(String.format("%.1f", (discount / (price*qty)) * 100));
+                txtDisPercentage.setText(String.format("%.1f", (discount / (price * qty)) * 100));
             }
             calculateFinalPrice();
         });
@@ -960,11 +950,10 @@ public class SalesController implements Initializable {
             int qty = parseIntOrZero(txtItemQty.getText());
 
             if (qty <= 0) qty = 1;
-            txtDiscount.setText(String.format("%.2f", ((price*qty) * pct) / 100));
+            txtDiscount.setText(String.format("%.2f", ((price * qty) * pct) / 100));
             calculateFinalPrice();
         });
     }
-
 
 
     private void calculateFinalPrice() {

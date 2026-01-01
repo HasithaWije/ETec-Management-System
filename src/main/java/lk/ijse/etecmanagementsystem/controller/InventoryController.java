@@ -20,7 +20,7 @@ import lk.ijse.etecmanagementsystem.dto.ProductDTO;
 import lk.ijse.etecmanagementsystem.model.CategoryModel;
 import lk.ijse.etecmanagementsystem.model.InventoryModel;
 import lk.ijse.etecmanagementsystem.util.InventoryUtil;
-import lk.ijse.etecmanagementsystem.service.ThreadService;
+import lk.ijse.etecmanagementsystem.util.ThreadService;
 import lk.ijse.etecmanagementsystem.util.Category;
 import lk.ijse.etecmanagementsystem.util.ProductCondition;
 import javafx.scene.input.MouseEvent;
@@ -60,7 +60,8 @@ public class InventoryController {
     @FXML
     private Button btnProductManager;
 
-    @FXML private  Button btnReset;
+    @FXML
+    private Button btnReset;
 
 
     private final InventoryUtil inventoryUtil = new InventoryUtil();
@@ -342,7 +343,7 @@ public class InventoryController {
 
     @FXML
     private void getTableSelectedItem(MouseEvent event) {
-        if(event.getClickCount() == 2) {
+        if (event.getClickCount() == 2) {
 
             ProductDTO selectedProduct = productTable.getSelectionModel().getSelectedItem();
             if (selectedProduct != null) {
@@ -421,9 +422,8 @@ public class InventoryController {
     }
 
 
-
     @FXML
-    private void handleReset(){
+    private void handleReset() {
         txtSearch.clear();
         setupCategoryComboBox();
         cmbCondition.getSelectionModel().select(ProductCondition.BOTH);

@@ -6,9 +6,7 @@ import javafx.scene.control.TextFormatter;
 
 public class FieldsValidation {
 
-    public static boolean validateCustomerFields(TextField txtName, TextField txtContact,TextField txtEmail, TextField txtAddress,TextField txtId) {
-
-
+    public static boolean validateCustomerFields(TextField txtName, TextField txtContact, TextField txtEmail, TextField txtAddress, TextField txtId) {
 
 
         final String ID_REGEX = "^\\d+$";
@@ -18,11 +16,11 @@ public class FieldsValidation {
         final String ADDRESS_REGEX = "^[A-Za-z0-9, ./-]{4,}$";
 
 
-        String idText = (txtId.getText() == null? "" : txtId.getText().trim());
-        String nameText = (txtName.getText() == null? "" : txtName.getText().trim());
-        String contactText = (txtContact.getText() == null? "" : txtContact.getText().trim());
-        String emailText = (txtEmail.getText() == null? "" : txtEmail.getText().trim());
-        String addressText = (txtAddress.getText() == null? "" : txtAddress.getText().trim());
+        String idText = (txtId.getText() == null ? "" : txtId.getText().trim());
+        String nameText = (txtName.getText() == null ? "" : txtName.getText().trim());
+        String contactText = (txtContact.getText() == null ? "" : txtContact.getText().trim());
+        String emailText = (txtEmail.getText() == null ? "" : txtEmail.getText().trim());
+        String addressText = (txtAddress.getText() == null ? "" : txtAddress.getText().trim());
 
         // 1. ID Validation
         if (!idText.isEmpty() && !idText.matches(ID_REGEX)) {
@@ -63,9 +61,7 @@ public class FieldsValidation {
         return false;
     }
 
-    public static boolean validateUserFields(TextField txtName, TextField txtContact,TextField txtEmail, TextField txtAddress,TextField txtId, TextField txtUserName, TextField txtPassword) {
-
-
+    public static boolean validateUserFields(TextField txtName, TextField txtContact, TextField txtEmail, TextField txtAddress, TextField txtId, TextField txtUserName, TextField txtPassword) {
 
 
         final String ID_REGEX = "^\\d+$"; // ID must be numeric
@@ -77,14 +73,13 @@ public class FieldsValidation {
         final String USERNAME_REGEX = "^[a-zA-Z0-9_]{4,20}$"; // Username must be 4-20 characters, letters, numbers, underscores
 
 
-
-        String idText = (txtId.getText() == null? "" : txtId.getText().trim());
-        String nameText = (txtName.getText() == null? "" : txtName.getText().trim());
-        String contactText = (txtContact.getText() == null? "" : txtContact.getText().trim());
-        String emailText = (txtEmail.getText() == null? "" : txtEmail.getText().trim());
-        String addressText = (txtAddress.getText() == null? "" : txtAddress.getText().trim());
-        String password = (txtPassword.getText() == null? "" : txtPassword.getText().trim());
-        String userName = (txtUserName.getText() == null? "" : txtUserName.getText().trim());
+        String idText = (txtId.getText() == null ? "" : txtId.getText().trim());
+        String nameText = (txtName.getText() == null ? "" : txtName.getText().trim());
+        String contactText = (txtContact.getText() == null ? "" : txtContact.getText().trim());
+        String emailText = (txtEmail.getText() == null ? "" : txtEmail.getText().trim());
+        String addressText = (txtAddress.getText() == null ? "" : txtAddress.getText().trim());
+        String password = (txtPassword.getText() == null ? "" : txtPassword.getText().trim());
+        String userName = (txtUserName.getText() == null ? "" : txtUserName.getText().trim());
 
         // 1. ID Validation
         if (!idText.isEmpty() && !idText.matches(ID_REGEX)) {

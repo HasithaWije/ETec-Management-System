@@ -33,7 +33,7 @@ public class SuppliersModel {
     public SupplierDTO getSupplierById(int id) throws SQLException {
         String sql = "SELECT * FROM Supplier WHERE supplier_id=?";
 
-        SupplierDTO  supplier = null;
+        SupplierDTO supplier = null;
 
         try (ResultSet rs = CrudUtil.execute(sql, id)) {
             if (rs.next()) {

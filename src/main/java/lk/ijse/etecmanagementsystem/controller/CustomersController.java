@@ -218,7 +218,7 @@ public class CustomersController {
     @FXML
     private void handleSearch() {
         String search = txtSearch.getText().toLowerCase();
-        if (!search.isEmpty() ) {
+        if (!search.isEmpty()) {
             ObservableList<CustomerDTO> filteredList = filterData(search);
             tblCustomer.setItems(filteredList);
         } else {
@@ -234,59 +234,6 @@ public class CustomersController {
             populateFields(selectedItem);
         }
     }
-
-
-    private boolean validateFields() {
-
-        final String ID_REGEX = "^\\d+$";
-        final String NAME_REGEX = "^[a-zA-Z0-9\\s.\\-&]+$";
-        final String CONTACT_REGEX = "^0\\d{9}$";
-        final String EMAIL_REGEX = "^[\\w-\\.]+@([\\w-]+\\.)+[\\w-]{2,}$";
-        final String ADDRESS_REGEX = "^[A-Za-z0-9, ./-]{4,}$";
-
-
-        String idText = txtId.getText();
-        if (!(idText == null || idText.isEmpty() ) && !idText.matches(ID_REGEX)) {
-            new Alert(Alert.AlertType.ERROR, "Invalid ID: Must be a number (Integer) only.").show();
-            txtId.requestFocus();
-            return false;
-        }
-
-
-        String nameText = txtName.getText();
-        if (nameText == null || nameText.isEmpty() || !nameText.matches(NAME_REGEX)) {
-            new Alert(Alert.AlertType.ERROR, "Invalid Name: Must contain at least 3 letters.").show();
-            txtName.requestFocus();
-            return false;
-        }
-
-        // 3. Contact Validation (THIS WAS CAUSING THE ERROR)
-        String contactText = txtContact.getText();
-        // Added 'contactText == null' check
-        if (contactText == null || contactText.isEmpty() || !contactText.matches(CONTACT_REGEX)) {
-            new Alert(Alert.AlertType.ERROR, "Invalid Contact: Must start with 0 and have exactly 10 digits.").show();
-            txtContact.requestFocus();
-            return false;
-        }
-
-        // 4. Email Validation
-        String emailText = txtEmail.getText();
-        if (!(emailText == null || emailText.isEmpty()) && !emailText.matches(EMAIL_REGEX)) {
-            new Alert(Alert.AlertType.ERROR, "Invalid Email: Please enter a valid email address.").show();
-            txtEmail.requestFocus();
-            return false;
-        }
-
-        // 5. Address Validation
-        String addressText = txtAddress.getText();
-        if (addressText == null || addressText.isEmpty() || !addressText.matches(ADDRESS_REGEX)) {
-            new Alert(Alert.AlertType.ERROR, "Invalid Address: Must be at least 4 characters long.").show();
-            txtAddress.requestFocus();
-            return false;
-        }
-
-        return true;
-    } // not used....................
 
     private void reloadTable() {
         loadProducts();

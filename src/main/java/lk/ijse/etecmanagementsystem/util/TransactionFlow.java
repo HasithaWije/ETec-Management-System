@@ -6,7 +6,7 @@ public enum TransactionFlow {
 
     private final String flowType;
 
-    TransactionFlow(){
+    TransactionFlow() {
         this.flowType = this.name();
     }
 

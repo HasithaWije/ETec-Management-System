@@ -14,6 +14,7 @@ public enum Stock {
     public String getStockType() {
         return stockType;
     }
+
     @Override
     public String toString() {
         return stockType;

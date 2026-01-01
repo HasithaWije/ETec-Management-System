@@ -27,28 +27,46 @@ import java.util.Optional;
 public class TransactionsController {
 
     // --- UI Components (Same as before) ---
-    @FXML private Label lblTotalIncome, lblTotalExpense, lblNetProfit;
-    @FXML private DatePicker dpFromDate, dpToDate;
-    @FXML private ComboBox<String> comboTypeFilter;
-    @FXML private TextField txtSearchHistory;
+    @FXML
+    private Label lblTotalIncome, lblTotalExpense, lblNetProfit;
+    @FXML
+    private DatePicker dpFromDate, dpToDate;
+    @FXML
+    private ComboBox<String> comboTypeFilter;
+    @FXML
+    private TextField txtSearchHistory;
 
     // Tables
-    @FXML private TableView<TransactionTM> tblHistory;
-    @FXML private TableColumn<TransactionTM, Integer> colHistId;
-    @FXML private TableColumn<TransactionTM, String> colHistDate, colHistType, colHistRef, colHistFlow, colHistUser;
-    @FXML private TableColumn<TransactionTM, Double> colHistAmount;
+    @FXML
+    private TableView<TransactionTM> tblHistory;
+    @FXML
+    private TableColumn<TransactionTM, Integer> colHistId;
+    @FXML
+    private TableColumn<TransactionTM, String> colHistDate, colHistType, colHistRef, colHistFlow, colHistUser;
+    @FXML
+    private TableColumn<TransactionTM, Double> colHistAmount;
 
-    @FXML private TableView<PendingSaleTM> tblPendingSales;
-    @FXML private TableColumn<PendingSaleTM, Integer> colSaleId;
-    @FXML private TableColumn<PendingSaleTM, String> colSaleCustomer;
-    @FXML private TableColumn<PendingSaleTM, Double> colSaleTotal, colSaleDue;
-    @FXML private TableColumn<PendingSaleTM, Void> colSaleAction;
+    @FXML
+    private TableView<PendingSaleTM> tblPendingSales;
+    @FXML
+    private TableColumn<PendingSaleTM, Integer> colSaleId;
+    @FXML
+    private TableColumn<PendingSaleTM, String> colSaleCustomer;
+    @FXML
+    private TableColumn<PendingSaleTM, Double> colSaleTotal, colSaleDue;
+    @FXML
+    private TableColumn<PendingSaleTM, Void> colSaleAction;
 
-    @FXML private TableView<PendingRepairTM> tblPendingRepairs;
-    @FXML private TableColumn<PendingRepairTM, Integer> colRepairId;
-    @FXML private TableColumn<PendingRepairTM, String> colRepairDevice, colRepairCustomer;
-    @FXML private TableColumn<PendingRepairTM, Double> colRepairDue;
-    @FXML private TableColumn<PendingRepairTM, Void> colRepairAction;
+    @FXML
+    private TableView<PendingRepairTM> tblPendingRepairs;
+    @FXML
+    private TableColumn<PendingRepairTM, Integer> colRepairId;
+    @FXML
+    private TableColumn<PendingRepairTM, String> colRepairDevice, colRepairCustomer;
+    @FXML
+    private TableColumn<PendingRepairTM, Double> colRepairDue;
+    @FXML
+    private TableColumn<PendingRepairTM, Void> colRepairAction;
 
     // --- Model Instance ---
     private final TransactionsModel transactionsModel = new TransactionsModel();
@@ -91,10 +109,6 @@ public class TransactionsController {
         comboTypeFilter.getSelectionModel().selectFirst();
     }
 
-
-
-    // --- Loading Data via Model ---
-
     @FXML
     public void loadHistory() {
         try {
@@ -112,38 +126,38 @@ public class TransactionsController {
     }
 
     private void handleComboTypeFilter() {
-        try{
-        String selectedType = comboTypeFilter.getSelectionModel().getSelectedItem();
-        ObservableList<TransactionTM> allTransactions = tblHistory.getItems();
+        try {
+            String selectedType = comboTypeFilter.getSelectionModel().getSelectedItem();
+            ObservableList<TransactionTM> allTransactions = tblHistory.getItems();
 
-        if (selectedType.equals("All")) {
-            tblHistory.setItems(allTransactions);
-        } else {
-            ObservableList<TransactionTM> filteredList = allTransactions.filtered(
-                    transaction -> transaction.getType().equalsIgnoreCase(selectedType)
-            );
-            tblHistory.setItems(filteredList);
-        }
-        } catch (Exception e){
+            if (selectedType.equals("All")) {
+                tblHistory.setItems(allTransactions);
+            } else {
+                ObservableList<TransactionTM> filteredList = allTransactions.filtered(
+                        transaction -> transaction.getType().equalsIgnoreCase(selectedType)
+                );
+                tblHistory.setItems(filteredList);
+            }
+        } catch (Exception e) {
             // ignore
         }
     }
 
     private void handleSearchHistory() {
-        try{
-        String searchText = txtSearchHistory.getText().toLowerCase();
-        ObservableList<TransactionTM> allTransactions = tblHistory.getItems();
+        try {
+            String searchText = txtSearchHistory.getText().toLowerCase();
+            ObservableList<TransactionTM> allTransactions = tblHistory.getItems();
 
-        if (searchText.isEmpty()) {
-            tblHistory.setItems(allTransactions);
-        } else {
-            ObservableList<TransactionTM> filteredList = allTransactions.filtered(
-                    transaction -> transaction.getReference().toLowerCase().contains(searchText) ||
-                                   transaction.getUser().toLowerCase().contains(searchText)
-            );
-            tblHistory.setItems(filteredList);
-        }
-        } catch (Exception e){
+            if (searchText.isEmpty()) {
+                tblHistory.setItems(allTransactions);
+            } else {
+                ObservableList<TransactionTM> filteredList = allTransactions.filtered(
+                        transaction -> transaction.getReference().toLowerCase().contains(searchText) ||
+                                transaction.getUser().toLowerCase().contains(searchText)
+                );
+                tblHistory.setItems(filteredList);
+            }
+        } catch (Exception e) {
             // ignore
         }
     }
@@ -239,6 +253,7 @@ public class TransactionsController {
     private void addSettleButtonToSales() {
         colSaleAction.setCellFactory(param -> new TableCell<>() {
             private final Button btn = new Button("Pay");
+
             {
                 btn.setStyle("-fx-background-color: #27ae60; -fx-text-fill: white;");
                 btn.setOnAction(event -> {
@@ -246,6 +261,7 @@ public class TransactionsController {
                     showPaymentDialog("SALE", sale.getSaleId(), sale.getBalanceDue());
                 });
             }
+
             @Override
             protected void updateItem(Void item, boolean empty) {
                 super.updateItem(item, empty);
@@ -257,6 +273,7 @@ public class TransactionsController {
     private void addSettleButtonToRepairs() {
         colRepairAction.setCellFactory(param -> new TableCell<>() {
             private final Button btn = new Button("Pay");
+
             {
                 btn.setStyle("-fx-background-color: #8e44ad; -fx-text-fill: white;");
                 btn.setOnAction(event -> {
@@ -264,6 +281,7 @@ public class TransactionsController {
                     showPaymentDialog("REPAIR", repair.getRepairId(), repair.getBalanceDue());
                 });
             }
+
             @Override
             protected void updateItem(Void item, boolean empty) {
                 super.updateItem(item, empty);

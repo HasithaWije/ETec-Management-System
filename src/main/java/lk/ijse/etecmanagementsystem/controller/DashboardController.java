@@ -23,7 +23,6 @@ import java.util.TreeSet;
 
 public class DashboardController {
 
-    // --- FXML Injections ---
     @FXML
     private Label lblTodayIncome;
     @FXML

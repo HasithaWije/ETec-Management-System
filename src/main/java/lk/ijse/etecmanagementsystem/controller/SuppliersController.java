@@ -217,7 +217,7 @@ public class SuppliersController {
     @FXML
     private void handleSearch() {
         String search = txtSearch.getText().toLowerCase();
-        if (!search.isEmpty() ) {
+        if (!search.isEmpty()) {
             ObservableList<SupplierDTO> filteredList = filterData(search);
             tblSuppliers.setItems(filteredList);
         } else {
@@ -245,7 +245,7 @@ public class SuppliersController {
 
 
         String idText = txtId.getText();
-        if (!(idText == null || idText.isEmpty() ) && !idText.matches(ID_REGEX)) {
+        if (!(idText == null || idText.isEmpty()) && !idText.matches(ID_REGEX)) {
             new Alert(Alert.AlertType.ERROR, "Invalid ID: Must be a number (Integer) only.").show();
             txtId.requestFocus();
             return false;

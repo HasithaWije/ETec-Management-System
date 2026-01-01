@@ -16,7 +16,6 @@ import javafx.stage.Stage;
 import lk.ijse.etecmanagementsystem.App;
 import lk.ijse.etecmanagementsystem.dto.tm.RepairPartTM;
 import lk.ijse.etecmanagementsystem.model.RepairPartsModel; // Import Model
-import lk.ijse.etecmanagementsystem.util.ETecAlerts;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -25,13 +24,20 @@ import java.util.Optional;
 
 public class SelectRepairPartController {
 
-    @FXML private TextField txtSearch;
-    @FXML private TableView<RepairPartTM> tblStock;
-    @FXML private TableColumn<RepairPartTM, Integer> colId;
-    @FXML private TableColumn<RepairPartTM, String> colName;
-    @FXML private TableColumn<RepairPartTM, String> colSerial;
-    @FXML private TableColumn<RepairPartTM, String> colCondition;
-    @FXML private TableColumn<RepairPartTM, Double> colPrice;
+    @FXML
+    private TextField txtSearch;
+    @FXML
+    private TableView<RepairPartTM> tblStock;
+    @FXML
+    private TableColumn<RepairPartTM, Integer> colId;
+    @FXML
+    private TableColumn<RepairPartTM, String> colName;
+    @FXML
+    private TableColumn<RepairPartTM, String> colSerial;
+    @FXML
+    private TableColumn<RepairPartTM, String> colCondition;
+    @FXML
+    private TableColumn<RepairPartTM, Double> colPrice;
 
     private RepairDashboardController mainController;
     private final ObservableList<RepairPartTM> stockList = FXCollections.observableArrayList();
@@ -158,16 +164,16 @@ public class SelectRepairPartController {
                 // 1. Get the new price
                 double newPrice = Double.parseDouble(txtPrice.getText());
 
-                if(newPrice < 0){
+                if (newPrice < 0) {
                     new Alert(Alert.AlertType.ERROR, "Price cannot be negative.").show();
                     return;
                 }
-                if(newPrice == 0 || newPrice < item.getUnitPrice()/2){
+                if (newPrice == 0 || newPrice < item.getUnitPrice() / 2) {
                     Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "The price seems unusually low. Please confirm.", ButtonType.OK, ButtonType.CANCEL);
                     alert.setTitle("Confirm Low Price");
                     alert.setHeaderText("Unusually Low Price");
                     alert.showAndWait();
-                    if(alert.getResult() != ButtonType.OK){
+                    if (alert.getResult() != ButtonType.OK) {
                         return;
                     }
                 }
@@ -182,5 +188,8 @@ public class SelectRepairPartController {
         }
     }
 
-    @FXML private void handleCancel() { ((Stage) txtSearch.getScene().getWindow()).close(); }
+    @FXML
+    private void handleCancel() {
+        ((Stage) txtSearch.getScene().getWindow()).close();
+    }
 }

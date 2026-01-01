@@ -91,7 +91,6 @@ public class ProductController implements Initializable {
     private TableColumn<ProductDTO, String> colDesc;
 
 
-
     private final ObservableList<ProductDTO> productList = FXCollections.observableArrayList();
     private String selectedImagePath = "";
 
@@ -190,6 +189,7 @@ public class ProductController implements Initializable {
         }
 
     }
+
     private void saveProduct() {
         txtId.setText("");
         if (validateFields()) return;
@@ -220,11 +220,11 @@ public class ProductController implements Initializable {
                 showAlert(Alert.AlertType.ERROR, "Failure", "Failed to save product.");
             }
         } catch (Exception e) {
-            if(e.getMessage().contains("Duplicate entry") || e.getMessage().contains("UNIQUE constraint failed: Product.name")){
+            if (e.getMessage().contains("Duplicate entry") || e.getMessage().contains("UNIQUE constraint failed: Product.name")) {
                 showAlert(Alert.AlertType.ERROR, "Validation Error", "Product with the same name already exists.");
                 return;
             }
-            showAlert(Alert.AlertType.ERROR, "Error", "Failed to save product: " );
+            showAlert(Alert.AlertType.ERROR, "Error", "Failed to save product: ");
             System.out.println(e.getMessage());
         }
     }
@@ -246,7 +246,6 @@ public class ProductController implements Initializable {
         int newQty = Integer.parseInt(txtQty.getText().trim());
 
 
-
         try {
 
             int realItemCount = productModel.getRealItemCount(stockId);
@@ -261,11 +260,11 @@ public class ProductController implements Initializable {
                 return;
             }
 
-            Alert alert =new Alert(Alert.AlertType.CONFIRMATION,"You are updating the product details and quantity to " + newQty + ".\n" +
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "You are updating the product details and quantity to " + newQty + ".\n" +
                     "Click OK to proceed.", ButtonType.OK, ButtonType.CANCEL);
             alert.setTitle("Confirm Update");
             alert.showAndWait();
-            if(alert.getResult() != ButtonType.OK){
+            if (alert.getResult() != ButtonType.OK) {
                 return;
             }
 
@@ -293,7 +292,7 @@ public class ProductController implements Initializable {
 
         } catch (Exception e) {
 
-            if(e.getMessage().contains("Duplicate entry") || e.getMessage().contains("UNIQUE constraint failed: Product.name")){
+            if (e.getMessage().contains("Duplicate entry") || e.getMessage().contains("UNIQUE constraint failed: Product.name")) {
                 showAlert(Alert.AlertType.ERROR, "Validation Error", "Product with the same name already exists.");
                 return;
             }
@@ -315,7 +314,7 @@ public class ProductController implements Initializable {
 
             } else {
 
-                if(!isProductIdExist()) return;
+                if (!isProductIdExist()) return;
 
                 selected = new ProductDTO();
                 selected.setId(txtId.getText().trim());
@@ -494,11 +493,11 @@ public class ProductController implements Initializable {
             showAlert(Alert.AlertType.ERROR, "Validation Error", "Qty must be 1-5 digit number.");
             return true;
         }
-        if( cmbCategory.getValue() == null){
+        if (cmbCategory.getValue() == null) {
             showAlert(Alert.AlertType.ERROR, "Validation Error", "Please select a Category.");
             return true;
         }
-        if( cmbCondition.getValue() == null){
+        if (cmbCondition.getValue() == null) {
             showAlert(Alert.AlertType.ERROR, "Validation Error", "Please select a Condition.");
             return true;
         }
@@ -509,7 +508,7 @@ public class ProductController implements Initializable {
         String id = txtId.getText();
         try {
             ResultSet product = productModel.findById(id);
-            if(!product.next()){
+            if (!product.next()) {
                 showAlert(Alert.AlertType.ERROR, "Error", "Product with ID " + id + " does not exist.");
                 return false;
             }
@@ -528,7 +527,7 @@ public class ProductController implements Initializable {
     }
 
     private void openImagePopup() {
-        if(txtName.getText() == null || txtName.getText().isEmpty()){
+        if (txtName.getText() == null || txtName.getText().isEmpty()) {
             showAlert(Alert.AlertType.ERROR, "Validation Error", "Please enter the Product Name before selecting an image.");
             return;
         }
@@ -560,7 +559,7 @@ public class ProductController implements Initializable {
         this.selectedImagePath = path;
         if (this.selectedImagePath != null) {
             txtImagePath.setText(this.selectedImagePath);
-        }else {
+        } else {
             selectedImagePath = "";
             txtImagePath.setText("null");
         }

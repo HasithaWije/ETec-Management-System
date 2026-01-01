@@ -18,17 +18,13 @@ public class ImagePopupController {
 
     @FXML
     private Pane paneImageBack;
-
     @FXML
     private ImageView imageViewBack;
-
     @FXML
     private ImageView imgPreview;
-
     private File selectedFile;
     private String productName;
     private ProductController productController;
-
 
     @FXML
     public void initialize() {
@@ -50,7 +46,6 @@ public class ImagePopupController {
                 new FileChooser.ExtensionFilter("Image Files", "*.png", "*.jpg", "*.jpeg")
         );
 
-        // Get the current stage (window) to show the dialog
         Stage stage = new Stage(); // Or retrieve your actual main stage
         selectedFile = fileChooser.showOpenDialog(stage);
 
@@ -112,7 +107,7 @@ public class ImagePopupController {
                 e.printStackTrace();
                 // Handle error (e.g., show an Alert to the user)
             }
-        }else {
+        } else {
             ETecAlerts.showAlert(Alert.AlertType.WARNING, "No Image Selected", "Please select an image before confirming.");
         }
     }

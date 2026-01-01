@@ -13,6 +13,7 @@ import lk.ijse.etecmanagementsystem.App;
 import lk.ijse.etecmanagementsystem.dto.CustomerDTO;
 import lk.ijse.etecmanagementsystem.dto.RepairJobDTO;
 import lk.ijse.etecmanagementsystem.dto.tm.RepairJobTM;
+import lk.ijse.etecmanagementsystem.dto.tm.RepairPartTM;
 import lk.ijse.etecmanagementsystem.model.CustomersModel; // Model Import
 import lk.ijse.etecmanagementsystem.model.RepairJobModel; // Model Import
 
@@ -23,20 +24,26 @@ import java.util.stream.Collectors;
 
 public class UpdateRepairTicketController {
 
-    @FXML private Label lblJobId;
-
-    // --- CUSTOMER SEARCH & PREVIEW ---
-    @FXML private ComboBox<String> cmbCustomer;
-    @FXML private Label lblCusName;
-    @FXML private Label lblCusContact;
-    @FXML private Label lblCusId;
-    @FXML private Label lblCusEmail;
-    @FXML private Label lblCusAddress;
-
-    // --- DEVICE FIELDS ---
-    @FXML private TextField txtDeviceName;
-    @FXML private TextField txtSerial;
-    @FXML private TextArea txtProblem;
+    @FXML
+    private Label lblJobId;
+    @FXML
+    private ComboBox<String> cmbCustomer;
+    @FXML
+    private Label lblCusName;
+    @FXML
+    private Label lblCusContact;
+    @FXML
+    private Label lblCusId;
+    @FXML
+    private Label lblCusEmail;
+    @FXML
+    private Label lblCusAddress;
+    @FXML
+    private TextField txtDeviceName;
+    @FXML
+    private TextField txtSerial;
+    @FXML
+    private TextArea txtProblem;
 
     // Data handling
     private RepairJobTM currentJob;
@@ -45,13 +52,8 @@ public class UpdateRepairTicketController {
     private final ObservableList<String> originalList = FXCollections.observableArrayList();
     private int selectedCustomerId = -1;
 
-    // --- MODELS ---
     private final CustomersModel customersModel = new CustomersModel();
     private final RepairJobModel repairJobModel = new RepairJobModel();
-
-    // =========================================================
-    // INITIALIZATION & DATA LOADING
-    // =========================================================
 
     @FXML
     public void initialize() {
@@ -65,31 +67,25 @@ public class UpdateRepairTicketController {
 
         lblJobId.setText("JOB #" + job.getRepairId());
 
-        // 1. FILL DEVICE DETAILS
         txtDeviceName.setText(job.getDeviceName());
         txtSerial.setText(job.getSerialNumber());
         txtProblem.setText(job.getProblemDescription());
 
-        // 2. FILL CURRENT CUSTOMER (PREVIEW)
         lblCusName.setText(job.getCustomerName());
         lblCusContact.setText(job.getContactNumber());
 
-        // Fill extra details (Email/Address) by looking up the ID
         if (job.getOriginalDto() != null) {
             selectedCustomerId = job.getOriginalDto().getCusId();
             lblCusId.setText(String.valueOf(selectedCustomerId));
 
-            // Populate Email/Address from loaded map
             populateCustomerDetailsById(selectedCustomerId);
 
-            // Set ComboBox Text to current name
             cmbCustomer.getEditor().setText(job.getCustomerName());
 
         }
     }
 
     private void populateCustomerDetailsById(int cusId) {
-        // Iterate through loaded customers to find the matching ID for display
         for (CustomerDTO dto : customerMap.values()) {
             if (dto.getId() == cusId) {
                 lblCusEmail.setText(dto.getEmailAddress());
@@ -98,10 +94,6 @@ public class UpdateRepairTicketController {
             }
         }
     }
-
-    // =========================================================
-    // SEARCH LOGIC
-    // =========================================================
 
     private void loadCustomerData() {
         customerMap.clear();
@@ -184,10 +176,6 @@ public class UpdateRepairTicketController {
         }
     }
 
-    // =========================================================
-    // BUTTON ACTIONS
-    // =========================================================
-
     @FXML
     private void handleAddNewCustomer() {
         try {
@@ -200,7 +188,9 @@ public class UpdateRepairTicketController {
 
             // Refresh search list
             loadCustomerData();
-        } catch (IOException e) { e.printStackTrace(); }
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 
     @FXML
@@ -219,11 +209,9 @@ public class UpdateRepairTicketController {
 
         try {
             RepairJobDTO jobDTO = new RepairJobDTO();
-
-            // Set ID so DB knows which row to update
             jobDTO.setRepairId(currentJob.getRepairId());
 
-            // Set Updated Fields
+
             jobDTO.setCusId(selectedCustomerId);
             jobDTO.setDeviceName(txtDeviceName.getText());
             jobDTO.setDeviceSn(txtSerial.getText());
@@ -252,10 +240,32 @@ public class UpdateRepairTicketController {
         alert.setHeaderText("Delete Job #" + currentJob.getRepairId() + "?");
         alert.setContentText("This action cannot be undone.");
 
+        try {
+            List<RepairPartTM> associatedParts = repairJobModel.getUsedParts(currentJob.getRepairId());
+
+            if (associatedParts != null && !associatedParts.isEmpty()) {
+                StringBuilder partsList = new StringBuilder("The following parts are associated with this job:\n");
+                for (RepairPartTM part : associatedParts) {
+                    partsList.append("- ").append(part.getItemName()).append(" (Qty: ").append(1).append(")\n");
+                }
+                partsList.append("Deleting this job will also remove these associated parts.");
+
+                Alert partsAlert = new Alert(Alert.AlertType.WARNING);
+                partsAlert.setTitle("Associated Parts Found");
+                partsAlert.setHeaderText("Cannot delete job with associated parts. you can delete it manually first.");
+                partsAlert.setContentText(partsList.toString());
+                partsAlert.showAndWait();
+                return;
+            }
+        } catch (SQLException e) {
+            e.printStackTrace();
+            showAlert(Alert.AlertType.ERROR, "Database Error", "Failed to check associated parts.");
+            return;
+        }
+
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
             try {
-                // CALL MODEL
                 boolean success = repairJobModel.deleteRepairJob(currentJob.getRepairId());
 
                 if (success) {
@@ -271,7 +281,10 @@ public class UpdateRepairTicketController {
         }
     }
 
-    @FXML private void handleCancel() { closeWindow(); }
+    @FXML
+    private void handleCancel() {
+        closeWindow();
+    }
 
     private void closeWindow() {
         Stage stage = (Stage) lblJobId.getScene().getWindow();

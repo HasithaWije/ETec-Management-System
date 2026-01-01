@@ -58,8 +58,6 @@ public class ProductCard extends StackPane {
 
                 System.out.println("Loaded image from: " + fullPath);
             } else {
-                // If the file is missing from Documents, throw exception to trigger the catch block
-                // or handle the placeholder logic here directly.
                 System.out.println("File not found: " + fullPath);
                 throw new IOException("File not found");
             }
@@ -81,7 +79,6 @@ public class ProductCard extends StackPane {
         lblName.setTextAlignment(TextAlignment.CENTER);
         lblName.setStyle("-fx-font-size: 11px; -fx-text-fill: #555555;");
         lblName.setWrapText(true);
-
 
 
         Label lblCode = new Label("STOCK ID : " + p.getId());

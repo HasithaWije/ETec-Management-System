@@ -13,23 +13,23 @@ import java.time.LocalDate;
 import java.util.List;
 
 public class TransactionsModel {
-    public List <TransactionTM> getAllTransactions(Date dpFromDate, Date dpToDate ) throws SQLException {
+    public List<TransactionTM> getAllTransactions(Date dpFromDate, Date dpToDate) throws SQLException {
         List<TransactionTM> list = new java.util.ArrayList<>();
         String sql = "SELECT t.*, u.user_name FROM TransactionRecord t JOIN User u ON t.user_id = u.user_id WHERE DATE(t.transaction_date) BETWEEN ? AND ?";
 
-            ResultSet rs = CrudUtil.execute(sql, dpFromDate, dpToDate);
-            while (rs.next()) {
-                list.add(new TransactionTM(
-                        rs.getInt("transaction_id"),
-                        rs.getString("transaction_date"),
-                        rs.getString("transaction_type"),
-                        rs.getString("reference_note"),
-                        rs.getString("flow"),
-                        rs.getDouble("amount"),
-                        rs.getString("user_name")
-                ));
-            }
-            rs.close();
+        ResultSet rs = CrudUtil.execute(sql, dpFromDate, dpToDate);
+        while (rs.next()) {
+            list.add(new TransactionTM(
+                    rs.getInt("transaction_id"),
+                    rs.getString("transaction_date"),
+                    rs.getString("transaction_type"),
+                    rs.getString("reference_note"),
+                    rs.getString("flow"),
+                    rs.getDouble("amount"),
+                    rs.getString("user_name")
+            ));
+        }
+        rs.close();
         return list;
     }
 
@@ -72,15 +72,12 @@ public class TransactionsModel {
     }
 
 
-    // --- 4. Save Manual Transaction ---
     public boolean saveManualTransaction(String type, double amount, String method, String note, int userId) throws SQLException {
         String flow = (type.equals("EXPENSE") || type.equals("SUPPLIER_PAYMENT")) ? "OUT" : "IN";
         String sql = "INSERT INTO TransactionRecord (transaction_type, payment_method, amount, flow, user_id, reference_note) VALUES (?, ?, ?, ?, ?, ?)";
         return CrudUtil.execute(sql, type, method, amount, flow, userId, note);
     }
 
-    // --- 5. Get Dashboard Stats (Income/Expense) ---
-    // Returns an array: [TotalIncome, TotalExpense]
     public double[] getDashboardStats(Date fromDate, Date toDate) throws SQLException {
         String sql = "SELECT " +
                 "SUM(CASE WHEN flow = 'IN' THEN amount ELSE 0 END) as total_in, " +
@@ -91,38 +88,33 @@ public class TransactionsModel {
         double[] newDoubleArray;
         if (rs.next()) {
 
-            newDoubleArray =  new double[]{ rs.getDouble("total_in"), rs.getDouble("total_out") };
-        }else {
+            newDoubleArray = new double[]{rs.getDouble("total_in"), rs.getDouble("total_out")};
+        } else {
             newDoubleArray = new double[]{0.0, 0.0};
         }
         rs.close();
         return newDoubleArray;
     }
 
-    // --- 6. Process Payment (Transaction Block) ---
-    // This is complex so we use raw JDBC to handle commit/rollback
     public boolean settlePayment(String type, int id, double amount, int userId) throws SQLException {
         Connection conn = null;
         try {
             conn = DBConnection.getInstance().getConnection();
             conn.setAutoCommit(false); // Start Transaction
 
-            // 1. Insert Transaction Record
             String insertTrans = "INSERT INTO TransactionRecord (transaction_type, payment_method, amount, flow, " +
                     (type.equals("SALE") ? "sale_id" : "repair_id") + ", user_id, reference_note) VALUES (?, 'CASH', ?, 'IN', ?, ?, 'Partial Settlement')";
 
             String transType = type.equals("SALE") ? "SALE_PAYMENT" : "REPAIR_PAYMENT";
 
-            // Using raw PreparedStatement because CrudUtil might auto-close or not handle the specific connection instance
-            try(PreparedStatement ps1 = conn.prepareStatement(insertTrans)){
+            try (PreparedStatement ps1 = conn.prepareStatement(insertTrans)) {
                 ps1.setString(1, transType);
                 ps1.setDouble(2, amount);
                 ps1.setInt(3, id);
                 ps1.setInt(4, userId);
-                if(ps1.executeUpdate() <= 0) throw new SQLException("Failed to insert transaction");
+                if (ps1.executeUpdate() <= 0) throw new SQLException("Failed to insert transaction");
             }
 
-            // 2. Update Sales or Repair Table
             String updateSql;
             if (type.equals("SALE")) {
                 updateSql = "UPDATE Sales SET paid_amount = paid_amount + ?, payment_status = CASE WHEN (paid_amount + ?) >= grand_total THEN 'PAID' ELSE 'PARTIAL' END WHERE sale_id = ?";
@@ -130,18 +122,18 @@ public class TransactionsModel {
                 updateSql = "UPDATE RepairJob SET paid_amount = paid_amount + ?, payment_status = CASE WHEN (paid_amount + ?) >= total_amount THEN 'PAID' ELSE 'PARTIAL' END WHERE repair_id = ?";
             }
 
-            try(PreparedStatement ps2 = conn.prepareStatement(updateSql)){
+            try (PreparedStatement ps2 = conn.prepareStatement(updateSql)) {
                 ps2.setDouble(1, amount);
                 ps2.setDouble(2, amount);
                 ps2.setInt(3, id);
-                if(ps2.executeUpdate() <= 0) throw new SQLException("Failed to update status");
+                if (ps2.executeUpdate() <= 0) throw new SQLException("Failed to update status");
             }
 
-            conn.commit(); // Success
+            conn.commit();
             return true;
 
         } catch (SQLException e) {
-            if (conn != null) conn.rollback(); // Failure
+            if (conn != null) conn.rollback();
             throw e;
         } finally {
             if (conn != null) conn.setAutoCommit(true);

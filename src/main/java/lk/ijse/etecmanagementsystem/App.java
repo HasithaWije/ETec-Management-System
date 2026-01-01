@@ -30,6 +30,7 @@ public class App extends Application {
             primaryStage.setResizable(!"login".equals(fxml));
         }
     }
+
     public static void setupLoginStageScene(String fxmlFileName) throws IOException {
 
         Scene sceneLogin = new Scene(loadFXML(fxmlFileName), 1000, 600);
@@ -43,6 +44,7 @@ public class App extends Application {
         primaryStage.centerOnScreen();
         primaryStage.show();
     }
+
     public static void setupPrimaryStageScene(String fxmlFileName) throws Exception {
 
         scene = new Scene(loadFXML(fxmlFileName), 1280, 720);
@@ -56,15 +58,15 @@ public class App extends Application {
     }
 
     public static Parent loadFXML(String fxml) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("view/"+fxml + ".fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(App.class.getResource("view/" + fxml + ".fxml"));
         return fxmlLoader.load();
     }
 
     public static Scene getScene() {
-        return  scene;
+        return scene;
     }
 
-    public static  Stage getPrimaryStage() {
+    public static Stage getPrimaryStage() {
         return primaryStage;
     }
 

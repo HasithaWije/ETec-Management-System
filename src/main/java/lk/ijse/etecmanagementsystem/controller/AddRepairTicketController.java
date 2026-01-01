@@ -33,27 +33,31 @@ import java.util.stream.Collectors;
 
 public class AddRepairTicketController {
 
-    // --- FXML INJECTIONS ---
-    @FXML private ComboBox<String> cmbCustomer;
+    @FXML
+    private ComboBox<String> cmbCustomer;
 
-    // Details Labels
-    @FXML private Label lblCusName;
-    @FXML private Label lblCusContact;
-    @FXML private Label lblCusId;
-    @FXML private Label lblCusAddress;
+    @FXML
+    private Label lblCusName;
+    @FXML
+    private Label lblCusContact;
+    @FXML
+    private Label lblCusId;
+    @FXML
+    private Label lblCusAddress;
 
-    @FXML private TextField txtDeviceName;
-    @FXML private TextField txtSerial;
-    @FXML private TextArea txtProblem;
+    @FXML
+    private TextField txtDeviceName;
+    @FXML
+    private TextField txtSerial;
+    @FXML
+    private TextArea txtProblem;
 
-    // --- DATA HANDLING ---
     private final Map<String, CustomerDTO> customerMap = new HashMap<>();
     private final ObservableList<String> originalList = FXCollections.observableArrayList();
 
     private int selectedCustomerId = -1;
     private RepairDashboardController mainController;
 
-    // --- MODELS ---
     private final CustomersModel customersModel = new CustomersModel();
     private final RepairJobModel repairJobModel = new RepairJobModel();
 
@@ -192,10 +196,8 @@ public class AddRepairTicketController {
             newJob.setStatus(RepairStatus.PENDING);
             newJob.setDateIn(new Date());
 
-            // Hardcoded User ID for now (Replace with Session User ID later)
             newJob.setUserId(1);
 
-            // 2. Call Model to Save
             boolean isSaved = repairJobModel.saveRepairJob(newJob);
 
             if (isSaved) {
@@ -203,7 +205,7 @@ public class AddRepairTicketController {
                 alert.setTitle("Success");
                 alert.setHeaderText("Repair Ticket Saved");
                 alert.showAndWait();
-                if(mainController != null) mainController.refreshList();
+                if (mainController != null) mainController.refreshList();
                 closeWindow();
 
                 generateIntakeReceipt(newJob.getRepairId());

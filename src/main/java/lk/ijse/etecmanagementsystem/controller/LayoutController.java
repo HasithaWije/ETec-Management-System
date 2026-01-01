@@ -4,13 +4,12 @@ import javafx.fxml.FXML;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonType;
-import javafx.scene.control.Dialog;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.StackPane;
 import lk.ijse.etecmanagementsystem.App;
-import lk.ijse.etecmanagementsystem.service.MenuBar;
-import lk.ijse.etecmanagementsystem.service.ThreadService;
+import lk.ijse.etecmanagementsystem.util.MenuBar;
+import lk.ijse.etecmanagementsystem.util.ThreadService;
 import lk.ijse.etecmanagementsystem.util.LoginUtil;
 
 import java.io.IOException;
@@ -21,18 +20,29 @@ public class LayoutController {
 
     @FXML
     private Button btnDashboard;
-    @FXML private Button btnSales;
-    @FXML private Button btnInventory;
-    @FXML private Button btnRepairs;
-    @FXML private Button btnSuppliers;
-    @FXML private Button btnCustomers;
-    @FXML private Button btnTransactions;
-    @FXML private Button btnReports;
-    @FXML private Button btnLogout;
-    @FXML private Button btnUser;
-    @FXML private Button btnAdmin;
+    @FXML
+    private Button btnSales;
+    @FXML
+    private Button btnInventory;
+    @FXML
+    private Button btnRepairs;
+    @FXML
+    private Button btnSuppliers;
+    @FXML
+    private Button btnCustomers;
+    @FXML
+    private Button btnTransactions;
+    @FXML
+    private Button btnReports;
+    @FXML
+    private Button btnLogout;
+    @FXML
+    private Button btnUser;
+    @FXML
+    private Button btnAdmin;
 
-    @FXML private StackPane contentArea;
+    @FXML
+    private StackPane contentArea;
 
     MenuBar menuBar = new MenuBar();
 
@@ -42,7 +52,6 @@ public class LayoutController {
         btnDashboardClicked();
 
         setupMenuBar();
-
 
 
         String username = LoginUtil.getUserName();
@@ -59,12 +68,12 @@ public class LayoutController {
             btnAdmin.setVisible(false);
         }
 
-        System.out.println("is loadingThead deamon: "+ ThreadService.getInventoryLoadingThread().isDaemon());
-        System.out.println("is loadingThead alive: "+ThreadService.getInventoryLoadingThread().isAlive());
+        System.out.println("is loadingThead deamon: " + ThreadService.getInventoryLoadingThread().isDaemon());
+        System.out.println("is loadingThead alive: " + ThreadService.getInventoryLoadingThread().isAlive());
     }
 
     @FXML
-    private void btnDashboardClicked()  {
+    private void btnDashboardClicked() {
         menuBar.setActive(btnDashboard);
         try {
             contentArea.getChildren().clear();
@@ -76,7 +85,7 @@ public class LayoutController {
     }
 
     @FXML
-    private void btnSalesClicked(){
+    private void btnSalesClicked() {
         menuBar.setActive(btnSales);
         try {
             contentArea.getChildren().clear();
@@ -88,7 +97,7 @@ public class LayoutController {
 
 
     @FXML
-    private void btnInventoryClicked()  {
+    private void btnInventoryClicked() {
         menuBar.setActive(btnInventory);
         try {
             contentArea.getChildren().setAll(App.loadFXML("inventory"));
@@ -99,7 +108,7 @@ public class LayoutController {
     }
 
     @FXML
-    private void btnRepairsClicked()  {
+    private void btnRepairsClicked() {
         menuBar.setActive(btnRepairs);
         try {
             contentArea.getChildren().setAll(App.loadFXML("repairDashboard"));
@@ -109,7 +118,7 @@ public class LayoutController {
     }
 
     @FXML
-    private void btnSuppliersClicked()  {
+    private void btnSuppliersClicked() {
         menuBar.setActive(btnSuppliers);
         try {
             contentArea.getChildren().setAll(App.loadFXML("suppliers"));
@@ -119,7 +128,7 @@ public class LayoutController {
     }
 
     @FXML
-    private void btnCustomersClicked()  {
+    private void btnCustomersClicked() {
         menuBar.setActive(btnCustomers);
         try {
             contentArea.getChildren().setAll(App.loadFXML("customers"));
@@ -129,7 +138,7 @@ public class LayoutController {
     }
 
     @FXML
-    private void btnTransactionsClicked()  {
+    private void btnTransactionsClicked() {
         menuBar.setActive(btnTransactions);
         try {
             contentArea.getChildren().setAll(App.loadFXML("transactions"));
@@ -139,7 +148,7 @@ public class LayoutController {
     }
 
     @FXML
-    private void btnReportsClicked()  {
+    private void btnReportsClicked() {
         menuBar.setActive(btnReports);
         try {
             contentArea.getChildren().setAll(App.loadFXML("reports"));
@@ -149,7 +158,7 @@ public class LayoutController {
     }
 
     @FXML
-    private void  btnAdminClicked()  {
+    private void btnAdminClicked() {
         menuBar.setActive(btnAdmin);
         try {
             contentArea.getChildren().setAll(App.loadFXML("admin"));
@@ -159,7 +168,7 @@ public class LayoutController {
     }
 
     @FXML
-    private void btnUserClicked()  {
+    private void btnUserClicked() {
         menuBar.setActive(btnUser);
         try {
             contentArea.getChildren().setAll(App.loadFXML("user"));
@@ -169,7 +178,7 @@ public class LayoutController {
     }
 
     @FXML
-    private void btnLogoutClicked()  {
+    private void btnLogoutClicked() {
         menuBar.setActive(btnLogout);
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "", ButtonType.YES, ButtonType.NO);
         alert.setTitle("Logout Confirmation");
@@ -202,7 +211,4 @@ public class LayoutController {
         menuBar.setupButton(btnUser);
         menuBar.setupButton(btnAdmin);
     }
-
-
-
 }

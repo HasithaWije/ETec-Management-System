@@ -49,7 +49,6 @@ public class UnitManagementModel {
         return itemList;
     }
 
-    // --- METHOD A: Create Empty Slots (Call this when adding a NEW Product) ---
     public boolean createPlaceholderItems(int stockId, int qty) throws SQLException {
         String sql = "INSERT INTO ProductItem (stock_id, serial_number, status, added_date) VALUES (?, ?, 'AVAILABLE', NOW())";
 
@@ -71,19 +70,16 @@ public class UnitManagementModel {
             return true;
         } catch (Exception e) {
             if (conn != null) conn.rollback();
-            throw new  SQLException("Failed to create placeholder items: " + e.getMessage());
+            throw new SQLException("Failed to create placeholder items: " + e.getMessage());
         }
     }
 
-    // --- METHOD B: The "Smart Add" (Call this when scanning items) ---
     public boolean registerRealItem(ProductItemDTO dto) throws SQLException {
         Connection conn = null;
         try {
             conn = DBConnection.getInstance().getConnection();
             conn.setAutoCommit(false);
 
-            // 1. Check for an available "Placeholder" for this product
-            // We look for serials starting with 'PENDING-' for this stock_id
             String findSql = "SELECT item_id FROM ProductItem WHERE stock_id = ? AND serial_number LIKE 'PENDING-%' LIMIT 1 FOR UPDATE";
             int placeholderId = -1;
 
@@ -97,7 +93,7 @@ public class UnitManagementModel {
             }
 
             if (placeholderId != -1) {
-                // CASE 1: Empty Slot Found -> UPDATE it (Qty does NOT change)
+
                 String updateSql = "UPDATE ProductItem SET serial_number = ?, supplier_id = ?, supplier_warranty_mo = ?, customer_warranty_mo = ?, status = 'AVAILABLE', added_date = NOW() WHERE item_id = ?";
                 try (PreparedStatement ps = conn.prepareStatement(updateSql)) {
                     ps.setString(1, dto.getSerialNumber());
@@ -110,7 +106,7 @@ public class UnitManagementModel {
                     ps.executeUpdate();
                 }
             } else {
-                // CASE 2: No Slot Found -> INSERT new row AND Increase Product Qty
+
                 String insertSql = "INSERT INTO ProductItem (stock_id, supplier_id, serial_number, supplier_warranty_mo, customer_warranty_mo, status, added_date) VALUES (?, ?, ?, ?, ?, 'AVAILABLE', NOW())";
                 try (PreparedStatement ps = conn.prepareStatement(insertSql)) {
                     ps.setInt(1, dto.getStockId());
@@ -123,7 +119,6 @@ public class UnitManagementModel {
                     ps.executeUpdate();
                 }
 
-                // Sync the main Product Qty
                 String qtySql = "UPDATE Product SET qty = qty + 1 WHERE stock_id = ?";
                 try (PreparedStatement qtyPs = conn.prepareStatement(qtySql)) {
                     qtyPs.setInt(1, dto.getStockId());
@@ -148,7 +143,6 @@ public class UnitManagementModel {
             conn = DBConnection.getInstance().getConnection();
             conn.setAutoCommit(false); // Start Transaction
 
-            // 1. Check if an Empty Slot (Placeholder) exists for this Product
             String findSql = "SELECT item_id FROM ProductItem WHERE stock_id = ? AND serial_number LIKE 'PENDING-%' LIMIT 1 FOR UPDATE";
             int existingId = -1;
             if (dto.getSerialNumber().isEmpty()) {
@@ -163,47 +157,6 @@ public class UnitManagementModel {
                     }
                 }
             }
-
-//            int finalId ;
-
-//            if (existingId != -1) {
-//                // --- SCENARIO A: Placeholder Found -> UPDATE it ---
-//                String updateSql = "UPDATE ProductItem SET serial_number = ?, customer_warranty_mo = ?, status = 'AVAILABLE', added_date = NOW() WHERE item_id = ?";
-//                try (PreparedStatement updatePstm = conn.prepareStatement(updateSql)) {
-//                    updatePstm.setString(1, dto.getSerialNumber());
-//                    updatePstm.setInt(2, dto.getCustomerWarranty());
-//                    updatePstm.setInt(3, existingId);
-//                    updatePstm.executeUpdate();
-//                }
-//                finalId = existingId; // Return the ID of the slot we just filled
-//            } else {
-//                // --- SCENARIO B: No Placeholder -> INSERT New ---
-//                String insertSql = "INSERT INTO ProductItem (stock_id, serial_number, customer_warranty_mo, status, added_date) VALUES (?, ?, ?, 'AVAILABLE', NOW())";
-//
-//                try (PreparedStatement insertPstm = conn.prepareStatement(insertSql, Statement.RETURN_GENERATED_KEYS)) {
-//                    insertPstm.setInt(1, dto.getStockId());
-//                    insertPstm.setString(2, dto.getSerialNumber());
-//                    insertPstm.setInt(3, dto.getCustomerWarranty());
-//
-//                    int affectedRows = insertPstm.executeUpdate();
-//                    if (affectedRows == 0) throw new SQLException("Creating item failed, no rows affected.");
-//
-//                    try (ResultSet generatedKeys = insertPstm.getGeneratedKeys()) {
-//                        if (generatedKeys.next()) {
-//                            finalId = generatedKeys.getInt(1);
-//                        } else {
-//                            throw new SQLException("Creating item failed, no ID obtained.");
-//                        }
-//                    }
-//                }
-//
-//                // CRITICAL: Since we added a NEW line, we must increase the Product Qty
-//                String updateQtySql = "UPDATE Product SET qty = qty + 1 WHERE stock_id = ?";
-//                try (PreparedStatement qtyPstm = conn.prepareStatement(updateQtySql)) {
-//                    qtyPstm.setInt(1, dto.getStockId());
-//                    qtyPstm.executeUpdate();
-//                }
-//            }
 
             conn.commit();
             return existingId <= 0 ? -1 : existingId;
@@ -228,7 +181,6 @@ public class UnitManagementModel {
         }
     }
 
-    // --- 1. CHANGED: Get Map of ID -> Name ---
     public Map<Integer, String> getAllProductMap() throws SQLException {
         Map<Integer, String> map = new HashMap<>();
         try (ResultSet rs = CrudUtil.execute("SELECT stock_id, name FROM Product")) {
@@ -239,7 +191,6 @@ public class UnitManagementModel {
         return map;
     }
 
-    // --- 2. CHANGED: Get Map of ID -> Name ---
     public Map<Integer, String> getAllSuppliersMap() throws SQLException {
         Map<Integer, String> map = new HashMap<>();
         try (ResultSet rs = CrudUtil.execute("SELECT supplier_id, supplier_name FROM Supplier")) {
@@ -250,7 +201,6 @@ public class UnitManagementModel {
         return map;
     }
 
-    // --- 3. NEW: Get Meta by ID ---
     public ProductMeta getProductMetaById(int stockId) throws SQLException {
         try (ResultSet rs = CrudUtil.execute("SELECT name, warranty_months FROM Product WHERE stock_id = ?", stockId)) {
             if (rs.next()) {
@@ -260,7 +210,6 @@ public class UnitManagementModel {
         return null;
     }
 
-    // --- 4. NEW: Helper to get specific IDs for a serial (Used in Fix Tab) ---
     public ItemIds getIdsBySerial(String serial) throws SQLException {
         String sql = "SELECT stock_id, supplier_id FROM ProductItem WHERE serial_number = ?";
         try (ResultSet rs = CrudUtil.execute(sql, serial)) {
@@ -271,7 +220,6 @@ public class UnitManagementModel {
         return null;
     }
 
-    // --- EXISTING METHODS (Optimized) ---
 
     public boolean saveBatch(int stockId, Integer supplierId, int supWar, int custWar, List<String> serials) throws SQLException {
         if (serials.isEmpty()) return false;
@@ -423,7 +371,7 @@ public class UnitManagementModel {
         Connection con = null;
         boolean isStatusChange = false;
         boolean isQtyChange = false;
-        try{
+        try {
             con = DBConnection.getInstance().getConnection();
             con.setAutoCommit(false);
 
@@ -431,17 +379,16 @@ public class UnitManagementModel {
             isQtyChange = CrudUtil.execute(sqlQty, newStatus, serial);
 
             con.commit();
-        }catch(SQLException e){
-            if(con != null) con.rollback();
+        } catch (SQLException e) {
+            if (con != null) con.rollback();
             throw e;
-        }finally {
-            if(con != null) con.setAutoCommit(true);
+        } finally {
+            if (con != null) con.setAutoCommit(true);
         }
         return isStatusChange && isQtyChange;
 
     }
 
-    // --- Data Classes ---
     public static class ProductMeta {
         public final int stockId;
         public final int defaultWarranty;

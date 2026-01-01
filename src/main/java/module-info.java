@@ -14,7 +14,6 @@ module lk.ijse.etecmanagementsystem {
     requires java.mail;
 
 
-
     exports lk.ijse.etecmanagementsystem;
     opens lk.ijse.etecmanagementsystem to javafx.fxml;
 
@@ -25,14 +24,9 @@ module lk.ijse.etecmanagementsystem {
     opens lk.ijse.etecmanagementsystem.util to javafx.fxml;
 
     opens lk.ijse.etecmanagementsystem.dto to java.base;
-    exports  lk.ijse.etecmanagementsystem.dto;
+    exports lk.ijse.etecmanagementsystem.dto;
 
     opens lk.ijse.etecmanagementsystem.dto.tm to java.base;
     exports lk.ijse.etecmanagementsystem.dto.tm;
-
-    exports lk.ijse.etecmanagementsystem.service;
-    opens lk.ijse.etecmanagementsystem.service to javafx.fxml;
-
-
 
 }

@@ -15,7 +15,6 @@ import java.util.List;
 
 public class DashboardModel {
 
-    // 1. GET TOP CARD STATISTICS
     public DashboardTM getDashboardStats() throws SQLException {
         Connection conn = DBConnection.getInstance().getConnection();
         Statement stmt = conn.createStatement();
@@ -45,11 +44,10 @@ public class DashboardModel {
         ResultSet rs4 = stmt.executeQuery(sqlDebts);
         if (rs4.next()) debts = rs4.getDouble(1);
 
-        stmt.close(); // Close statement to release resources
+        stmt.close();
         return new DashboardTM(income, repairs, stock, debts);
     }
 
-    // 2. GET URGENT REPAIRS (Oldest Pending Jobs First)
     public ObservableList<UrgentRepairTM> getUrgentRepairs() throws SQLException {
         ObservableList<UrgentRepairTM> list = FXCollections.observableArrayList();
         String sql = "SELECT repair_id, device_name, status, DATE(date_in) as d_in FROM RepairJob " +
@@ -69,7 +67,6 @@ public class DashboardModel {
         return list;
     }
 
-    // 3. GET UNPAID DEBTS (Combines Sales & Repairs with IDs)
     public ObservableList<DebtTM> getUnpaidDebts() throws SQLException {
         ObservableList<DebtTM> list = FXCollections.observableArrayList();
         // Uses UNION ALL to combine Sales and Repair tables
@@ -94,7 +91,6 @@ public class DashboardModel {
         return list;
     }
 
-    // 4. GET CHART DATA (Last 7 Days Revenue)
     public XYChart.Series<String, Number> getSalesChartData() throws SQLException {
         XYChart.Series<String, Number> series = new XYChart.Series<>();
         series.setName("Revenue");
@@ -114,18 +110,15 @@ public class DashboardModel {
     public List<XYChart.Series<String, Number>> getTrafficChartData() throws SQLException {
         List<XYChart.Series<String, Number>> allSeries = new ArrayList<>();
 
-        // Series 1: Sales Count
         XYChart.Series<String, Number> seriesSales = new XYChart.Series<>();
         seriesSales.setName("Sales");
 
-        // Series 2: Repair Count
         XYChart.Series<String, Number> seriesRepairs = new XYChart.Series<>();
         seriesRepairs.setName("Repairs");
 
         Connection conn = DBConnection.getInstance().getConnection();
         Statement stmt = conn.createStatement();
 
-        // 1. Get Sales Count (Last 7 Days)
         String sqlSales = "SELECT DATE(sale_date) as d, COUNT(*) as c FROM Sales " +
                 "WHERE sale_date >= DATE(NOW()) - INTERVAL 7 DAY " +
                 "GROUP BY DATE(sale_date) ORDER BY DATE(sale_date)";
@@ -134,7 +127,6 @@ public class DashboardModel {
             seriesSales.getData().add(new XYChart.Data<>(rs1.getString("d"), rs1.getInt("c")));
         }
 
-        // 2. Get Repair Count (Last 7 Days)
         String sqlRepairs = "SELECT DATE(date_in) as d, COUNT(*) as c FROM RepairJob " +
                 "WHERE date_in >= DATE(NOW()) - INTERVAL 7 DAY " +
                 "GROUP BY DATE(date_in) ORDER BY DATE(date_in)";

@@ -9,6 +9,7 @@ import lk.ijse.etecmanagementsystem.db.DBConnection;
 import lk.ijse.etecmanagementsystem.dto.RepairJobDTO;
 import lk.ijse.etecmanagementsystem.dto.tm.RepairJobTM;
 import lk.ijse.etecmanagementsystem.model.RepairJobModel;
+import lk.ijse.etecmanagementsystem.util.GenerateReports;
 import net.sf.jasperreports.engine.JRException;
 import net.sf.jasperreports.engine.JasperFillManager;
 import net.sf.jasperreports.engine.JasperPrint;
@@ -25,24 +26,30 @@ import java.util.Map;
 
 public class RepairCheckoutController {
 
-    // --- UI ELEMENTS ---
-    @FXML private Label lblJobId;
-    @FXML private Label lblCustomer;
-    @FXML private Label lblPartsTotal;
-    @FXML private Label lblLaborTotal;
-    @FXML private Label lblGrandTotal;
-    @FXML private Label lblBalance;
+    @FXML
+    private Label lblJobId;
+    @FXML
+    private Label lblCustomer;
+    @FXML
+    private Label lblPartsTotal;
+    @FXML
+    private Label lblLaborTotal;
+    @FXML
+    private Label lblGrandTotal;
+    @FXML
+    private Label lblBalance;
 
     @FXML
     private Label lblDiscount;
-
     @FXML
     private TextField txtDiscount;
     @FXML
     private Label lblSubTotal;
 
-    @FXML private ComboBox<String> cmbPaymentMethod;
-    @FXML private TextField txtAmountPaid;
+    @FXML
+    private ComboBox<String> cmbPaymentMethod;
+    @FXML
+    private TextField txtAmountPaid;
 
     // --- DATA ---
     private RepairJobTM jobTM;
@@ -64,7 +71,7 @@ public class RepairCheckoutController {
 
         txtDiscount.textProperty().addListener((obs, oldVal, newVal) -> {
             try {
-                if(newVal != null && newVal.isEmpty()){
+                if (newVal != null && newVal.isEmpty()) {
                     return;
                 }
                 double discount = Double.parseDouble(newVal);
@@ -86,7 +93,6 @@ public class RepairCheckoutController {
         txtAmountPaid.requestFocus();
     }
 
-    // --- RECEIVE DATA FROM DASHBOARD ---
     public void setInvoiceData(RepairJobTM job, RepairDashboardController main) {
         this.jobTM = job;
         this.mainController = main;
@@ -143,14 +149,14 @@ public class RepairCheckoutController {
             double paid = Double.parseDouble(txtAmountPaid.getText());
 
             if (paid < 0) throw new NumberFormatException();
-            if(paid > grandTotal){
+            if (paid > grandTotal) {
                 new Alert(Alert.AlertType.ERROR, "Paid amount cannot exceed the grand total.").showAndWait();
                 return;
             }
-            if(paid == 0){
+            if (paid == 0) {
                 new Alert(Alert.AlertType.ERROR, "Paid amount cannot be zero.").showAndWait();
                 return;
-            }else if(paid < grandTotal){
+            } else if (paid < grandTotal) {
                 Alert alert = new Alert(Alert.AlertType.CONFIRMATION,
                         "The amount paid is less than the grand total. This will mark the job as PARTIALLY PAID. Do you want to proceed?",
                         ButtonType.YES, ButtonType.NO);
@@ -183,7 +189,8 @@ public class RepairCheckoutController {
             if (success) {
                 new Alert(Alert.AlertType.INFORMATION, "Job Delivered Successfully!").showAndWait();
                 mainController.refreshList(); // Reload Dashboard
-                generateInvoice(jobTM.getRepairId());
+//                generateInvoice(jobTM.getRepairId());
+                GenerateReports.generateInvoice(jobTM.getRepairId(), "repairInvoice2", "REPAIR");
                 closeWindow();
             }
 
@@ -195,36 +202,10 @@ public class RepairCheckoutController {
         }
     }
 
-    public void generateInvoice(int repairId) {
-        try {
-
-            String path = "reports/repairInvoice2.jasper";
-
-            InputStream reportStream = App.class.getResourceAsStream(path);
-
-            if (reportStream == null) {
-                System.err.println("Error: Could not find repairInvoice.jasper at " + path);
-                return;
-            }
-
-            JasperReport jasperReport = (JasperReport) JRLoader.loadObject(reportStream);
-
-            Map<String, Object> parameters = new HashMap<>();
-
-            parameters.put("repairId", repairId);
-
-            Connection connection = DBConnection.getInstance().getConnection();
-
-            JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, connection);
-
-            JasperViewer.viewReport(jasperPrint, false); // false = Don't close app on exit
-
-        } catch (JRException | java.sql.SQLException e) {
-            e.printStackTrace();
-        }
+    @FXML
+    private void handleCancel() {
+        closeWindow();
     }
-
-    @FXML private void handleCancel() { closeWindow(); }
 
     private void closeWindow() {
         ((Stage) lblJobId.getScene().getWindow()).close();

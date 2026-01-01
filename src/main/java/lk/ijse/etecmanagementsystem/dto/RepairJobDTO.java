@@ -9,17 +9,17 @@ public class RepairJobDTO {
     private int cusId;
     private int userId;
     private String deviceName;
-    private String deviceSn;      // Changed to camelCase (DB: device_sn)
-    private String problemDesc;   // Tab 1: Intake
-    private String diagnosisDesc; // Tab 2: Diagnosis (NEW)
-    private String repairResults; // Tab 3: Results (NEW)
+    private String deviceSn;
+    private String problemDesc;
+    private String diagnosisDesc;
+    private String repairResults;
     private RepairStatus status;
     private Date dateIn;
     private Date dateOut;
     private double laborCost;
     private double partsCost;
-    private double totalAmount;   // Changed to match DB column (DB: total_amount)
-    private double paidAmount; // Changed to match DB column (DB: paid_amount)
+    private double totalAmount;
+    private double paidAmount;
     private double discount;
     private PaymentStatus paymentStatus;
 
@@ -95,4 +95,27 @@ public class RepairJobDTO {
 
     public String getRepairResults() { return repairResults; }
     public void setRepairResults(String repairResults) { this.repairResults = repairResults; }
+
+    @Override
+    public String toString() {
+        return "RepairJobDTO{" +
+                "repairId=" + repairId +
+                ", cusId=" + cusId +
+                ", userId=" + userId +
+                ", deviceName='" + deviceName + '\'' +
+                ", deviceSn='" + deviceSn + '\'' +
+                ", problemDesc='" + problemDesc + '\'' +
+                ", diagnosisDesc='" + diagnosisDesc + '\'' +
+                ", repairResults='" + repairResults + '\'' +
+                ", status=" + status +
+                ", dateIn=" + dateIn +
+                ", dateOut=" + dateOut +
+                ", laborCost=" + laborCost +
+                ", partsCost=" + partsCost +
+                ", totalAmount=" + totalAmount +
+                ", paidAmount=" + paidAmount +
+                ", discount=" + discount +
+                ", paymentStatus=" + paymentStatus +
+                '}';
+    }
 }

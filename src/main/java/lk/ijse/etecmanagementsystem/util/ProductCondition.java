@@ -17,21 +17,18 @@ public enum ProductCondition {
     public static ProductCondition fromString(String text) {
         if (text == null) return BOTH;
 
-        switch (text) {
-            case "BRAND NEW": return BRAND_NEW;
-            case "USED":      return USED;
-            default:          return BOTH;
-        }
+        return switch (text) {
+            case "BRAND NEW" -> BRAND_NEW;
+            case "USED" -> USED;
+            default -> BOTH;
+        };
     }
-
 
 
     public String getLabel() {
         return label;
     }
 
-    // This is CRITICAL for JavaFX ComboBoxes.
-    // It tells the UI to display "Brand New" instead of "BRAND_NEW"
     @Override
     public String toString() {
         return label;

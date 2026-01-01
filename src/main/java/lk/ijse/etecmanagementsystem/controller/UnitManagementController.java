@@ -143,7 +143,6 @@ public class UnitManagementController {
             ObservableList<String> prodObList = FXCollections.observableArrayList();
 
 
-
             for (Map.Entry<Integer, String> entry : dbProducts.entrySet()) {
                 int id = entry.getKey();
                 String name = entry.getValue();
@@ -203,22 +202,23 @@ public class UnitManagementController {
         });
 
         txtViewSearch.textProperty().addListener((o, old, newVal) -> {
-           if (newVal == null ) {
-               return;
-           }
+            if (newVal == null) {
+                return;
+            }
             String searchTxt = newVal.trim();
-           filterViewList(searchTxt);
+            filterViewList(searchTxt);
         });
     }
 
     // --- TAB 1 LOGIC ---
-    @FXML private void handleMouseDoubleClicked(MouseEvent event) {
+    @FXML
+    private void handleMouseDoubleClicked(MouseEvent event) {
         if (event.getClickCount() == 2) {
             ProductItemDTO selectedItem = tblView.getSelectionModel().getSelectedItem();
             if (selectedItem != null && selectedItem.getSerialNumber() != null) {
-                if(selectedItem.getSerialNumber().isEmpty()){
+                if (selectedItem.getSerialNumber().isEmpty()) {
                     return;
-                }else if(selectedItem.getSerialNumber().contains("PENDING")){
+                } else if (selectedItem.getSerialNumber().contains("PENDING")) {
                     new Alert(Alert.AlertType.WARNING, "Cannot update status of a place holders.").show();
                     return;
                 }
@@ -229,16 +229,18 @@ public class UnitManagementController {
             }
         }
     }
-private void setupTooltipForTableView() {
-    Tooltip hintTooltip = new Tooltip("Double-click a row to update status");
-    hintTooltip.setStyle("-fx-font-size: 12px;");
 
-    // Install it on the TableView
-    Tooltip.install(tblView, hintTooltip);
+    private void setupTooltipForTableView() {
+        Tooltip hintTooltip = new Tooltip("Double-click a row to update status");
+        hintTooltip.setStyle("-fx-font-size: 12px;");
 
-    // Optional: Make it appear faster (default delay is often too long for hints)
-    hintTooltip.setShowDelay(javafx.util.Duration.millis(200));
+        // Install it on the TableView
+        Tooltip.install(tblView, hintTooltip);
+
+        // Optional: Make it appear faster (default delay is often too long for hints)
+        hintTooltip.setShowDelay(javafx.util.Duration.millis(200));
     }
+
     private void loadAllItemsToViewTable() {
         try {
             List<ProductItemDTO> allProductItems = model.getAllProductItems();
@@ -247,10 +249,11 @@ private void setupTooltipForTableView() {
             viewList.clear();
             viewList.addAll(productItemList);
         } catch (Exception e) {
-            new Alert(Alert.AlertType.ERROR,"DB Error").show();
+            new Alert(Alert.AlertType.ERROR, "DB Error").show();
             System.out.println(e.getMessage());
         }
     }
+
     private void filterViewList(String searchText) {
         List<ProductItemDTO> filteredList = new ArrayList<>();
 
@@ -268,7 +271,7 @@ private void setupTooltipForTableView() {
                     return matchSerial || matchId || matchName;
                 })
                 .toList();
-        if(!searchText.isEmpty()){
+        if (!searchText.isEmpty()) {
             tblView.setItems(FXCollections.observableArrayList(filteredList));
         } else {
             tblView.setItems(viewList);
@@ -280,7 +283,7 @@ private void setupTooltipForTableView() {
         String selection = cmbViewProduct.getValue();
         Integer stockId = productSelectionMap.get(selection);
 
-        if(selection == null || stockId == null){
+        if (selection == null || stockId == null) {
             loadAllItemsToViewTable();
             return;
         }
@@ -288,9 +291,9 @@ private void setupTooltipForTableView() {
         try {
             // Get Name just for the DTO display (optional, can extract from selection string too)
             String name = selection.substring(0, selection.lastIndexOf(" (ID:"));
-            name = name != null ? name.trim() :"";
+            name = name != null ? name.trim() : "";
 
-            if(name.isEmpty()){
+            if (name.isEmpty()) {
                 loadAllItemsToViewTable();
                 return;
             }
@@ -298,7 +301,7 @@ private void setupTooltipForTableView() {
             viewList.clear();
             viewList.addAll(model.getUnitsByStockId(stockId, name));
         } catch (SQLException ex) {
-            new Alert(Alert.AlertType.ERROR,"DB Error").show();
+            new Alert(Alert.AlertType.ERROR, "DB Error").show();
             System.out.println(ex.getMessage());
         }
     }
@@ -337,7 +340,7 @@ private void setupTooltipForTableView() {
                 historyList.addAll(model.getUnitsByStockId(selectedStockId, cleanName));
             }
         } catch (SQLException e) {
-            new Alert(Alert.AlertType.ERROR,"Something went wrong!").show();
+            new Alert(Alert.AlertType.ERROR, "Something went wrong!").show();
             System.out.println(e.getMessage());
         }
     }
@@ -357,7 +360,7 @@ private void setupTooltipForTableView() {
                 return;
             }
         } catch (SQLException ex) {
-            if(ex.getMessage().contains("Duplicate entry")) {
+            if (ex.getMessage().contains("Duplicate entry")) {
                 showAlert(Alert.AlertType.ERROR, "Duplicate in DB");
                 return;
             } else {
@@ -405,8 +408,6 @@ private void setupTooltipForTableView() {
                 itemDTO.setSupplierWarranty(supWar);
                 itemDTO.setCustomerWarranty(custWar);
 
-                // Call the SMART method
-                // This will auto-detect if it needs to fill a slot or add a new one
                 if (model.registerRealItem(itemDTO)) {
                     successCount++;
                 }
@@ -435,36 +436,6 @@ private void setupTooltipForTableView() {
             }
         }
     }
-
-//    @FXML void handleSaveAll(ActionEvent e) {
-//        if (selectedStockId == -1) return;
-//        try {
-//            // Get ID from Map
-//            Integer supId = (cmbSupplier.getValue() != null) ? supplierSelectionMap.get(cmbSupplier.getValue()) : null;
-//
-//            int supWar = txtSupplierWarranty.getText().isEmpty() ? 0 : Integer.parseInt(txtSupplierWarranty.getText());
-//            int custWar = Integer.parseInt(txtCustomerWarranty.getText());
-//            List<String> list = new ArrayList<>(stagingList);
-//
-//            if (model.saveBatch(selectedStockId, supId, supWar, custWar, list)) {
-//                showAlert(Alert.AlertType.INFORMATION, "Success");
-//                stagingList.clear();
-//                lblStagingCount.setText("0 Items");
-//                btnSaveAll.setDisable(true);
-//
-//                // Refresh History
-//                String currentComboVal = cmbProduct.getValue();
-//                if(currentComboVal != null) {
-//                    historyList.clear();
-//                    String cleanName = currentComboVal.substring(0, currentComboVal.lastIndexOf(" (ID:"));
-//                    historyList.addAll(model.getUnitsByStockId(selectedStockId, cleanName));
-//                }
-//
-//                // Refresh View if match
-//                if (cmbViewProduct.getValue() != null && cmbViewProduct.getValue().equals(currentComboVal)) handleViewFilter(null);
-//            }
-//        } catch (Exception ex) { showAlert(Alert.AlertType.ERROR, ex.getMessage()); }
-//    }
 
     // --- TAB 3: CORRECTION ---
     @FXML
@@ -498,7 +469,7 @@ private void setupTooltipForTableView() {
                 vboxFixDetails.setDisable(true);
             }
         } catch (SQLException ex) {
-            new Alert(Alert.AlertType.ERROR,"Something went wrong!").show();
+            new Alert(Alert.AlertType.ERROR, "Something went wrong!").show();
             System.out.println(ex.getMessage());
         }
     }
@@ -551,7 +522,7 @@ private void setupTooltipForTableView() {
                 vboxStatusUpdate.setDisable(true);
             }
         } catch (SQLException ex) {
-            new Alert(Alert.AlertType.ERROR,"Something went wrong!").show();
+            new Alert(Alert.AlertType.ERROR, "Something went wrong!").show();
             System.out.println(ex.getMessage());
         }
     }

@@ -2,7 +2,6 @@ package lk.ijse.etecmanagementsystem.controller;
 
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
-import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.*;
 import lk.ijse.etecmanagementsystem.App;
@@ -10,12 +9,10 @@ import lk.ijse.etecmanagementsystem.model.LoginModel;
 import lk.ijse.etecmanagementsystem.util.ETecAlerts;
 import lk.ijse.etecmanagementsystem.util.EmailService;
 import lk.ijse.etecmanagementsystem.util.LoginUtil;
-import lk.ijse.etecmanagementsystem.service.ButtonStyle;
+import lk.ijse.etecmanagementsystem.util.ButtonStyle;
 
-import java.net.URL;
 import java.sql.SQLException;
 import java.util.Optional;
-import java.util.Random;
 
 
 public class LoginController {
@@ -69,38 +66,6 @@ public class LoginController {
 
     }
 
-    public void setBackground(Region rootPane) {
-        // 1. Load the image from resources (Portable path)
-        // This looks inside 'src/main/resources' for the path
-        String imagePath = "/lk/ijse/etecmanagementsystem/images/Background03.png";
-        URL imageUrl = getClass().getResource(imagePath);
-
-        // Safety check to prevent crashing if path is wrong
-        if (imageUrl == null) {
-            System.out.println("Error: Image not found at " + imagePath);
-            return;
-        }
-
-        Image image = new Image(imageUrl.toExternalForm());
-
-        // 2. Define the "Cover" behavior
-        // Width=1.0, Height=1.0, AsPercentage=true, Contain=false, Cover=true
-        BackgroundSize backgroundSize = new BackgroundSize(1.0, 1.0, true, true, false, true);
-
-        // 3. Create the BackgroundImage
-        BackgroundImage bgImage = new BackgroundImage(
-                image,
-                BackgroundRepeat.NO_REPEAT,  // Don't repeat horizontally
-                BackgroundRepeat.NO_REPEAT,  // Don't repeat vertically
-                BackgroundPosition.CENTER,   // Center the image
-                backgroundSize
-        );
-
-        // 4. Apply it to your pane (e.g., anchorPane, stackPane)
-        rootPane.setBackground(new Background(bgImage));
-    }
-
-
     @FXML
     private void onLoginButtonClick() {
         String username = userNameField.getText() == null ? "" : userNameField.getText().trim();
@@ -112,7 +77,7 @@ public class LoginController {
         if (checkIsEmpty(password, passwordBox)) return;
 
 
-        try{
+        try {
             if (loginModel.validateCredentials(username, password)) {
 
                 LoginUtil.setUserName(username);
@@ -120,11 +85,11 @@ public class LoginController {
                 role = loginModel.getUserRole(username);
 
 
-                if(userId == -1) {
-                ETecAlerts.showAlert(Alert.AlertType.ERROR, "Login Error", "Unable to retrieve user ID. Please contact support.");
+                if (userId == -1) {
+                    ETecAlerts.showAlert(Alert.AlertType.ERROR, "Login Error", "Unable to retrieve user ID. Please contact support.");
                     return;
                 }
-                if(role == null || role.isEmpty()) {
+                if (role == null || role.isEmpty()) {
                     ETecAlerts.showAlert(Alert.AlertType.ERROR, "Login Error", "Unable to retrieve user role. Please contact support.");
                     return;
                 }
@@ -168,11 +133,10 @@ public class LoginController {
         }
 
 
-
     }
 
     private boolean checkIsEmpty(String username, HBox userNameBox) {
-        if(username.isEmpty()) {
+        if (username.isEmpty()) {
             userNameBox.getStyleClass().add("input-box-error");
             Alert alert = new Alert(Alert.AlertType.WARNING);
             alert.setTitle("Input Required");
@@ -184,49 +148,16 @@ public class LoginController {
         return false;
     }
 
-    private void loginButtonStyle() {
-        final String neonColor = "#21E3FF";
-
-        final String idleStyle = "-fx-background-color: transparent;"
-                + " -fx-text-fill: white;"
-                + " -fx-padding: 1px;"
-                + " -fx-border-color: white; "
-                + " -fx-border-width: 1; "
-                + " -fx-effect: dropshadow(three-pass-box, rgba(0,0,0,0.4), 5, 0, 0, 0);";
-
-        final String hoverStyle = "-fx-background-color:  #1e293b;"
-                + " -fx-text-fill: white;"
-                + " -fx-padding: 1px;"
-                + " -fx-border-color: " + neonColor + "; "
-                + " -fx-border-width: 1;"
-                + " -fx-effect: dropshadow(three-pass-box, " + neonColor + ", 5, 0.5, 0, 0);"
-                + " -fx-cursor: hand;";
-
-        final String activeStyle = "-fx-background-color: #1e293b; "
-                + "-fx-text-fill: white; "
-                + "-fx-padding: 1px; "
-                + "-fx-border-color: " + neonColor + "; "
-                + "-fx-border-width: 0.5; "
-                + "-fx-effect: dropshadow(three-pass-box, " + neonColor + ", 2.5, 0.2, 0, 0);"
-                + " -fx-cursor: hand;";
-
-        buttonStyle.setCurrentStyle(idleStyle);
-        buttonStyle.setHoverStyle(hoverStyle);
-        buttonStyle.setActiveStyle(activeStyle);
-
-        buttonStyle.onMouseAction(loginBtn);
-    }
-
     @FXML
     private void handleForgotPassword() {
 
         String username = userNameField.getText() == null ? "" : userNameField.getText().trim();
-        if(username.isEmpty()) {
+        if (username.isEmpty()) {
             ETecAlerts.showAlert(Alert.AlertType.WARNING, "Input Required", "Please enter your username before proceeding.");
             return;
         }
 
-        if(!checkUserNameExists(username)) {
+        if (!checkUserNameExists(username)) {
             ETecAlerts.showAlert(Alert.AlertType.ERROR, "Email Error", "Invalid username. Please enter a registered username.");
             return;
         }
@@ -236,7 +167,6 @@ public class LoginController {
         dialog.setTitle("Get Password to Email");
         dialog.setHeaderText("Forgot your password?");
         dialog.setContentText("Please enter your registered email:");
-
 
 
         Optional<String> result = dialog.showAndWait();
@@ -256,23 +186,23 @@ public class LoginController {
         System.out.println("User entered: " + email);
 
 
-            if (isValidEmailInDatabase(username, email)) {
+        if (isValidEmailInDatabase(username, email)) {
 
-                String userPassword = getUserPassword(username);
-                if (userPassword == null) {
-                    return;
-                }
-                // Send the password to the user's email
-                boolean isSent = EmailService.sendUserPasswordToEmail(email, userPassword);
-                if (!isSent) {
-                    return;
-                }
-                // Show confirmation alert
-                ETecAlerts.showAlert(Alert.AlertType.INFORMATION, "Email Successfully Sent", "Email Sent");
-
-            } else {
-                ETecAlerts.showAlert(Alert.AlertType.ERROR, "Email Error", "The provided email does not match our records for the given username.");
+            String userPassword = getUserPassword(username);
+            if (userPassword == null) {
+                return;
             }
+            // Send the password to the user's email
+            boolean isSent = EmailService.sendUserPasswordToEmail(email, userPassword);
+            if (!isSent) {
+                return;
+            }
+
+            ETecAlerts.showAlert(Alert.AlertType.INFORMATION, "Email Successfully Sent", "Email Sent");
+
+        } else {
+            ETecAlerts.showAlert(Alert.AlertType.ERROR, "Email Error", "The provided email does not match our records for the given username.");
+        }
 
     }
 
@@ -280,7 +210,7 @@ public class LoginController {
         try {
             return loginModel.validateUserName(username);
         } catch (SQLException e) {
-            ETecAlerts.showAlert(Alert.AlertType.INFORMATION,"Database Error", "An error occurred while accessing the database. Please try again later.");
+            ETecAlerts.showAlert(Alert.AlertType.INFORMATION, "Database Error", "An error occurred while accessing the database. Please try again later.");
             return false;
         }
     }
@@ -289,7 +219,7 @@ public class LoginController {
         try {
             return loginModel.getUserPassword(username);
         } catch (SQLException e) {
-            ETecAlerts.showAlert(Alert.AlertType.INFORMATION,"Database Error", "An error occurred while accessing the database. Please try again later.");
+            ETecAlerts.showAlert(Alert.AlertType.INFORMATION, "Database Error", "An error occurred while accessing the database. Please try again later.");
             return null;
         }
     }
@@ -299,7 +229,7 @@ public class LoginController {
         try {
             return loginModel.validateUserEmail(userName, email);
         } catch (SQLException e) {
-            ETecAlerts.showAlert(Alert.AlertType.INFORMATION,"Database Error", "An error occurred while accessing the database. Please try again later.");
+            ETecAlerts.showAlert(Alert.AlertType.INFORMATION, "Database Error", "An error occurred while accessing the database. Please try again later.");
             return false;
         }
     }

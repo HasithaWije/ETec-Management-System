@@ -15,13 +15,13 @@ public class AdminController {
         DirectoryChooser directoryChooser = new DirectoryChooser();
         directoryChooser.setTitle("Select Location to Save Backup");
 
-// Get the button that was clicked
+
         javafx.scene.Node source = (javafx.scene.Node) event.getSource();
-// Use the button to find the window
+
         File selectedDirectory = directoryChooser.showDialog(source.getScene().getWindow());
 
         if (selectedDirectory != null) {
-            // Replace with your ACTUAL database credentials
+
             boolean isSuccess = BackupUtil.backupDatabase(
                     "ETec", // DB Name
                     "root",                 // Username

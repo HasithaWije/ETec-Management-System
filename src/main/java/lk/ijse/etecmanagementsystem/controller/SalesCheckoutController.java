@@ -15,6 +15,7 @@ import lk.ijse.etecmanagementsystem.dto.CustomerDTO;
 import lk.ijse.etecmanagementsystem.dto.SalesDTO;
 import lk.ijse.etecmanagementsystem.dto.tm.ItemCartTM;
 import lk.ijse.etecmanagementsystem.model.SalesModel;
+import lk.ijse.etecmanagementsystem.util.GenerateReports;
 import lk.ijse.etecmanagementsystem.util.LoginUtil;
 import lk.ijse.etecmanagementsystem.util.PaymentStatus;
 import net.sf.jasperreports.engine.JRException;
@@ -35,46 +36,60 @@ import java.util.*;
 
 public class SalesCheckoutController {
 
-    // --- FXML Bindings (Must match fx:ids in checkout_form.fxml) ---
-    @FXML private Label lblDate;
-    @FXML private Label lblTime;
-    @FXML private Label lblEmployee;
+    @FXML
+    private Label lblDate;
+    @FXML
+    private Label lblTime;
+    @FXML
+    private Label lblEmployee;
 
-    // Customer Details
-    @FXML private Label lblCusName;
-    @FXML private Label lblCusContact;
-    @FXML private Label lblCusEmail;
-    @FXML private Label lblCusAddress;
+    @FXML
+    private Label lblCusName;
+    @FXML
+    private Label lblCusContact;
+    @FXML
+    private Label lblCusEmail;
+    @FXML
+    private Label lblCusAddress;
 
-    // Table
-    @FXML private TableView<ItemCartTM> tblReceipt;
-    @FXML private TableColumn<ItemCartTM, String> colItem;
-    @FXML private TableColumn<ItemCartTM, String> colSerial;
-    @FXML private TableColumn<ItemCartTM, Integer> colWarranty;
-    @FXML private TableColumn<ItemCartTM, Integer> colQty;
-    @FXML private TableColumn<ItemCartTM, Double> colTotal;
+    @FXML
+    private TableView<ItemCartTM> tblReceipt;
+    @FXML
+    private TableColumn<ItemCartTM, String> colItem;
+    @FXML
+    private TableColumn<ItemCartTM, String> colSerial;
+    @FXML
+    private TableColumn<ItemCartTM, Integer> colWarranty;
+    @FXML
+    private TableColumn<ItemCartTM, Integer> colQty;
+    @FXML
+    private TableColumn<ItemCartTM, Double> colTotal;
 
-    // Totals
-    @FXML private Label lblSubTotal;
-    @FXML private Label lblDiscount;
-    @FXML private Label lblGrandTotal;
-    @FXML private Label lblPayableAmount;
+    @FXML
+    private Label lblSubTotal;
+    @FXML
+    private Label lblDiscount;
+    @FXML
+    private Label lblGrandTotal;
+    @FXML
+    private Label lblPayableAmount;
 
-    // Payment Inputs
-    @FXML private TextField txtCash;
-    @FXML private TextField txtBalance;
-    @FXML private Button btnPayPrint;
-    @FXML private Button btnCancel;
+    @FXML
+    private TextField txtCash;
+    @FXML
+    private TextField txtBalance;
+    @FXML
+    private Button btnPayPrint;
+    @FXML
+    private Button btnCancel;
 
-    // --- Controller Data ---
     private ObservableList<ItemCartTM> cartItems;
     private double subTotalAmount;
     private double discountAmount;
     private double grandTotalAmount;
     private CustomerDTO customer;
-    private SalesController salesControllerInstance; // Reference to refresh the main window
+    private SalesController salesControllerInstance;
 
-    // --- MODEL ---
     private final SalesModel salesModel = new SalesModel();
 
     @FXML
@@ -82,14 +97,14 @@ public class SalesCheckoutController {
         setupClock();
         setupTable();
 
-        // 1. Set current user
+
         if (LoginUtil.getUserName() != null) {
             lblEmployee.setText(LoginUtil.getUserName());
         } else {
             lblEmployee.setText("Admin");
         }
 
-        // 2. Add Listener for Cash Input (Calculate Balance real-time)
+
         txtCash.textProperty().addListener((observable, oldValue, newValue) -> {
             // Allow only numbers and one decimal point
             if (!newValue.matches("\\d*(\\.\\d*)?")) {
@@ -99,16 +114,11 @@ public class SalesCheckoutController {
             calculateBalance();
         });
 
-        // 3. Cancel Button Action
         btnCancel.setOnAction(event -> closeWindow());
 
-        // 4. Pay Button Action
         btnPayPrint.setOnAction(this::handlePayment);
     }
 
-    /**
-     * This method is called from SalesController to pass data into this popup.
-     */
     public void setInvoiceData(SalesController parentController, CustomerDTO customer,
                                ObservableList<ItemCartTM> items,
                                double subTotal, double discount, double grandTotal) {
@@ -120,7 +130,6 @@ public class SalesCheckoutController {
         this.discountAmount = discount;
         this.grandTotalAmount = grandTotal;
 
-        // Populate Customer Labels
         if (customer != null) {
             lblCusName.setText(customer.getName());
             lblCusContact.setText(customer.getNumber());
@@ -133,10 +142,8 @@ public class SalesCheckoutController {
             lblCusAddress.setText("-");
         }
 
-        // Populate Table
         tblReceipt.setItems(items);
 
-        // Populate Totals
         lblSubTotal.setText(String.format("%.2f", subTotal));
         lblDiscount.setText(String.format("%.2f", discount));
         lblGrandTotal.setText(String.format("%.2f", grandTotal));
@@ -148,13 +155,13 @@ public class SalesCheckoutController {
         String cashText = txtCash.getText();
         double cashGiven = 0.0;
         PaymentStatus paymentStatus = PaymentStatus.PAID;
-        try{
+        try {
             cashGiven = Double.parseDouble(cashText);
 
-            if(cashGiven < 0){
+            if (cashGiven < 0) {
                 throw new Exception();
             }
-            if(cashGiven > grandTotalAmount){
+            if (cashGiven > grandTotalAmount) {
                 new Alert(Alert.AlertType.ERROR, "Cash given cannot exceed the grand total!").show();
                 return;
             }
@@ -162,7 +169,7 @@ public class SalesCheckoutController {
             if (cashText.isEmpty() || cashGiven == 0.0) {
                 new Alert(Alert.AlertType.ERROR, "Please enter a valid cash amount!").show();
                 return;
-            }else if (cashGiven < grandTotalAmount) {
+            } else if (cashGiven < grandTotalAmount) {
                 Alert alert = new Alert(Alert.AlertType.CONFIRMATION,
                         "Provided cash amount not enough! Do you accept partial Payment?", ButtonType.YES, ButtonType.NO);
                 alert.setTitle("Confirm Partial Payment");
@@ -180,17 +187,13 @@ public class SalesCheckoutController {
         }
 
 
-
-
-        // 2. Prepare Sales Data
         int totalQty = cartItems.stream().mapToInt(ItemCartTM::getQuantity).sum();
-        int customerId = (customer != null) ? customer.getId() : 0; // 0 represents NULL in your logic
-        int userId = LoginUtil.getUserId(); // Ensure Login class has getUserId(), or use 1 for default Admin
+        int customerId = (customer != null) ? customer.getId() : 0;
+        int userId = LoginUtil.getUserId();
 
-        // NOTE: Your SalesModel applies this single warranty value to ALL items.
-        // Ideally, warranty should be per-item, but we must follow your SalesDTO structure.
+
         int generalWarranty = 0;
-        if(!cartItems.isEmpty()) {
+        if (!cartItems.isEmpty()) {
             generalWarranty = cartItems.get(0).getWarrantyMonths();
         }
 
@@ -210,20 +213,16 @@ public class SalesCheckoutController {
         );
 
 
-
-        // 3. Save to Database via SalesModel
         try {
             boolean isPlaced = salesModel.placeOrder(salesDTO, new ArrayList<>(cartItems));
 
             if (isPlaced) {
-                // 4. Success Flow
+
                 new Alert(Alert.AlertType.INFORMATION, "Order placed successfully!").showAndWait();
 
-                // Print Bill Logic
                 double balance = cashGiven - grandTotalAmount;
                 printBill(salesDTO.getSaleId(), cashGiven, balance);
 
-                // Clear the main Sales UI
                 if (salesControllerInstance != null) {
                     salesControllerInstance.resetAllFields();
                 }
@@ -286,37 +285,10 @@ public class SalesCheckoutController {
     private void printBill(int saleId, double cash, double balance) {
 
         // Implement JasperReports logic here using the 'saleId'
-        generateInvoice(saleId);
+        GenerateReports.generateInvoice(saleId, "salesInvoice", "SALE");
         System.out.println("Printing Bill for Sale ID: " + saleId);
 
     }
 
-    public void generateInvoice(int saleId) {
-        try {
 
-            String path = "reports/salesInvoice.jasper";
-
-            InputStream reportStream = App.class.getResourceAsStream(path);
-
-            if (reportStream == null) {
-                System.err.println("Error: Could not find salesReceipt.jasper at " + path);
-                return;
-            }
-
-            JasperReport jasperReport = (JasperReport) JRLoader.loadObject(reportStream);
-
-            Map<String, Object> parameters = new HashMap<>();
-
-            parameters.put("saleId", saleId);
-
-            Connection connection = DBConnection.getInstance().getConnection();
-
-            JasperPrint jasperPrint = JasperFillManager.fillReport(jasperReport, parameters, connection);
-
-            JasperViewer.viewReport(jasperPrint, false); // false = Don't close app on exit
-
-        } catch (JRException | java.sql.SQLException e) {
-            e.printStackTrace();
-        }
-    }
 }

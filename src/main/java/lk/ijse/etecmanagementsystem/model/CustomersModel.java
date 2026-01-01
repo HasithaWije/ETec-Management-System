@@ -34,7 +34,7 @@ public class CustomersModel {
     public CustomerDTO getCustomerById(int id) throws SQLException {
         String sql = "SELECT * FROM Customer WHERE cus_id=?";
 
-        CustomerDTO  customer = null;
+        CustomerDTO customer = null;
 
         try (ResultSet rs = CrudUtil.execute(sql, id)) {
             if (rs.next()) {
@@ -76,6 +76,7 @@ public class CustomersModel {
                 customer.getEmailAddress() == null ? "" : customer.getEmailAddress(),
                 customer.getAddress());
     }
+
     public int insertCustomerAndGetId(CustomerDTO customer) throws SQLException {
         String sql = "INSERT INTO Customer(name,number,email,address) VALUES(?,?,?,?)";
 

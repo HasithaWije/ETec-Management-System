@@ -7,7 +7,6 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import lk.ijse.etecmanagementsystem.model.ReportsModel;
-import lk.ijse.etecmanagementsystem.util.GenerateInvoice;
 import lk.ijse.etecmanagementsystem.util.GenerateReports;
 
 import java.sql.Date;
@@ -17,51 +16,91 @@ import java.time.temporal.TemporalAdjusters;
 
 public class ReportsController {
 
-    @FXML private Button btnGenerateRepairInvoice;
-    @FXML private Button btnGenerateReportCus;
-    @FXML private Button btnGenerateReportInven;
-    @FXML private Button btnGenerateReportRepair;
-    @FXML private Button btnGenerateReportSale;
-    @FXML private Button btnGenerateReportSup;
-    @FXML private Button btnGenerateReportTransf;
-    @FXML private Button btnGenerateSalesInvoice;
+    @FXML
+    private Button btnGenerateRepairInvoice;
+    @FXML
+    private Button btnGenerateReportCus;
+    @FXML
+    private Button btnGenerateReportInven;
+    @FXML
+    private Button btnGenerateReportRepair;
+    @FXML
+    private Button btnGenerateReportSale;
+    @FXML
+    private Button btnGenerateReportSup;
+    @FXML
+    private Button btnGenerateReportTransf;
+    @FXML
+    private Button btnGenerateSalesInvoice;
 
-    @FXML private Button btnLoadCustomer;
-    @FXML private Button btnLoadInventory;
-    @FXML private Button btnLoadRepair;
-    @FXML private Button btnLoadSale;
-    @FXML private Button btnLoadSupplier;
-    @FXML private Button btnLoadTransaction;
+    @FXML
+    private Button btnLoadCustomer;
+    @FXML
+    private Button btnLoadInventory;
+    @FXML
+    private Button btnLoadRepair;
+    @FXML
+    private Button btnLoadSale;
+    @FXML
+    private Button btnLoadSupplier;
+    @FXML
+    private Button btnLoadTransaction;
 
-    @FXML private ComboBox<String> cmbDatePreset;
-    @FXML private DatePicker dpFromDate;
-    @FXML private DatePicker dpToDate;
-    @FXML private HBox hBoxDate;
+    @FXML
+    private ComboBox<String> cmbDatePreset;
+    @FXML
+    private DatePicker dpFromDate;
+    @FXML
+    private DatePicker dpToDate;
+    @FXML
+    private HBox hBoxDate;
 
-    @FXML private Label lblRecordCountCus;
-    @FXML private Label lblRecordCountInven;
-    @FXML private Label lblRecordCountRepair;
-    @FXML private Label lblRecordCountSales;
-    @FXML private Label lblRecordCountSup;
-    @FXML private Label lblRecordCountTransf;
-    @FXML private Label lblRepairExists;
-    @FXML private Label lblSalesExist;
+    @FXML
+    private Label lblRecordCountCus;
+    @FXML
+    private Label lblRecordCountInven;
+    @FXML
+    private Label lblRecordCountRepair;
+    @FXML
+    private Label lblRecordCountSales;
+    @FXML
+    private Label lblRecordCountSup;
+    @FXML
+    private Label lblRecordCountTransf;
+    @FXML
+    private Label lblRepairExists;
+    @FXML
+    private Label lblSalesExist;
 
-    @FXML private Tab tabCustomer;
-    @FXML private Tab tabInventory;
-    @FXML private Tab tabRepair;
-    @FXML private Tab tabSales;
-    @FXML private Tab tabSupplier;
-    @FXML private Tab tabTransaction;
+    @FXML
+    private Tab tabCustomer;
+    @FXML
+    private Tab tabInventory;
+    @FXML
+    private Tab tabRepair;
+    @FXML
+    private Tab tabSales;
+    @FXML
+    private Tab tabSupplier;
+    @FXML
+    private Tab tabTransaction;
 
-    @FXML private TextField txtRLimitCus;
-    @FXML private TextField txtRLimitInven;
-    @FXML private TextField txtRLimitRepair;
-    @FXML private TextField txtRLimitSales;
-    @FXML private TextField txtRLimitSup;
-    @FXML private TextField txtRLimitTransf;
-    @FXML private TextField txtRepairId;
-    @FXML private TextField txtSalesId;
+    @FXML
+    private TextField txtRLimitCus;
+    @FXML
+    private TextField txtRLimitInven;
+    @FXML
+    private TextField txtRLimitRepair;
+    @FXML
+    private TextField txtRLimitSales;
+    @FXML
+    private TextField txtRLimitSup;
+    @FXML
+    private TextField txtRLimitTransf;
+    @FXML
+    private TextField txtRepairId;
+    @FXML
+    private TextField txtSalesId;
 
     private final ReportsModel reportsModel = new ReportsModel();
 
@@ -120,23 +159,29 @@ public class ReportsController {
     private void initTabListeners() {
         // Logic: Disable Date Filters for Supplier and Customer tabs
 
-        tabSales.setOnSelectionChanged(e -> { if(tabSales.isSelected()) hBoxDate.setDisable(false); });
-        tabRepair.setOnSelectionChanged(e -> { if(tabRepair.isSelected()) hBoxDate.setDisable(false); });
-        tabTransaction.setOnSelectionChanged(e -> { if(tabTransaction.isSelected()) hBoxDate.setDisable(false); });
+        tabSales.setOnSelectionChanged(e -> {
+            if (tabSales.isSelected()) hBoxDate.setDisable(false);
+        });
+        tabRepair.setOnSelectionChanged(e -> {
+            if (tabRepair.isSelected()) hBoxDate.setDisable(false);
+        });
+        tabTransaction.setOnSelectionChanged(e -> {
+            if (tabTransaction.isSelected()) hBoxDate.setDisable(false);
+        });
 
         // Disable for Supplier
         tabSupplier.setOnSelectionChanged(e -> {
-            if(tabSupplier.isSelected()) hBoxDate.setDisable(true);
+            if (tabSupplier.isSelected()) hBoxDate.setDisable(true);
         });
 
         // Disable for Customer
         tabCustomer.setOnSelectionChanged(e -> {
-            if(tabCustomer.isSelected()) hBoxDate.setDisable(true);
+            if (tabCustomer.isSelected()) hBoxDate.setDisable(true);
         });
 
-        // Optional: Inventory usually doesn't need dates (Snapshot), so disabling it there too is good practice,
-        // but sticking to your specific instruction, I ensured Supplier/Customer disable it.
-        tabInventory.setOnSelectionChanged(e -> { if(tabInventory.isSelected()) hBoxDate.setDisable(true); });
+        tabInventory.setOnSelectionChanged(e -> {
+            if (tabInventory.isSelected()) hBoxDate.setDisable(true);
+        });
     }
 
     // ----------------- LOAD BUTTON ACTIONS -----------------
@@ -214,9 +259,9 @@ public class ReportsController {
 
     @FXML
     void btnGenerateSalesInvoiceOnAction(ActionEvent event) {
-        try{
+        try {
             int saleId = Integer.parseInt(txtSalesId.getText());
-        }catch (Exception e){
+        } catch (Exception e) {
             txtSalesId.setText("");
         }
         String id = txtSalesId.getText();
@@ -244,16 +289,16 @@ public class ReportsController {
     @FXML
     private void handleGenerateSalesInvoice(ActionEvent event) {
         String saleId = txtSalesId.getText();
-        GenerateInvoice.generateInvoice(Integer.parseInt(saleId), "salesInvoice", "SALE");
+        GenerateReports.generateInvoice(Integer.parseInt(saleId), "salesInvoice", "SALE");
         System.out.println("Generating Sales Invoice for Sale ID: " + saleId);
         btnGenerateSalesInvoice.setDisable(true);
     }
 
     @FXML
     void btnGenerateRepairInvoiceOnAction(ActionEvent event) {
-        try{
+        try {
             int repairId = Integer.parseInt(txtRepairId.getText());
-        }catch (Exception e){
+        } catch (Exception e) {
             txtRepairId.setText("");
         }
         String id = txtRepairId.getText();
@@ -280,21 +325,20 @@ public class ReportsController {
     @FXML
     private void handleGenerateRepairInvoice(ActionEvent event) {
         String repairId = txtRepairId.getText();
-        GenerateInvoice.generateInvoice(Integer.parseInt(repairId), "repairInvoice2", "REPAIR");
+        GenerateReports.generateInvoice(Integer.parseInt(repairId), "repairInvoice2", "REPAIR");
         System.out.println("Generating Repair Invoice for Repair ID: " + repairId);
         btnGenerateRepairInvoice.setDisable(true);
     }
 
-    // ----------------- REPORT GENERATION (Placeholders) -----------------
-    // These methods would invoke JasperReports using the dates and limits provided.
 
+    // ----------------- REPORT GENERATION BUTTON ACTIONS -----------------
     @FXML
     void btnGenerateReportSaleOnAction(ActionEvent event) {
 
         Date fromDate = Date.valueOf(dpFromDate.getValue());
         Date toDate = Date.valueOf(dpToDate.getValue());
 
-        GenerateReports.generateReport(dpFromDate.getValue(), dpToDate.getValue(),"sales_report");
+        GenerateReports.generateReport(dpFromDate.getValue(), dpToDate.getValue(), "sales_report");
         System.out.println("Generating Sales Report...");
     }
 

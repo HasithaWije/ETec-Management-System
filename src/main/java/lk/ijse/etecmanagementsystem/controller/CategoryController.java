@@ -12,7 +12,6 @@ import java.util.List;
 
 public class CategoryController {
 
-
     @FXML
     TextField categoryName;
     @FXML
@@ -41,18 +40,18 @@ public class CategoryController {
     private void loadCategories() {
 
 
-        try{
+        try {
             List<String> list = categoryModel.getAllCategories();
-            if(!list.isEmpty()){
+            if (!list.isEmpty()) {
                 Category.getCategories().clear();// Clear existing categories
                 Category.getCategories().setAll(list);
 
                 System.out.println("Categories loaded from DB: " + list);
-            }else{
+            } else {
                 Alert alert = new Alert(Alert.AlertType.INFORMATION, "No categories found in the database.");
                 alert.showAndWait();
             }
-        }catch(Exception e){
+        } catch (Exception e) {
             Alert alert = new Alert(Alert.AlertType.ERROR, "Failed to load categories: " + e.getMessage());
             alert.showAndWait();
         }
@@ -82,7 +81,7 @@ public class CategoryController {
 
                 try {
 
-                    if(categoryModel.saveCategory(name)){
+                    if (categoryModel.saveCategory(name)) {
                         lblMsg.setText("Category " + name + " added successfully.");
                         lblMsg.setStyle("-fx-text-fill: green;");
 
@@ -110,32 +109,32 @@ public class CategoryController {
             lblMsg.setStyle("-fx-text-fill: red;");
         } else {
 
-                Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Do you want to delete category " + name + "?", ButtonType.YES, ButtonType.NO);
-                alert.showAndWait();
-                if (alert.getResult() == ButtonType.YES) {
-                    try {
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Do you want to delete category " + name + "?", ButtonType.YES, ButtonType.NO);
+            alert.showAndWait();
+            if (alert.getResult() == ButtonType.YES) {
+                try {
 
 
-                        boolean result = categoryModel.deleteCategory(name);
-                        if(!result){
-                            lblMsg.setText("Category delete failed.");
-                            lblMsg.setStyle("-fx-text-fill: red;");
-                            return;
-                        }
-
-                        lblMsg.setText("Category " + name + " delete successfully.");
-                        lblMsg.setStyle("-fx-text-fill: green;");
-
-                        categoryName.clear();
-                        loadCategories();
-
-                    } catch (Exception e) {
-                        new Alert(Alert.AlertType.ERROR, "Failed to save category: " + e.getMessage()).show();
+                    boolean result = categoryModel.deleteCategory(name);
+                    if (!result) {
+                        lblMsg.setText("Category delete failed.");
+                        lblMsg.setStyle("-fx-text-fill: red;");
+                        return;
                     }
-                } else {
-                    lblMsg.setText("Category deletion cancelled.");
-                    lblMsg.setStyle("-fx-text-fill: orange;");
+
+                    lblMsg.setText("Category " + name + " delete successfully.");
+                    lblMsg.setStyle("-fx-text-fill: green;");
+
+                    categoryName.clear();
+                    loadCategories();
+
+                } catch (Exception e) {
+                    new Alert(Alert.AlertType.ERROR, "Failed to save category: " + e.getMessage()).show();
                 }
+            } else {
+                lblMsg.setText("Category deletion cancelled.");
+                lblMsg.setStyle("-fx-text-fill: orange;");
+            }
 
         }
     }
@@ -150,13 +149,13 @@ public class CategoryController {
             lblMsg.setStyle("-fx-text-fill: red;");
         } else {
 
-            Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Do you want to update category " + oldName+" to "+ newName + "?", ButtonType.YES, ButtonType.NO);
+            Alert alert = new Alert(Alert.AlertType.CONFIRMATION, "Do you want to update category " + oldName + " to " + newName + "?", ButtonType.YES, ButtonType.NO);
             alert.showAndWait();
             if (alert.getResult() == ButtonType.YES) {
                 try {
 
                     boolean result = categoryModel.updateCategory(newName, oldName);
-                    if(!result){
+                    if (!result) {
                         lblMsg.setText("Category update failed.");
                         lblMsg.setStyle("-fx-text-fill: red;");
                         return;
@@ -198,18 +197,18 @@ public class CategoryController {
         if (event.getCode() == KeyCode.ENTER) {
             String name = categoryName.getText().trim();
 
-            if(categoryName.getText().isEmpty()){
+            if (categoryName.getText().isEmpty()) {
                 lblMsg.setText("Category name cannot be empty.");
                 lblMsg.setStyle("-fx-text-fill: red;");
 
-            }else {
+            } else {
                 ObservableList<String> categories = Category.getCategories();
 
                 if (!name.matches(CATEGORY_REGEX)) {
                     lblMsg.setText("Invalid category name. It should start with an uppercase letter and be 3-30 characters long.");
                     lblMsg.setStyle("-fx-text-fill: red;");
 
-                }else if (categories.contains(name) || !checkNomatch(name)) {
+                } else if (categories.contains(name) || !checkNomatch(name)) {
 
                     int index = categories.indexOf(name);
 
@@ -220,7 +219,7 @@ public class CategoryController {
                         lblMsg.setStyle("-fx-text-fill: green;");
                     }
 
-                }else {
+                } else {
                     lblMsg.setText("Category not exists.");
                     lblMsg.setStyle("-fx-text-fill: red;");
 

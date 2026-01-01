@@ -18,10 +18,8 @@ public class RepairJobModel {
     public List<RepairJobTM> getAllRepairJobs() throws SQLException {
         List<RepairJobTM> list = new ArrayList<>();
 
-        // We assume you have a DBConnection class
         Connection connection = DBConnection.getInstance().getConnection();
 
-        // JOIN Query to get Customer details along with Repair Job
         String sql = "SELECT r.repair_id, r.cus_id, r.user_id, r.device_name, r.device_sn, " +
                 "r.problem_desc, r.diagnosis_desc, r.repair_results, " + // <--- Added here
                 "r.status, r.date_in, r.date_out, r.labor_cost, r.parts_cost, r.total_amount, r.discount, r.payment_status, r.paid_amount, " +
@@ -35,7 +33,6 @@ public class RepairJobModel {
         ResultSet resultSet = pstm.executeQuery();
 
         while (resultSet.next()) {
-            // 1. Create the DTO from the Result Set
             RepairJobDTO dto = new RepairJobDTO(
                     resultSet.getInt("repair_id"),
                     resultSet.getInt("cus_id"),
@@ -43,8 +40,8 @@ public class RepairJobModel {
                     resultSet.getString("device_name"),
                     resultSet.getString("device_sn"),
                     resultSet.getString("problem_desc"),
-                    resultSet.getString("diagnosis_desc"), // <--- Get New Col
-                    resultSet.getString("repair_results"), // <--- Get New Col
+                    resultSet.getString("diagnosis_desc"),
+                    resultSet.getString("repair_results"),
                     RepairStatus.valueOf(resultSet.getString("status")),
                     resultSet.getTimestamp("date_in"),
                     resultSet.getTimestamp("date_out"),
@@ -56,13 +53,11 @@ public class RepairJobModel {
                     PaymentStatus.valueOf(resultSet.getString("payment_status"))
             );
 
-            // 2. Extract Customer Info (Not in DTO, but needed for TM)
             String cusName = resultSet.getString("cus_name");
             String cusContact = resultSet.getString("cus_contact");
             String email = resultSet.getString("cus_email");
             String address = resultSet.getString("cus_address");
 
-            // 3. Create the TM
             RepairJobTM tm = new RepairJobTM(dto, cusName, cusContact, email, address);
             list.add(tm);
         }
@@ -84,30 +79,28 @@ public class RepairJobModel {
         pstm.setString(3, dto.getDeviceName());
         pstm.setString(4, dto.getDeviceSn());
         pstm.setString(5, dto.getProblemDesc());
-        pstm.setString(6, dto.getStatus().name()); // ENUM to String
+        pstm.setString(6, dto.getStatus().name());
 
-        // Handle Date Conversion (Java Date -> SQL Timestamp)
         if (dto.getDateIn() != null) {
             pstm.setTimestamp(7, new java.sql.Timestamp(dto.getDateIn().getTime()));
         } else {
             pstm.setTimestamp(7, new java.sql.Timestamp(System.currentTimeMillis()));
         }
 
-        // Default Payment Status
+
         pstm.setString(8, "PENDING");
 
         if (pstm.executeUpdate() <= 0) {
             return false;
         }
 
-        // Get the generated Sale ID
         int repairId = -1;
         ResultSet rs = pstm.getGeneratedKeys();
         if (rs.next()) {
             repairId = rs.getInt(1);
         }
-        if(repairId > 0) {
-            dto.setRepairId(repairId); // Set the generated ID back to DTO
+        if (repairId > 0) {
+            dto.setRepairId(repairId);
             return true;
         }
         return false;
@@ -139,7 +132,7 @@ public class RepairJobModel {
         return pstm.executeUpdate() > 0;
     }
 
-    // 2. NEW METHOD: To save the text from the 3 Tabs
+
     public boolean updateRepairDescriptions(int repairId, String diagnosis, String results) throws SQLException {
         String sql = "UPDATE RepairJob SET diagnosis_desc = ?, repair_results = ? WHERE repair_id = ?";
         Connection connection = DBConnection.getInstance().getConnection();
@@ -150,7 +143,6 @@ public class RepairJobModel {
         return pstm.executeUpdate() > 0;
     }
 
-    // Add update methods here later (e.g., updateStatus)
     public boolean updateStatus(int repairId, RepairStatus newStatus) throws SQLException {
         Connection connection = DBConnection.getInstance().getConnection();
         String sql = "UPDATE RepairJob SET status = ? WHERE repair_id = ?";
@@ -160,11 +152,10 @@ public class RepairJobModel {
         return pstm.executeUpdate() > 0;
     }
 
-    // 1. GET USED PARTS (Load from RepairItem table)
+
     public List<RepairPartTM> getUsedParts(int repairId) throws SQLException {
         List<RepairPartTM> list = new ArrayList<>();
 
-        // JOIN: RepairItem -> ProductItem -> Product (To get Name & Price)
         String sql = "SELECT pi.item_id, p.name, pi.serial_number, p.p_condition, ri.unit_price " +
                 "FROM RepairItem ri " +
                 "JOIN ProductItem pi ON ri.item_id = pi.item_id " +
@@ -190,7 +181,6 @@ public class RepairJobModel {
         return list;
     }
 
-    // 2. SAVE JOB & PARTS (Transactional)
     public boolean updateRepairJobDetails(int repairId, String intake, String diagnosis, String resolution,
                                           double laborCost, double partsCost, double totalAmount,
                                           List<RepairPartTM> activeParts,
@@ -201,7 +191,6 @@ public class RepairJobModel {
             connection = DBConnection.getInstance().getConnection();
             connection.setAutoCommit(false); // START TRANSACTION
 
-            // A. Update RepairJob Text & Costs
             String sqlJob = "UPDATE RepairJob SET problem_desc=?, diagnosis_desc=?, repair_results=?, " +
                     "labor_cost=?, parts_cost=?, total_amount=? WHERE repair_id=?";
             PreparedStatement pstmJob = connection.prepareStatement(sqlJob);
@@ -214,8 +203,6 @@ public class RepairJobModel {
             pstmJob.setInt(7, repairId);
             pstmJob.executeUpdate();
 
-            // B. ADD NEW PARTS
-            // We check if the link already exists to avoid duplicates
             String sqlCheck = "SELECT id FROM RepairItem WHERE repair_id=? AND item_id=?";
             String sqlInsertLink = "INSERT INTO RepairItem (repair_id, item_id, unit_price) VALUES (?, ?, ?)";
             String sqlMarkSold = "UPDATE ProductItem SET status='IN_REPAIR_USE' WHERE item_id=?";
@@ -231,25 +218,22 @@ public class RepairJobModel {
             PreparedStatement pstmDeQty = connection.prepareStatement(sqlDeQty);
 
             for (RepairPartTM part : activeParts) {
-                // Check duplicate
+
                 pstmCheck.setInt(1, repairId);
                 pstmCheck.setInt(2, part.getItemId());
                 if (!pstmCheck.executeQuery().next()) {
-                    // 1. Insert Link in RepairItem
+
                     pstmLink.setInt(1, repairId);
                     pstmLink.setInt(2, part.getItemId());
                     pstmLink.setDouble(3, part.getUnitPrice());
                     pstmLink.addBatch();
 
-                    // 2. Mark Stock as IN_REPAIR_USE
                     pstmSold.setInt(1, part.getItemId());
                     pstmSold.addBatch();
 
-                    // 3. Fix Placeholder Serial Numbers
                     pstmFixSn.setInt(1, part.getItemId());
                     pstmFixSn.addBatch();
 
-                    // 4. Decrease Quantity in Product Table
                     pstmDeQty.setInt(1, part.getItemId());
                     pstmDeQty.addBatch();
                 }
@@ -260,9 +244,6 @@ public class RepairJobModel {
             pstmDeQty.executeBatch();
 
 
-
-
-            // C. REMOVE RETURNED PARTS (Restock)
             if (!returnedParts.isEmpty()) {
                 String sqlDeleteLink = "DELETE FROM RepairItem WHERE repair_id=? AND item_id=?";
                 String sqlRestock = "UPDATE ProductItem SET status='AVAILABLE' WHERE item_id=?";
@@ -278,22 +259,19 @@ public class RepairJobModel {
                         PreparedStatement pstmReplaceSn = connection.prepareStatement(sqlReplacePlaceholders);
                         PreparedStatement pstmIncQty = connection.prepareStatement(sqlIncQty);
 
-                ){
+                ) {
                     for (RepairPartTM part : returnedParts) {
-                        // 1. Remove Link
+
                         pstmDel.setInt(1, repairId);
                         pstmDel.setInt(2, part.getItemId());
                         pstmDel.addBatch();
 
-                        // 2. Mark Stock as AVAILABLE
                         pstmStock.setInt(1, part.getItemId());
                         pstmStock.addBatch();
 
-                        // 3. Replace Serial Number Placeholders
                         pstmReplaceSn.setInt(1, part.getItemId());
                         pstmReplaceSn.addBatch();
 
-                        // 4. Increase Quantity in Product Table
                         pstmIncQty.setInt(1, part.getItemId());
                         pstmIncQty.addBatch();
 
@@ -318,15 +296,13 @@ public class RepairJobModel {
     }
 
     public boolean completeCheckout(int repairId, int customerId, int userId,
-                                    double totalAmount, double discount,double partsTotal, double paidAmount, String paymentMethod) throws SQLException {
+                                    double totalAmount, double discount, double partsTotal, double paidAmount, String paymentMethod) throws SQLException {
 
         Connection connection = null;
         try {
             connection = DBConnection.getInstance().getConnection();
             connection.setAutoCommit(false); // START TRANSACTION
 
-
-            // 1. DETERMINE PAYMENT STATUS
             String payStatus = "PENDING";
             if (paidAmount >= totalAmount) {
                 payStatus = "PAID";
@@ -335,7 +311,7 @@ public class RepairJobModel {
             }
 
             String sqlRepairJob = "UPDATE RepairJob SET paid_amount = ?,total_amount = ?, discount = ? WHERE repair_id = ?";
-            try(PreparedStatement pstmRepairJob = connection.prepareStatement(sqlRepairJob)) {
+            try (PreparedStatement pstmRepairJob = connection.prepareStatement(sqlRepairJob)) {
                 pstmRepairJob.setDouble(1, paidAmount);
                 pstmRepairJob.setDouble(2, totalAmount);
                 pstmRepairJob.setDouble(3, discount);
@@ -343,38 +319,33 @@ public class RepairJobModel {
                 pstmRepairJob.executeUpdate();
             }
 
-
-
-
             boolean hasParts = false;
-            int  saleId = -1;
+            int saleId = -1;
             String sqlIsPartExist = "SELECT 1 FROM RepairItem WHERE repair_id = ?";
-            try(PreparedStatement pstmIsPartExist = connection.prepareStatement(sqlIsPartExist)){
+            try (PreparedStatement pstmIsPartExist = connection.prepareStatement(sqlIsPartExist)) {
                 pstmIsPartExist.setInt(1, repairId);
                 ResultSet rsPartExist = pstmIsPartExist.executeQuery();
-                if(rsPartExist.next()){
+                if (rsPartExist.next()) {
                     hasParts = true;
                 }
             }
 
-            // 2. CREATE SALE RECORD (Sales Table)
-            // Only if there are parts used
-            if(hasParts){
+            if (hasParts) {
 
 
                 String sqlMarkSold = "UPDATE ProductItem SET status='SOLD', sold_date=NOW() WHERE item_id=?";
-                try(PreparedStatement pstmSold = connection.prepareStatement(sqlMarkSold)) {
-                    // Mark all used parts as SOLD
+                try (PreparedStatement pstmSold = connection.prepareStatement(sqlMarkSold)) {
+
                     String sqlGetParts = "SELECT item_id FROM RepairItem WHERE repair_id = ?";
-                    try(PreparedStatement pstmGetParts = connection.prepareStatement(sqlGetParts)){
+                    try (PreparedStatement pstmGetParts = connection.prepareStatement(sqlGetParts)) {
                         pstmGetParts.setInt(1, repairId);
                         ResultSet rsParts = pstmGetParts.executeQuery();
-                        while(rsParts.next()){
+                        while (rsParts.next()) {
                             int itemId = rsParts.getInt("item_id");
                             pstmSold.setInt(1, itemId);
                             pstmSold.addBatch();
                         }
-                        if(pstmSold.executeBatch().length == 0){
+                        if (pstmSold.executeBatch().length == 0) {
                             connection.rollback();
                             return false;
                         }
@@ -398,17 +369,15 @@ public class RepairJobModel {
                     return false;
                 }
 
-                // Get the generated Sale ID
                 ResultSet rs = pstmSale.getGeneratedKeys();
                 if (rs.next()) {
                     saleId = rs.getInt(1);
 
-                }else {
+                } else {
                     connection.rollback();
                     return false;
                 }
 
-                // 3. LINK REPAIR TO SALE (RepairSale Table)
                 String sqlLink = "INSERT INTO RepairSale (repair_id, sale_id) VALUES (?, ?)";
                 PreparedStatement pstmLink = connection.prepareStatement(sqlLink);
                 pstmLink.setInt(1, repairId);
@@ -416,24 +385,16 @@ public class RepairJobModel {
                 pstmLink.executeUpdate();
             }
 
+            String sqlTrans = "INSERT INTO TransactionRecord (transaction_type, payment_method, amount, flow, repair_id, user_id, reference_note) " +
+                    "VALUES ('REPAIR_PAYMENT', ?, ?, 'IN', ?, ?, ?)";
+            PreparedStatement pstmTrans = connection.prepareStatement(sqlTrans);
+            pstmTrans.setString(1, paymentMethod);
+            pstmTrans.setDouble(2, paidAmount);
+            pstmTrans.setInt(3, repairId);
+            pstmTrans.setInt(4, userId);
+            pstmTrans.setString(5, "Repair Checkout Payment");
+            pstmTrans.executeUpdate();
 
-
-            // 4. RECORD THE PAYMENT (TransactionRecord Table)
-            // Only if they actually paid something now
-
-                String sqlTrans = "INSERT INTO TransactionRecord (transaction_type, payment_method, amount, flow, repair_id, user_id, reference_note) " +
-                        "VALUES ('REPAIR_PAYMENT', ?, ?, 'IN', ?, ?, ?)";
-                PreparedStatement pstmTrans = connection.prepareStatement(sqlTrans);
-                pstmTrans.setString(1, paymentMethod);
-                pstmTrans.setDouble(2, paidAmount);
-                pstmTrans.setInt(3, repairId);
-                pstmTrans.setInt(4, userId);
-                pstmTrans.setString(5, "Repair Checkout Payment");
-                pstmTrans.executeUpdate();
-
-
-            // 5. UPDATE REPAIR JOB STATUS
-            // Status -> DELIVERED, Payment -> Updated
             String sqlUpdateJob = "UPDATE RepairJob SET status='DELIVERED', date_out=NOW(), payment_status=? WHERE repair_id=?";
             PreparedStatement pstmJob = connection.prepareStatement(sqlUpdateJob);
             pstmJob.setString(1, payStatus);
@@ -447,11 +408,11 @@ public class RepairJobModel {
             if (connection != null) connection.rollback();
             e.printStackTrace();
             throw e;
-        }catch (Exception ex){
+        } catch (Exception ex) {
             if (connection != null) connection.rollback();
             ex.printStackTrace();
             throw new SQLException("Failed to complete checkout: " + ex.getMessage());
-        }finally {
+        } finally {
             if (connection != null) connection.setAutoCommit(true);
         }
     }

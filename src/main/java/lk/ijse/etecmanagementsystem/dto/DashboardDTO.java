@@ -1,12 +1,12 @@
 package lk.ijse.etecmanagementsystem.dto;
 
-public class DashboardStat {
+public class DashboardDTO {
     private String title;
     private String value;
     private String subtitle;
     private double growthPercentage;
 
-    public DashboardStat(String title, String value, String subtitle, double growthPercentage) {
+    public DashboardDTO(String title, String value, String subtitle, double growthPercentage) {
         this.title = title;
         this.value = value;
         this.subtitle = subtitle;
