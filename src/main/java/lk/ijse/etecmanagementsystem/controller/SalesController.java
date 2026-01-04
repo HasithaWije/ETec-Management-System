@@ -155,13 +155,14 @@ public class SalesController implements Initializable {
 
     // Barcode Scanning
     private final TextField barcodeInput = new TextField();
-    private final BarcodeServer barcodeServer = BarcodeServer.getBarcodeServerInstance(barcodeInput);
+    private final BarcodeScanner barcodeScanner = BarcodeScanner.getInstance(barcodeInput);
     private final Stage newStage = new Stage();
 
     private final SalesModel salesModel = new SalesModel();
     private final CustomersModel customersModel = new CustomersModel();
     private final ProductModel productModel = new ProductModel();
     private final UnitManagementModel unitManagementModel = new UnitManagementModel();
+
 
     @FXML
     public void initialize(URL location, ResourceBundle resources) {
@@ -200,17 +201,6 @@ public class SalesController implements Initializable {
         setupListeners();
         setupDiscountFieldListener();
 
-        // Barcode Input Listener
-        barcodeInput.textProperty().addListener((observable, oldValue, newValue) -> {
-            if (newValue != null && !newValue.trim().isEmpty()) {
-                String scannedCode = newValue.trim();
-                Platform.runLater(() -> {
-                    txtSerialNumber.setText(scannedCode);
-                    getItemBySerialNumber(scannedCode);
-                    barcodeInput.setText("");
-                });
-            }
-        });
     }
 
     @FXML
@@ -238,20 +228,33 @@ public class SalesController implements Initializable {
 
     @FXML
     private void handleScanAction() {
-        barcodeServer.startServer();
         try {
+
+            FXMLLoader loader = new FXMLLoader(App.class.getResource("view/barcode.fxml"));
+            Parent root = loader.load();
+
+            BarcodeScanController controller = loader.getController();
+            controller.setBarcodeInput(barcodeInput);
+
             newStage.setTitle("Barcode Scanner");
-            newStage.setScene(new Scene(App.loadFXML("barcode")));
+            newStage.setScene(new Scene(root));
             newStage.setResizable(false);
             newStage.show();
+
+            newStage.setOnCloseRequest(event -> {
+                barcodeScanner.stopScan();
+                tglBtnScan.setSelected(false);
+            });
+            rootPane.getScene().getWindow().setOnCloseRequest(event -> {
+//                barcodeScanner.stopScan();
+                newStage.close();
+            });
+
         } catch (Exception e) {
             new Alert(Alert.AlertType.ERROR, "Failed to start barcode server: " + e.getMessage()).showAndWait();
         }
 
-        newStage.setOnCloseRequest(event -> {
-            barcodeServer.stopServer();
-            tglBtnScan.setSelected(false);
-        });
+
     }
 
     @FXML
@@ -268,6 +271,7 @@ public class SalesController implements Initializable {
 
         String itemName = safeGetText(txtIProductName);
         String serialNumber = safeGetText(txtSerialNumber);
+        System.out.println(serialNumber);
 
 
         if (itemName.isEmpty()) {
@@ -378,9 +382,22 @@ public class SalesController implements Initializable {
                 addFieldItemToCart(newCartItem);
             }
         } else {
-            // No table selection, pure manual entry
-            addNewItemToInventory(newCartItem);
+            InventoryItemDTO itemBySerial = getItemBySerialNumber(serialNumber);
+            if(!serialNumber.isEmpty() && itemBySerial != null){
+                addFieldItemToCart(newCartItem);
+            }else {
+                // No table selection, pure manual entry
+                Alert alert = new Alert(Alert.AlertType.CONFIRMATION,
+                        "You are adding a custom item not from the inventory list. Add as new inventory item?",
+                        ButtonType.YES, ButtonType.NO);
+                alert.showAndWait();
+                if (alert.getResult() == ButtonType.YES) {
+
+                    addNewItemToInventory(newCartItem);
+
+                }
 //            addFieldItemToCart(newCartItem);
+            }
         }
     }
 
@@ -417,6 +434,8 @@ public class SalesController implements Initializable {
 
     private void addNewItemToInventory(ItemCartTM cartItem) {
 
+
+
         int ProductId = 0;
         try {
             ProductId = productModel.getIdByName(cartItem.getItemName());
@@ -430,32 +449,54 @@ public class SalesController implements Initializable {
             showAlert(Alert.AlertType.ERROR, "Product not found in database. Please add the product first.");
             return;
         }
-        //int stockId, String serialNumber, int customerWarranty, String status, Date addedDate
-        ProductItemDTO productItemDTO = new ProductItemDTO(
-                ProductId,
-                cartItem.getSerialNo(),
-                cartItem.getWarrantyMonths()
-        );
-        int newItemId = 0;
+//        //int stockId, String serialNumber, int customerWarranty, String status, Date addedDate
+//        ProductItemDTO productItemDTO = new ProductItemDTO(
+//                ProductId,
+//                cartItem.getSerialNo(),
+//                cartItem.getWarrantyMonths()
+//        );
+
+
+        List<Integer> pendingSlot = new ArrayList<>();
         try {
-            newItemId = unitManagementModel.addItemAndGetGeneratedId(productItemDTO);
-            if (newItemId != -1) {
-                cartItem.setItemId(newItemId);
-            } else {
-                ETecAlerts.showAlert(Alert.AlertType.WARNING, "Not Enough Stock", "Insufficient Stock to add the item.");
+            pendingSlot = unitManagementModel.getAvailablePendingSlot(ProductId);
+            if (!pendingSlot.isEmpty()) {
+                for(ItemCartTM item : cartItemList){
+
+                        pendingSlot.removeIf(slot -> slot == item.getItemId());
+
+                }
+                if(pendingSlot.isEmpty()){
+                    ETecAlerts.showAlert(Alert.AlertType.WARNING, "Not Enough Stock", "Insufficient Stock to add item as new. " +
+                            "If you have items on hand, please update Product Qty first.");
+                    return;
+                }
+            } else{
+                ETecAlerts.showAlert(Alert.AlertType.WARNING, "Not Enough Stock", "Insufficient Stock to add item as new. " +
+                        "If you have items on hand, please update Product Qty first.");
                 return;
             }
-        } catch (Exception e) {
-            if (e.getMessage().contains("Duplicate entry")) {
+
+            if(cartItem.getSerialNo().isEmpty()){
+                cartItem.setSerialNo(null);
+            }
+
+            boolean isDuplicated = unitManagementModel.checkSerialExists(cartItem.getSerialNo());
+            if(isDuplicated){
                 new Alert(Alert.AlertType.WARNING, "The new serial number already exists. Please use a different serial number.").showAndWait();
                 return;
             }
-            new Alert(Alert.AlertType.ERROR, "Failed to add new inventory item: ").show();
+
+            cartItem.setItemId(pendingSlot.getFirst());
+
+
+        } catch (Exception e) {
+            new Alert(Alert.AlertType.ERROR, "Something went Wrong!").show();
             System.out.println(e.getMessage());
             return;
         }
-        System.out.println(productItemDTO.toString());
-        cartItemList.add(cartItem);
+
+        addFieldItemToCart(cartItem);
         calculateTotals();
         loadProductItems();
     }
@@ -818,28 +859,42 @@ public class SalesController implements Initializable {
                 handleScanAction();
             } else {
                 tglBtnScan.setText("START SCAN");
-                barcodeServer.stopServer();
+//                barcodeScanner.stopScan();
                 newStage.close();
+            }
+        });
+
+        // Barcode Input Listener
+        barcodeInput.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue != null && !newValue.trim().isEmpty()) {
+                String scannedCode = newValue.trim();
+                Platform.runLater(() -> {
+                    txtSerialNumber.setText(scannedCode);
+                    getItemBySerialNumber(scannedCode);
+                    barcodeInput.clear();
+                });
             }
         });
 
         rootPane.sceneProperty().addListener((obs, oldScene, newScene) -> {
             if (newScene == null) {
-                barcodeServer.stopServer();
+//                barcodeScanner.stopScan();
                 newStage.close();
             }
         });
     }
 
-    private void getItemBySerialNumber(String serialNumber) {
+    private InventoryItemDTO getItemBySerialNumber(String serialNumber) {
         InventoryItemDTO item = inventoryItemsList.stream()
                 .filter(i -> i.getSerialNumber().equalsIgnoreCase(serialNumber))
                 .findFirst().orElse(null);
         if (item != null) {
             populateItemFields(item);
+            return item;
         } else {
-            showAlert(Alert.AlertType.WARNING, "No product found with serial: " + serialNumber);
+            ETecAlerts.showAlert(Alert.AlertType.WARNING,"Item Not Found!", "No inventory item found with serial number: " + serialNumber);
         }
+        return null;
     }
 
     private void getProductByName(String productName) {

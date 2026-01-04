@@ -96,7 +96,7 @@ public class TransactionsModel {
         return newDoubleArray;
     }
 
-    public boolean settlePayment(String type, int id, double amount, int userId) throws SQLException {
+    public boolean settlePayment(String type, int id, double amount, int userId, String newPaymentStatus) throws SQLException {
         Connection conn = null;
         try {
             conn = DBConnection.getInstance().getConnection();
@@ -117,14 +117,14 @@ public class TransactionsModel {
 
             String updateSql;
             if (type.equals("SALE")) {
-                updateSql = "UPDATE Sales SET paid_amount = paid_amount + ?, payment_status = CASE WHEN (paid_amount + ?) >= grand_total THEN 'PAID' ELSE 'PARTIAL' END WHERE sale_id = ?";
+                updateSql = "UPDATE Sales SET paid_amount = paid_amount + ?, payment_status = ? WHERE sale_id = ?";
             } else {
-                updateSql = "UPDATE RepairJob SET paid_amount = paid_amount + ?, payment_status = CASE WHEN (paid_amount + ?) >= total_amount THEN 'PAID' ELSE 'PARTIAL' END WHERE repair_id = ?";
+                updateSql = "UPDATE RepairJob SET paid_amount = paid_amount + ?, payment_status = ? WHERE repair_id = ?";
             }
 
             try (PreparedStatement ps2 = conn.prepareStatement(updateSql)) {
                 ps2.setDouble(1, amount);
-                ps2.setDouble(2, amount);
+                ps2.setString(2, newPaymentStatus);
                 ps2.setInt(3, id);
                 if (ps2.executeUpdate() <= 0) throw new SQLException("Failed to update status");
             }

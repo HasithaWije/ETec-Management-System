@@ -6,6 +6,7 @@ import lk.ijse.etecmanagementsystem.dto.InventoryItemDTO;
 import lk.ijse.etecmanagementsystem.dto.ProductItemDTO;
 import lk.ijse.etecmanagementsystem.util.CrudUtil;
 import lk.ijse.etecmanagementsystem.util.ProductCondition;
+import org.bridj.cpp.std.list;
 
 import java.sql.*;
 import java.util.ArrayList;
@@ -137,36 +138,18 @@ public class UnitManagementModel {
     }
 
 
-    public int addItemAndGetGeneratedId(ProductItemDTO dto) throws SQLException {
-        Connection conn = null;
-        try {
-            conn = DBConnection.getInstance().getConnection();
-            conn.setAutoCommit(false); // Start Transaction
+    public List<Integer> getAvailablePendingSlot(int productId) throws SQLException {
 
-            String findSql = "SELECT item_id FROM ProductItem WHERE stock_id = ? AND serial_number LIKE 'PENDING-%' LIMIT 1 FOR UPDATE";
-            int existingId = -1;
-            if (dto.getSerialNumber().isEmpty()) {
-                dto.setSerialNumber(null);
-            }
+            String findSql = "SELECT item_id  FROM ProductItem WHERE stock_id = ? AND serial_number LIKE 'PENDING-%'";
+            List<Integer> slotList = new ArrayList<>();
 
-            try (PreparedStatement findPstm = conn.prepareStatement(findSql)) {
-                findPstm.setInt(1, dto.getStockId());
-                try (ResultSet rs = findPstm.executeQuery()) {
-                    if (rs.next()) {
-                        existingId = rs.getInt("item_id");
-                    }
+
+            try (ResultSet rs = CrudUtil.execute(findSql, productId)) {
+                while (rs.next()) {
+                    slotList.add(rs.getInt("item_id"));
                 }
             }
-
-            conn.commit();
-            return existingId <= 0 ? -1 : existingId;
-
-        } catch (SQLException e) {
-            if (conn != null) conn.rollback();
-            throw e;
-        } finally {
-            if (conn != null) conn.setAutoCommit(true);
-        }
+            return slotList;
     }
 
     public int updateSerialNumber(int itemId, String newSerial) throws SQLException {
@@ -178,6 +161,13 @@ public class UnitManagementModel {
             pstm.setInt(2, itemId);
 
             return pstm.executeUpdate();
+        }
+    }
+
+    public boolean checkSerialExists(String serial) throws SQLException {
+        String sql = "SELECT 1 FROM ProductItem WHERE serial_number = ?";
+        try (ResultSet rs = CrudUtil.execute(sql, serial)) {
+            return rs.next();
         }
     }
 
@@ -366,6 +356,17 @@ public class UnitManagementModel {
     }
 
     public boolean updateItemStatus(String serial, String newStatus) throws SQLException {
+        String checkSql = "SELECT status FROM ProductItem WHERE serial_number = ?";
+        try (ResultSet rs = CrudUtil.execute(checkSql, serial)) {
+            if (rs.next()) {
+                String currentStatus = rs.getString("status");
+                if (currentStatus.equals(newStatus)) {
+                    return false;
+                }
+            } else {
+                throw new SQLException("Item with serial number " + serial + " does not exist.");
+            }
+        }
         String sql = "UPDATE ProductItem SET status = ?, sold_date = CASE WHEN ? = 'SOLD' THEN NOW() ELSE sold_date END WHERE serial_number = ?";
         String sqlQty = "UPDATE Product SET qty = CASE WHEN ? = 'AVAILABLE' THEN qty + 1 ELSE qty - 1 END WHERE stock_id = (SELECT stock_id FROM ProductItem WHERE serial_number = ?)";
         Connection con = null;

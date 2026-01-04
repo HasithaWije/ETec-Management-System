@@ -1,0 +1,139 @@
+<!-- Created with Jaspersoft Studio version 7.0.3.final using JasperReports Library version 7.0.3-41034ca841d452f3305ba55b9042260aaa1ab5dd  -->
+<jasperReport name="transaction_report_v2" language="java" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="a1b2c3d4-e5f6-4a7b-8c9d-0e1f2a3b4c5d">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="MYSQL"/>
+	<parameter name="fromDate" class="java.util.Date"/>
+	<parameter name="toDate" class="java.util.Date"/>
+	<query language="SQL"><![CDATA[
+		SELECT 
+			tr.transaction_id,
+			tr.transaction_date,
+			u.name AS cashier_name,
+			COALESCE(tr.reference_note, tr.transaction_type) AS description,
+			tr.flow,
+			tr.amount
+		FROM TransactionRecord tr
+		JOIN User u ON tr.user_id = u.user_id
+		WHERE DATE(tr.transaction_date) BETWEEN DATE($P{fromDate}) AND DATE($P{toDate})
+		ORDER BY tr.transaction_date ASC
+	]]></query>
+	<field name="transaction_id" class="java.lang.Integer"/>
+	<field name="transaction_date" class="java.sql.Timestamp"/>
+	<field name="cashier_name" class="java.lang.String"/>
+	<field name="description" class="java.lang.String"/>
+	<field name="flow" class="java.lang.String"/>
+	<field name="amount" class="java.math.BigDecimal"/>
+	<variable name="totalIncome" calculation="Sum" class="java.math.BigDecimal">
+		<expression><![CDATA[ $F{flow}.equals("IN") ? $F{amount} : java.math.BigDecimal.ZERO ]]></expression>
+	</variable>
+	<variable name="totalOutcome" calculation="Sum" class="java.math.BigDecimal">
+		<expression><![CDATA[ $F{flow}.equals("OUT") ? $F{amount} : java.math.BigDecimal.ZERO ]]></expression>
+	</variable>
+	<variable name="netProfit" calculation="Sum" class="java.math.BigDecimal">
+		<expression><![CDATA[ $F{flow}.equals("IN") ? $F{amount} : $F{amount}.negate() ]]></expression>
+	</variable>
+	<background splitType="Stretch"/>
+	<title height="140" splitType="Stretch">
+		<element kind="rectangle" uuid="2effce1d-8fbc-4cb0-83e2-cfd46ea6e7aa" x="290" y="40" width="263" height="90" backcolor="#F0F0F0">
+			<pen lineColor="#CCCCCC"/>
+		</element>
+		<element kind="textField" uuid="d4c187d2-ed4d-4d85-858d-9b2f033e5636" x="350" y="105" width="200" height="20" hTextAlign="Right" vTextAlign="Middle">
+			<expression><![CDATA[new java.text.SimpleDateFormat("yyyy-MM-dd").format($P{fromDate}) + " to " + new java.text.SimpleDateFormat("yyyy-MM-dd").format($P{toDate})]]></expression>
+		</element>
+		<element kind="staticText" uuid="562b305b-f91b-407e-b3ce-1fdbe9f3d636" x="295" y="105" width="50" height="20" bold="true" hTextAlign="Right" vTextAlign="Middle">
+			<text><![CDATA[Period:]]></text>
+		</element>
+		<element kind="staticText" uuid="1c5bc6c8-ca63-4d78-b505-0a03ab3dba85" x="295" y="45" width="100" height="15" forecolor="#030303" bold="true" hTextAlign="Left" vTextAlign="Middle">
+			<text><![CDATA[TOTAL INCOME:]]></text>
+		</element>
+		<element kind="textField" uuid="96b62bf7-8e60-4678-ac0f-8eec0ab1cf68" x="400" y="45" width="145" height="15" forecolor="#030303" evaluationTime="Report" pattern="Rs #,##0.00" bold="true" hTextAlign="Right" vTextAlign="Middle">
+			<expression><![CDATA[$V{totalIncome} == null ? java.math.BigDecimal.ZERO : $V{totalIncome}]]></expression>
+		</element>
+		<element kind="staticText" uuid="84e1b732-4752-4789-9824-2c5e52c80153" x="295" y="62" width="100" height="15" forecolor="#030303" bold="true" hTextAlign="Left" vTextAlign="Middle">
+			<text><![CDATA[TOTAL OUTCOME:]]></text>
+		</element>
+		<element kind="textField" uuid="2d1b7320-4752-4789-9824-2c5e52c80154" x="400" y="62" width="145" height="15" forecolor="#030303" evaluationTime="Report" pattern="Rs #,##0.00" bold="true" hTextAlign="Right" vTextAlign="Middle">
+			<expression><![CDATA[$V{totalOutcome} == null ? java.math.BigDecimal.ZERO : $V{totalOutcome}]]></expression>
+		</element>
+		<element kind="line" uuid="3c1b7320-4752-4789-9824-2c5e52c80155" x="350" y="82" width="195" height="1" forecolor="#999999"/>
+		<element kind="staticText" uuid="4d1b7320-4752-4789-9824-2c5e52c80156" x="295" y="85" width="100" height="15" bold="true" hTextAlign="Left" vTextAlign="Middle">
+			<text><![CDATA[NET PROFIT:]]></text>
+		</element>
+		<element kind="textField" uuid="5e1b7320-4752-4789-9824-2c5e52c80157" x="400" y="85" width="145" height="15" evaluationTime="Report" pattern="Rs #,##0.00" bold="true" hTextAlign="Right" vTextAlign="Middle">
+			<expression><![CDATA[$V{netProfit} == null ? java.math.BigDecimal.ZERO : $V{netProfit}]]></expression>
+		</element>
+		<element kind="image" uuid="915159c2-5168-4241-a0a3-663109f23f78" x="95" y="0" width="90" height="60" onErrorType="Blank" hImageAlign="Center" vImageAlign="Middle">
+			<expression><![CDATA["src/main/resources/lk/ijse/etecmanagementsystem/images/ETBatch.png"]]></expression>
+		</element>
+		<element kind="staticText" uuid="d97fdbbc-a6f3-4f36-a9d9-c1f0e796a1e6" x="0" y="51" width="280" height="30" fontSize="20.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+			<text><![CDATA[ETec Computers]]></text>
+		</element>
+		<element kind="staticText" uuid="109e011a-1cd6-45d6-b026-e8e8a9af1371" x="0" y="80" width="280" height="12" fontSize="8.0" hTextAlign="Center">
+			<text><![CDATA[Nagoda, Galle, Sri Lanka]]></text>
+		</element>
+		<element kind="staticText" uuid="eec57cc9-bd77-4adb-b682-352d0569792f" x="0" y="92" width="280" height="12" fontSize="8.0" bold="true" hTextAlign="Center">
+			<text><![CDATA[Tel: +94 00 000 0000]]></text>
+		</element>
+	</title>
+	<pageHeader height="35" splitType="Stretch">
+		<element kind="staticText" uuid="ebb28a90-0c0e-465d-b8a7-2a1777019287" x="0" y="2" width="270" height="30" fontSize="16.0" bold="false" hTextAlign="Left" vTextAlign="Top">
+			<text><![CDATA[Transaction Report]]></text>
+		</element>
+	</pageHeader>
+	<columnHeader height="35" splitType="Stretch">
+		<element kind="rectangle" uuid="fca67e90-6f1a-421f-b3a4-c60c4eff1b2a" x="0" y="0" width="555" height="30" backcolor="#E0E0E0">
+			<pen lineWidth="0.0"/>
+		</element>
+		<element kind="staticText" uuid="93697975-c9f7-4acd-91fa-0bf68604df12" x="0" y="0" width="50" height="30" fontSize="10.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+			<text><![CDATA[#ID]]></text>
+		</element>
+		<element kind="staticText" uuid="cb74f78b-4459-48af-90ef-6ca954390aed" x="50" y="0" width="100" height="30" fontSize="10.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+			<text><![CDATA[Proceed Date]]></text>
+		</element>
+		<element kind="staticText" uuid="356fa39c-c20f-40ba-89a8-265b1893594f" x="150" y="0" width="90" height="30" fontSize="10.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+			<text><![CDATA[Cashier]]></text>
+		</element>
+		<element kind="staticText" uuid="830b8593-2a01-4c03-a9f4-c0f0508c6848" x="240" y="0" width="180" height="30" fontSize="10.0" bold="true" hTextAlign="Left" vTextAlign="Middle">
+			<text><![CDATA[  Description]]></text>
+		</element>
+		<element kind="staticText" uuid="8bde555b-4b42-4d6a-96db-bc18ae44d1e0" x="420" y="0" width="40" height="30" fontSize="10.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+			<text><![CDATA[Flow]]></text>
+		</element>
+		<element kind="staticText" uuid="a92f7ba7-70cb-41cd-bd17-fff14003356a" x="460" y="0" width="93" height="30" bold="true" hTextAlign="Right" vTextAlign="Middle">
+			<text><![CDATA[Amount (Rs)  ]]></text>
+		</element>
+	</columnHeader>
+	<detail>
+		<band height="30" splitType="Stretch">
+			<element kind="textField" uuid="a882e4ed-d144-476a-805e-af3081fb3773" x="0" y="0" width="50" height="25" hTextAlign="Center" vTextAlign="Middle">
+				<expression><![CDATA[$F{transaction_id}]]></expression>
+			</element>
+			<element kind="textField" uuid="2f0658fa-6aa6-4b3b-9ea8-88af14526e68" x="50" y="0" width="100" height="25" pattern="yyyy-MM-dd HH:mm" hTextAlign="Center" vTextAlign="Middle">
+				<expression><![CDATA[$F{transaction_date}]]></expression>
+			</element>
+			<element kind="textField" uuid="538d8c60-62e2-491f-b550-b1c2594b0d95" x="150" y="0" width="90" height="25" hTextAlign="Center" vTextAlign="Middle">
+				<expression><![CDATA[$F{cashier_name}]]></expression>
+			</element>
+			<element kind="textField" uuid="88852ecb-8ee9-4fa1-8e6c-aee9d65160e0" x="250" y="0" width="170" height="25" vTextAlign="Middle">
+				<expression><![CDATA[$F{description}]]></expression>
+			</element>
+			<element kind="textField" uuid="71a444a5-ed07-4406-9c4d-19a9209308fc" x="420" y="0" width="40" height="25" hTextAlign="Center" vTextAlign="Middle">
+				<expression><![CDATA[$F{flow}]]></expression>
+			</element>
+			<element kind="textField" uuid="63de0f7a-b3f8-483e-8ff5-caa36570b611" x="460" y="0" width="93" height="25" pattern="#,##0.00" hTextAlign="Right" vTextAlign="Middle">
+				<expression><![CDATA[$F{amount}]]></expression>
+			</element>
+		</band>
+	</detail>
+	<columnFooter height="3" splitType="Stretch">
+		<element kind="line" uuid="5c4cd463-a193-4b4f-adbb-0110e9beb483" x="0" y="0" width="555" height="1" forecolor="#CCCCCC"/>
+	</columnFooter>
+	<pageFooter height="33" splitType="Stretch">
+		<element kind="textField" uuid="7c62dc76-be1a-4e9c-a36f-e2fd17cde4e5" x="0" y="0" width="100" height="30" pattern="MMMMM dd, yyyy" vTextAlign="Middle">
+			<expression><![CDATA[new java.util.Date()]]></expression>
+		</element>
+		<element kind="textField" uuid="f58b4369-8539-4bef-9bb6-a8a852a71b17" x="353" y="1" width="200" height="30" hTextAlign="Center" vTextAlign="Middle">
+			<expression><![CDATA["Page " + $V{PAGE_NUMBER}]]></expression>
+		</element>
+	</pageFooter>
+</jasperReport>

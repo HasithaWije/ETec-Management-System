@@ -537,6 +537,8 @@ public class UnitManagementController {
                 vboxStatusUpdate.setDisable(true);
                 txtStatusSearch.clear();
                 handleViewFilter();
+            }else {
+                showAlert(Alert.AlertType.ERROR, "Update Failed");
             }
         } catch (SQLException ex) {
             showAlert(Alert.AlertType.ERROR, ex.getMessage());

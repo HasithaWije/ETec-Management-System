@@ -21,6 +21,7 @@ public class App extends Application {
     public void start(Stage stage) throws IOException {
         primaryStage = stage;
         setupLoginStageScene("login");
+//        setupPrimaryStageScene("layout");
     }
 
     public static void setRoot(String fxml) throws IOException {
@@ -45,7 +46,7 @@ public class App extends Application {
         primaryStage.show();
     }
 
-    public static void setupPrimaryStageScene(String fxmlFileName) throws Exception {
+    public static void setupPrimaryStageScene(String fxmlFileName) throws IOException {
 
         scene = new Scene(loadFXML(fxmlFileName), 1280, 720);
         primaryStage.setScene(scene);

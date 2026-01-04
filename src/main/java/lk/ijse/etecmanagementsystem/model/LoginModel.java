@@ -12,7 +12,7 @@ public class LoginModel {
 
     public boolean validateCredentials(String username, String password) throws SQLException {
         // Logic to validate credentials against a data source
-        String sql = "SELECT * FROM User WHERE user_name = ? AND password = ?";
+        String sql = "SELECT * FROM User WHERE BINARY user_name = ? AND BINARY password = ?";
         try (ResultSet resultSet = CrudUtil.execute(sql, username, password)) {
             return resultSet.next();
         }

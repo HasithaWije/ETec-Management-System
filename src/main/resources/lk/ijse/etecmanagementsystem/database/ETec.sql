@@ -231,3 +231,9 @@ INSERT INTO Supplier (supplier_name, contact_number, email, address)
 VALUES ('Tech Supplies Co.', '123-456-7890', '', '123 Tech Street, Silicon Valley, CA'),
        ('Gadget World', '987-654-3210', '', '456 Gadget Avenue, Tech City, NY'),
        ('Computer Parts Inc.', '555-123-4567', '', '789 Computer Blvd, Hardware Town, TX');
+
+-- net start MySQL80
+
+SELECT COUNT(item_id) AS count  FROM ProductItem WHERE stock_id = ? AND serial_number LIKE 'PENDING-%';
+
+SELECT pi.item_id, p.name, pi.serial_number, p.p_condition, p.sell_price FROM ProductItem pi JOIN Product p ON pi.stock_id = p.stock_id WHERE pi.status = 'AVAILABLE';

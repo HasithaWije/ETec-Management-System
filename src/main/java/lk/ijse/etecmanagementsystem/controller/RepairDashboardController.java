@@ -150,7 +150,7 @@ public class RepairDashboardController {
             Parent root = loader.load();
 
             RepairCheckoutController controller = loader.getController();
-            controller.setInvoiceData(currentSelection, this);
+            controller.setInvoiceData(currentSelection, usedPartsList, this);
 
             Stage stage = new Stage();
             stage.setTitle("Repair Checkout");

@@ -36,7 +36,7 @@ public class ReportsModel {
     }
 
     public int getInventoryCount() throws SQLException {
-        String sql = "SELECT COUNT(*) FROM ProductItem WHERE status = 'AVAILABLE'";
+        String sql = "SELECT COUNT(*) FROM Product ";
         return getTotalCount(sql);
     }
 

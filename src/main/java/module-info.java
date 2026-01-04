@@ -12,6 +12,10 @@ module lk.ijse.etecmanagementsystem {
     requires jdk.httpserver;
     requires net.sf.jasperreports.core;
     requires java.mail;
+    requires webcam.capture;
+    requires com.google.zxing;
+    requires com.google.zxing.javase;
+    requires bridj;
 
 
     exports lk.ijse.etecmanagementsystem;

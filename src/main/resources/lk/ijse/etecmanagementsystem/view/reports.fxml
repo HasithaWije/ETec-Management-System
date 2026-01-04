@@ -87,12 +87,6 @@
                                                 <Label fx:id="lblRecordCountSales" prefHeight="17.0" prefWidth="33.0" text="0" />
                                              </children>
                                           </HBox>
-                                          <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="10.0">
-                                             <children>
-                                                <Label text="Record Limit:" />
-                                                <TextField fx:id="txtRLimitSales" promptText="Enter Record Limit" stylesheets="@../css/TextFieldStyle.css" />
-                                             </children>
-                                          </HBox>
                                           <HBox alignment="CENTER" prefHeight="107.0" prefWidth="1000.0" spacing="20.0">
                                              <children>
                               
@@ -204,12 +198,6 @@
                                                 <Label fx:id="lblRecordCountRepair" prefHeight="17.0" prefWidth="33.0" text="0" />
                                              </children>
                                           </HBox>
-                                          <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="10.0">
-                                             <children>
-                                                <Label text="Record Limit:" />
-                                                <TextField fx:id="txtRLimitRepair" promptText="Enter Record Limit" stylesheets="@../css/TextFieldStyle.css" />
-                                             </children>
-                                          </HBox>
                                           <HBox alignment="CENTER" prefHeight="107.0" prefWidth="1000.0" spacing="20.0">
                                              <children>
                                                 <Button fx:id="btnGenerateReportRepair" mnemonicParsing="false" onAction="#btnGenerateReportRepairOnAction" style="-fx-background-color: #3498db; -fx-text-fill: white; -fx-font-weight: bold;" text="Generate Repair Report">
@@ -318,12 +306,6 @@
                                                    </HBox.margin>
                                                 </Label>
                                                 <Label fx:id="lblRecordCountTransf" prefHeight="17.0" prefWidth="33.0" text="0" />
-                                             </children>
-                                          </HBox>
-                                          <HBox alignment="CENTER" prefHeight="100.0" prefWidth="200.0" spacing="10.0">
-                                             <children>
-                                                <Label text="Record Limit:" />
-                                                <TextField fx:id="txtRLimitTransf" promptText="Enter Record Limit" stylesheets="@../css/TextFieldStyle.css" />
                                              </children>
                                           </HBox>
                                           <HBox alignment="CENTER" prefHeight="107.0" prefWidth="1000.0" spacing="20.0">

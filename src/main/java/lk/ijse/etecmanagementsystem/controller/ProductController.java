@@ -333,7 +333,7 @@ public class ProductController implements Initializable {
             if (status.restrictedCount > 0) {
                 showAlert(Alert.AlertType.ERROR, "Deletion Blocked",
                         "Cannot delete this product.\n\n" +
-                                "Reason: It has " + status.restrictedCount + " items with history (SOLD, RMA, or DAMAGED).\n" +
+                                "Reason: It has " + status.restrictedCount + " items with history (SOLD, RMA, DAMAGED, RETURN_TO_SUPPLIER or IN_REPAIR_USE).\n" +
                                 "You cannot delete records that are part of business history.");
                 return;
             }

@@ -3,6 +3,7 @@ package lk.ijse.etecmanagementsystem.controller;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.*;
 import lk.ijse.etecmanagementsystem.App;
 import lk.ijse.etecmanagementsystem.model.LoginModel;
@@ -11,6 +12,7 @@ import lk.ijse.etecmanagementsystem.util.EmailService;
 import lk.ijse.etecmanagementsystem.util.LoginUtil;
 import lk.ijse.etecmanagementsystem.util.ButtonStyle;
 
+import javafx.scene.input.KeyEvent;
 import java.sql.SQLException;
 import java.util.Optional;
 
@@ -67,6 +69,20 @@ public class LoginController {
     }
 
     @FXML
+    private void handleMoveToPasswordField(KeyEvent event) {
+        if (event.getCode() == KeyCode.ENTER) {
+            passwordField.requestFocus();
+        }
+    }
+
+    @FXML
+    private void handleEnterKeyPress(KeyEvent event) {
+        if (event.getCode() == KeyCode.ENTER) {
+            onLoginButtonClick();
+        }
+    }
+
+    @FXML
     private void onLoginButtonClick() {
         String username = userNameField.getText() == null ? "" : userNameField.getText().trim();
         String password = passwordField.getText() == null ? "" : passwordField.getText().trim();
@@ -78,6 +94,8 @@ public class LoginController {
 
 
         try {
+
+
             if (loginModel.validateCredentials(username, password)) {
 
                 LoginUtil.setUserName(username);
@@ -111,17 +129,10 @@ public class LoginController {
                 }
             } else {
 
-                System.out.println("Invalid username or password");
-
-                Alert alert = new Alert(Alert.AlertType.ERROR);
-                alert.setTitle("Login Failed");
-                alert.setHeaderText(null);
-                alert.setContentText("Invalid username or password. Please try again.");
-                alert.showAndWait();
-
-
+                ETecAlerts.showAlert(Alert.AlertType.ERROR, "Login Failed", "Invalid username or password. Please try again.");
                 userNameField.clear();
                 passwordField.clear();
+                userNameField.requestFocus();
             }
         } catch (SQLException e) {
             System.out.println("Database error: " + e.getMessage());

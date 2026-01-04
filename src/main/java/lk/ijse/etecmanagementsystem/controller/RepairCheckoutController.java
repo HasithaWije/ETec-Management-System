@@ -8,6 +8,7 @@ import lk.ijse.etecmanagementsystem.App;
 import lk.ijse.etecmanagementsystem.db.DBConnection;
 import lk.ijse.etecmanagementsystem.dto.RepairJobDTO;
 import lk.ijse.etecmanagementsystem.dto.tm.RepairJobTM;
+import lk.ijse.etecmanagementsystem.dto.tm.RepairPartTM;
 import lk.ijse.etecmanagementsystem.model.RepairJobModel;
 import lk.ijse.etecmanagementsystem.util.GenerateReports;
 import lk.ijse.etecmanagementsystem.util.LoginUtil;
@@ -23,6 +24,7 @@ import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 public class RepairCheckoutController {
@@ -60,6 +62,7 @@ public class RepairCheckoutController {
     private double subTotal = 0.0;
     private double grandTotal = 0.0;
     private double discount = 0.0;
+    private String serialNumber = "";
 
     @FXML
     public void initialize() {
@@ -85,6 +88,7 @@ public class RepairCheckoutController {
                     this.grandTotal = grandTotal;
                     txtAmountPaid.setText(String.format("%.2f", grandTotal));
                     this.discount = discount;
+
                 }
             } catch (NumberFormatException e) {
                 txtDiscount.setText(oldVal);
@@ -94,7 +98,7 @@ public class RepairCheckoutController {
         txtAmountPaid.requestFocus();
     }
 
-    public void setInvoiceData(RepairJobTM job, RepairDashboardController main) {
+    public void setInvoiceData(RepairJobTM job, List<RepairPartTM> repairParts, RepairDashboardController main) {
         this.jobTM = job;
         this.mainController = main;
 
@@ -112,6 +116,15 @@ public class RepairCheckoutController {
         lblSubTotal.setText(String.format("%.2f", subTotal));
         lblGrandTotal.setText(String.format("%.2f", subTotal));
         this.grandTotal = subTotal;
+        for (RepairPartTM part : repairParts) {
+            if (part.getSerialNumber() != null) {
+                // Check for null OR empty to be safe
+                if (serialNumber == null || serialNumber.isEmpty() || part.getSerialNumber().startsWith("REPAIR-")) {
+                    System.out.println("Adding serial: " + part.getSerialNumber());
+                    serialNumber = part.getSerialNumber();
+                }
+            }
+        }
 
         // Default: Assume they pay full amount
         txtAmountPaid.setText(String.valueOf(grandTotal));
@@ -184,7 +197,8 @@ public class RepairCheckoutController {
                     discount,
                     partsTotal,
                     paid,
-                    method
+                    method,
+                    serialNumber
             );
 
             if (success) {

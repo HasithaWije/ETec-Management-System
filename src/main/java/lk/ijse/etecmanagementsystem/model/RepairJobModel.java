@@ -296,7 +296,7 @@ public class RepairJobModel {
     }
 
     public boolean completeCheckout(int repairId, int customerId, int userId,
-                                    double totalAmount, double discount, double partsTotal, double paidAmount, String paymentMethod) throws SQLException {
+                                    double totalAmount, double discount, double partsTotal, double paidAmount, String paymentMethod, String serialNumber) throws SQLException {
 
         Connection connection = null;
         try {
@@ -331,23 +331,32 @@ public class RepairJobModel {
             }
 
             if (hasParts) {
-
-
+                // 2. Mark Parts as SOLD
+                // FIX: Removed 'serial_number = ?' from SQL. The serial is already correct in the DB.
                 String sqlMarkSold = "UPDATE ProductItem SET status='SOLD', sold_date=NOW() WHERE item_id=?";
+
                 try (PreparedStatement pstmSold = connection.prepareStatement(sqlMarkSold)) {
 
                     String sqlGetParts = "SELECT item_id FROM RepairItem WHERE repair_id = ?";
                     try (PreparedStatement pstmGetParts = connection.prepareStatement(sqlGetParts)) {
                         pstmGetParts.setInt(1, repairId);
                         ResultSet rsParts = pstmGetParts.executeQuery();
+
                         while (rsParts.next()) {
                             int itemId = rsParts.getInt("item_id");
-                            pstmSold.setInt(1, itemId);
+                            // FIX: Removed pstmSold.setString(1, serialNumber);
+                            pstmSold.setInt(1, itemId); // This is now parameter #1
                             pstmSold.addBatch();
                         }
-                        if (pstmSold.executeBatch().length == 0) {
-                            connection.rollback();
-                            return false;
+
+                        // executeBatch returns an array of update counts.
+                        // We must check if any updates failed (returned 0).
+                        int[] results = pstmSold.executeBatch();
+                        for(int r : results) {
+                            if(r == 0) {
+                                connection.rollback();
+                                throw new SQLException("Failed to update part status. Item might be missing.");
+                            }
                         }
                     }
                 }

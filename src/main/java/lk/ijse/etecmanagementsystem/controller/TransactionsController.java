@@ -300,22 +300,40 @@ public class TransactionsController {
         result.ifPresent(amountStr -> {
             try {
                 double amount = Double.parseDouble(amountStr);
+                String newPayStatus = "PAID";
+                if (amount < 0) {
+                    new Alert(Alert.AlertType.ERROR, "Amount cannot be negative!").show();
+                    return;
+                }
                 if (amount > dueAmount) {
                     new Alert(Alert.AlertType.ERROR, "Amount cannot exceed balance due!").show();
                     return;
                 }
+                if(amount < dueAmount){
+                    Alert alert = new Alert(Alert.AlertType.CONFIRMATION,
+                            "The amount entered is less than the balance due. This will mark the " + type.toLowerCase() + " as PARTIALLY PAID. Do you want to proceed?",
+                            ButtonType.YES, ButtonType.NO);
+                    alert.setTitle("Confirm Partial Payment");
+                    alert.setHeaderText(null);
+                    Optional<ButtonType> confirmationResult = alert.showAndWait();
+                    if (confirmationResult.isEmpty() || confirmationResult.get() != ButtonType.YES) {
+                        return;
+                    }
+                    newPayStatus = "PARTIAL";
+                }
+
                 // Call Process Method
-                processPayment(type, id, amount);
+                processPayment(type, id, amount, newPayStatus);
             } catch (NumberFormatException e) {
                 new Alert(Alert.AlertType.ERROR, "Invalid Amount").show();
             }
         });
     }
 
-    private void processPayment(String type, int id, double amount) {
+    private void processPayment(String type, int id, double amount, String newPayStatus) {
         try {
             // Delegate complex logic to Model
-            boolean success = transactionsModel.settlePayment(type, id, amount, LoginUtil.getUserId()); // User ID 1
+            boolean success = transactionsModel.settlePayment(type, id, amount, LoginUtil.getUserId(), newPayStatus); // User ID 1
             if (success) {
                 new Alert(Alert.AlertType.INFORMATION, "Payment Successful!").show();
                 loadPendingSettlements();

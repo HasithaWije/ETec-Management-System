@@ -1,0 +1,173 @@
+<!-- Created with Jaspersoft Studio version 7.0.3.final using JasperReports Library version 7.0.3-41034ca841d452f3305ba55b9042260aaa1ab5dd  -->
+<jasperReport name="detailed_repair_report" language="java" pageWidth="595" pageHeight="842" columnWidth="555" leftMargin="20" rightMargin="20" topMargin="20" bottomMargin="20" uuid="fcee9e49-54c5-4cce-8221-8a6e25b37490">
+	<property name="com.jaspersoft.studio.data.sql.tables" value=""/>
+	<property name="com.jaspersoft.studio.data.defaultdataadapter" value="MYSQL"/>
+	<parameter name="fromDate" class="java.util.Date"/>
+	<parameter name="toDate" class="java.util.Date"/>
+	<query language="SQL"><![CDATA[
+		SELECT 
+			rj.repair_id,
+			c.name AS customer_name,
+			rj.status,
+			rj.date_in,
+			rj.date_out,
+			rj.paid_amount,
+			rj.payment_status,
+			rj.total_amount
+		FROM RepairJob rj
+		JOIN Customer c ON rj.cus_id = c.cus_id
+		WHERE DATE(rj.date_out) BETWEEN DATE($P{fromDate}) AND DATE($P{toDate})
+		ORDER BY rj.date_out ASC
+	]]></query>
+	<field name="repair_id" class="java.lang.Integer">
+		<property name="com.jaspersoft.studio.field.name" value="repair_id"/>
+		<property name="com.jaspersoft.studio.field.label" value="repair_id"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="RepairJob"/>
+	</field>
+	<field name="customer_name" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="name"/>
+		<property name="com.jaspersoft.studio.field.label" value="customer_name"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="Customer"/>
+	</field>
+	<field name="status" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="status"/>
+		<property name="com.jaspersoft.studio.field.label" value="status"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="RepairJob"/>
+	</field>
+	<field name="date_in" class="java.sql.Timestamp">
+		<property name="com.jaspersoft.studio.field.name" value="date_in"/>
+		<property name="com.jaspersoft.studio.field.label" value="date_in"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="RepairJob"/>
+	</field>
+	<field name="date_out" class="java.sql.Timestamp">
+		<property name="com.jaspersoft.studio.field.name" value="date_out"/>
+		<property name="com.jaspersoft.studio.field.label" value="date_out"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="RepairJob"/>
+	</field>
+	<field name="paid_amount" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="paid_amount"/>
+		<property name="com.jaspersoft.studio.field.label" value="paid_amount"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="RepairJob"/>
+	</field>
+	<field name="payment_status" class="java.lang.String">
+		<property name="com.jaspersoft.studio.field.name" value="payment_status"/>
+		<property name="com.jaspersoft.studio.field.label" value="payment_status"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="RepairJob"/>
+	</field>
+	<field name="total_amount" class="java.math.BigDecimal">
+		<property name="com.jaspersoft.studio.field.name" value="total_amount"/>
+		<property name="com.jaspersoft.studio.field.label" value="total_amount"/>
+		<property name="com.jaspersoft.studio.field.tree.path" value="RepairJob"/>
+	</field>
+	<variable name="grandTotal" calculation="Sum" class="java.math.BigDecimal">
+		<expression><![CDATA[$F{total_amount}]]></expression>
+	</variable>
+	<background splitType="Stretch"/>
+	<title height="126" splitType="Stretch">
+		<element kind="rectangle" uuid="2effce1d-8fbc-4cb0-83e2-cfd46ea6e7aa" x="290" y="51" width="263" height="60" backcolor="#F0F0F0">
+			<pen lineColor="#CCCCCC"/>
+		</element>
+		<element kind="textField" uuid="d4c187d2-ed4d-4d85-858d-9b2f033e5636" x="353" y="84" width="200" height="20" vTextAlign="Middle">
+			<expression><![CDATA[new java.text.SimpleDateFormat("yyyy-MM-dd").format($P{fromDate}) + " to " + new java.text.SimpleDateFormat("yyyy-MM-dd").format($P{toDate})]]></expression>
+		</element>
+		<element kind="textField" uuid="96b62bf7-8e60-4678-ac0f-8eec0ab1cf68" x="410" y="56" width="130" height="20" fontSize="12.0" evaluationTime="Report" pattern="Rs #,##0.00" bold="true" hTextAlign="Right" vTextAlign="Middle">
+			<expression><![CDATA[$V{grandTotal} == null ? java.math.BigDecimal.ZERO : $V{grandTotal}]]></expression>
+		</element>
+		<element kind="staticText" uuid="1c5bc6c8-ca63-4d78-b505-0a03ab3dba85" x="290" y="56" width="99" height="20" bold="true" hTextAlign="Right" vTextAlign="Middle">
+			<text><![CDATA[TOTAL REVENUE:]]></text>
+		</element>
+		<element kind="staticText" uuid="562b305b-f91b-407e-b3ce-1fdbe9f3d636" x="292" y="84" width="60" height="20" bold="true" hTextAlign="Right" vTextAlign="Middle">
+			<text><![CDATA[Period:]]></text>
+		</element>
+		<element kind="image" uuid="915159c2-5168-4241-a0a3-663109f23f78" x="95" y="0" width="90" height="60" onErrorType="Blank" linkType="None" linkTarget="Self" hImageAlign="Center" vImageAlign="Middle">
+			<expression><![CDATA["src/main/resources/lk/ijse/etecmanagementsystem/images/ETBatch.png"]]></expression>
+			<property name="com.jaspersoft.studio.unit.width" value="px"/>
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+		</element>
+		<element kind="staticText" uuid="eec57cc9-bd77-4adb-b682-352d0569792f" x="0" y="92" width="280" height="12" forecolor="#000000" fontSize="8.0" bold="true" hTextAlign="Center">
+			<text><![CDATA[Tel: +94 00 000 0000]]></text>
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+		</element>
+		<element kind="staticText" uuid="d97fdbbc-a6f3-4f36-a9d9-c1f0e796a1e6" x="0" y="51" width="280" height="30" forecolor="#000000" fontName="SansSerif" fontSize="20.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+			<text><![CDATA[ETec Computers]]></text>
+		</element>
+		<element kind="staticText" uuid="109e011a-1cd6-45d6-b026-e8e8a9af1371" x="0" y="80" width="280" height="12" forecolor="#000000" fontSize="8.0" hTextAlign="Center">
+			<text><![CDATA[Nagoda, Galle, Sri Lanka]]></text>
+			<property name="com.jaspersoft.studio.unit.height" value="px"/>
+		</element>
+	</title>
+	<pageHeader height="35" splitType="Stretch">
+		<element kind="staticText" uuid="ebb28a90-0c0e-465d-b8a7-2a1777019287" x="0" y="2" width="270" height="30" fontSize="16.0" bold="false" hTextAlign="Left" vTextAlign="Top">
+			<text><![CDATA[Detailed Repair Report]]></text>
+		</element>
+	</pageHeader>
+	<columnHeader height="35" splitType="Stretch">
+		<element kind="rectangle" uuid="fca67e90-6f1a-421f-b3a4-c60c4eff1b2a" x="0" y="0" width="555" height="30" backcolor="#E0E0E0">
+			<pen lineWidth="0.0"/>
+		</element>
+		<element kind="staticText" uuid="93697975-c9f7-4acd-91fa-0bf68604df12" x="0" y="0" width="50" height="30" fontSize="10.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+			<text><![CDATA[  #ID]]></text>
+		</element>
+		<element kind="staticText" uuid="cb74f78b-4459-48af-90ef-6ca954390aed" x="50" y="0" width="141" height="30" fontSize="10.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+			<text><![CDATA[  Customer]]></text>
+		</element>
+		<element kind="staticText" uuid="356fa39c-c20f-40ba-89a8-265b1893594f" x="191" y="0" width="48" height="30" fontSize="10.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+			<text><![CDATA[Status]]></text>
+		</element>
+		<element kind="staticText" uuid="830b8593-2a01-4c03-a9f4-c0f0508c6848" x="239" y="0" width="60" height="30" fontSize="10.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+			<text><![CDATA[Day in]]></text>
+		</element>
+		<element kind="staticText" uuid="8bde555b-4b42-4d6a-96db-bc18ae44d1e0" x="298" y="0" width="60" height="30" fontSize="10.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+			<text><![CDATA[Day out]]></text>
+		</element>
+		<element kind="staticText" uuid="b5156f51-79ca-4d3c-a618-6c78934ce115" x="360" y="0" width="69" height="30" fontSize="10.0" bold="true" hTextAlign="Center" vTextAlign="Middle">
+			<text><![CDATA[Paid_A.(Rs.)]]></text>
+		</element>
+		<element kind="staticText" uuid="4ba48092-d703-4eee-a639-0dc298267509" x="430" y="0" width="49" height="30" bold="true" hTextAlign="Center" vTextAlign="Middle">
+			<text><![CDATA[P.Status]]></text>
+		</element>
+		<element kind="staticText" uuid="a92f7ba7-70cb-41cd-bd17-fff14003356a" x="480" y="0" width="73" height="30" bold="true" hTextAlign="Center" vTextAlign="Middle">
+			<text><![CDATA[  Total(Rs)]]></text>
+		</element>
+	</columnHeader>
+	<detail>
+		<band height="30" splitType="Stretch">
+			<element kind="textField" uuid="a882e4ed-d144-476a-805e-af3081fb3773" x="4" y="0" width="44" height="25" hTextAlign="Center" vTextAlign="Middle">
+				<expression><![CDATA[$F{repair_id}]]></expression>
+			</element>
+			<element kind="textField" uuid="2f0658fa-6aa6-4b3b-9ea8-88af14526e68" x="52" y="0" width="135" height="25" vTextAlign="Middle">
+				<expression><![CDATA[$F{customer_name}]]></expression>
+			</element>
+			<element kind="textField" uuid="538d8c60-62e2-491f-b550-b1c2594b0d95" x="191" y="0" width="48" height="25" fontSize="8.0" hTextAlign="Center" vTextAlign="Middle">
+				<expression><![CDATA[$F{status}]]></expression>
+			</element>
+			<element kind="textField" uuid="88852ecb-8ee9-4fa1-8e6c-aee9d65160e0" x="239" y="0" width="59" height="25" fontSize="8.0" pattern="yyyy-MM-dd" hTextAlign="Center" vTextAlign="Middle">
+				<expression><![CDATA[$F{date_in}]]></expression>
+			</element>
+			<element kind="textField" uuid="71a444a5-ed07-4406-9c4d-19a9209308fc" x="298" y="0" width="60" height="25" fontSize="8.0" pattern="yyyy-MM-dd" hTextAlign="Center" vTextAlign="Middle">
+				<expression><![CDATA[$F{date_out} == null ? "-" : $F{date_out}]]></expression>
+			</element>
+			<element kind="textField" uuid="b526001e-635f-4b49-952a-a9e217781e1c" x="360" y="0" width="68" height="25" pattern="#,##0.00" hTextAlign="Right" vTextAlign="Middle">
+				<expression><![CDATA[$F{paid_amount}]]></expression>
+			</element>
+			<element kind="textField" uuid="557c77d3-b14c-463c-aa29-8183408a14ea" x="430" y="0" width="49" height="25" fontSize="8.0" hTextAlign="Center" vTextAlign="Middle">
+				<expression><![CDATA[$F{payment_status}]]></expression>
+			</element>
+			<element kind="textField" uuid="63de0f7a-b3f8-483e-8ff5-caa36570b611" x="480" y="0" width="73" height="25" pattern="#,##0.00" hTextAlign="Right" vTextAlign="Middle">
+				<expression><![CDATA[$F{total_amount}]]></expression>
+			</element>
+		</band>
+	</detail>
+	<columnFooter height="3" splitType="Stretch">
+		<element kind="line" uuid="5c4cd463-a193-4b4f-adbb-0110e9beb483" x="0" y="0" width="555" height="1" forecolor="#CCCCCC"/>
+	</columnFooter>
+	<pageFooter height="33" splitType="Stretch">
+		<element kind="textField" uuid="7c62dc76-be1a-4e9c-a36f-e2fd17cde4e5" x="0" y="0" width="100" height="30" pattern="MMMMM dd, yyyy" vTextAlign="Middle">
+			<expression><![CDATA[new java.util.Date()]]></expression>
+		</element>
+		<element kind="textField" uuid="f58b4369-8539-4bef-9bb6-a8a852a71b17" x="353" y="1" width="200" height="30" hTextAlign="Center" vTextAlign="Middle">
+			<expression><![CDATA["Page " + $V{PAGE_NUMBER}]]></expression>
+		</element>
+	</pageFooter>
+	<summary splitType="Stretch"/>
+</jasperReport>

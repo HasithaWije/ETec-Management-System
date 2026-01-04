@@ -58,12 +58,17 @@ public class LayoutController {
         String userRole = LoginUtil.getUserRole();
         btnAdmin.setText(username);
 
-        if (userRole.equals("ADMIN") || userRole.equals("MANAGER")) {
-            btnReports.setVisible(true);
+        if (userRole.equals("ADMIN")) {
+
             btnUser.setVisible(true);
             btnAdmin.setVisible(true);
-        } else {
-            btnReports.setVisible(false);
+
+        } else if(userRole.equals("MANAGER")) {
+
+            btnAdmin.setVisible(true);
+            btnUser.setVisible(false);
+
+        }else {
             btnUser.setVisible(false);
             btnAdmin.setVisible(false);
         }

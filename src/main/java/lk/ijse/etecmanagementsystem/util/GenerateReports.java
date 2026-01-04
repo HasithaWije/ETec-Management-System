@@ -63,7 +63,7 @@ public class GenerateReports {
                 return;
             }
 
-            parameters.put("limit", limit);
+            parameters.put("rowLimit", limit);
 
 
             Connection connection = DBConnection.getInstance().getConnection();

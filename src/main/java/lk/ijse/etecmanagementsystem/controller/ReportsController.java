@@ -7,6 +7,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
 import lk.ijse.etecmanagementsystem.model.ReportsModel;
+import lk.ijse.etecmanagementsystem.util.ETecAlerts;
 import lk.ijse.etecmanagementsystem.util.GenerateReports;
 
 import java.sql.Date;
@@ -90,13 +91,7 @@ public class ReportsController {
     @FXML
     private TextField txtRLimitInven;
     @FXML
-    private TextField txtRLimitRepair;
-    @FXML
-    private TextField txtRLimitSales;
-    @FXML
     private TextField txtRLimitSup;
-    @FXML
-    private TextField txtRLimitTransf;
     @FXML
     private TextField txtRepairId;
     @FXML
@@ -180,7 +175,10 @@ public class ReportsController {
         });
 
         tabInventory.setOnSelectionChanged(e -> {
-            if (tabInventory.isSelected()) hBoxDate.setDisable(true);
+            if (tabInventory.isSelected()) {
+                btnLoadInventoryOnAction(null);
+                hBoxDate.setDisable(true);
+            }
         });
     }
 
@@ -193,6 +191,8 @@ public class ReportsController {
         System.out.println("To Date: " + dpToDate.getValue());
         try {
             int count = reportsModel.getSalesCount(dpFromDate.getValue(), dpToDate.getValue());
+            System.out.println(dpFromDate.getValue());
+            System.out.println(dpToDate.getValue());
             lblRecordCountSales.setText(String.valueOf(count));
         } catch (SQLException e) {
             e.printStackTrace();
@@ -227,6 +227,7 @@ public class ReportsController {
         try {
             int count = reportsModel.getInventoryCount();
             lblRecordCountInven.setText(String.valueOf(count));
+            txtRLimitInven.setText(String.valueOf(count));
         } catch (SQLException e) {
             e.printStackTrace();
             new Alert(Alert.AlertType.ERROR, "DB Error: " + e.getMessage()).show();
@@ -344,16 +345,44 @@ public class ReportsController {
 
     @FXML
     void btnGenerateReportRepairOnAction(ActionEvent event) {
+        Date fromDate = Date.valueOf(dpFromDate.getValue());
+        Date toDate = Date.valueOf(dpToDate.getValue());
+
+        GenerateReports.generateReport(dpFromDate.getValue(), dpToDate.getValue(), "repair_report");
         System.out.println("Generating Repair Report...");
     }
 
     @FXML
     void btnGenerateReportTransfOnAction(ActionEvent event) {
+        Date fromDate = Date.valueOf(dpFromDate.getValue());
+        Date toDate = Date.valueOf(dpToDate.getValue());
+
+        GenerateReports.generateReport(dpFromDate.getValue(), dpToDate.getValue(), "transaction_report");
+        System.out.println("Generating Repair Report...");
         System.out.println("Generating Transaction Report...");
     }
 
     @FXML
     void btnGenerateReportInvenOnAction(ActionEvent event) {
+        try{
+
+        if(txtRLimitInven.getText().isEmpty()){
+            new Alert(Alert.AlertType.WARNING, "Please enter record limit").show();
+            return;
+        }
+
+
+            int limit = Integer.parseInt(txtRLimitInven.getText());
+            if(limit<=0){
+                new Alert(Alert.AlertType.WARNING, "Please enter a valid record limit").show();
+                return;
+            }
+            GenerateReports.generateReport("inventory_report", limit);
+        } catch (Exception e) {
+            ETecAlerts.showAlert(Alert.AlertType.ERROR, "Report Generation Error", "Cannot generate inventory report");
+            return;
+        }
+
         System.out.println("Generating Inventory Report...");
     }
 

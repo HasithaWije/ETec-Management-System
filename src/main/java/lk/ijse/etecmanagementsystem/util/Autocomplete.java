@@ -1,10 +1,13 @@
 package lk.ijse.etecmanagementsystem.util;
 
+import javafx.event.ActionEvent;
+import javafx.event.Event;
 import javafx.geometry.Side;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.MenuItem;
 import javafx.scene.control.TextField;
 
+import java.awt.event.KeyEvent;
 import java.util.List;
 import java.util.stream.Collectors;
 
@@ -30,6 +33,7 @@ public class Autocomplete {
                         item.setOnAction(e -> {
                             searchField.setText(match);
                             searchField.positionCaret(match.length());
+                            searchField.fireEvent(new ActionEvent());
                             suggestionsPopup.hide();
                         });
                         suggestionsPopup.getItems().add(item);
