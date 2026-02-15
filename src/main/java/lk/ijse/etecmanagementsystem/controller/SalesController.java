@@ -4,7 +4,6 @@ import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.event.Event;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.fxml.Initializable;
@@ -18,29 +17,18 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
 import lk.ijse.etecmanagementsystem.App;
-import lk.ijse.etecmanagementsystem.db.DBConnection;
+import lk.ijse.etecmanagementsystem.dao.CustomerDAOImpl;
 import lk.ijse.etecmanagementsystem.dto.*;
-import lk.ijse.etecmanagementsystem.model.CustomersModel;
 import lk.ijse.etecmanagementsystem.model.ProductModel;
 import lk.ijse.etecmanagementsystem.model.SalesModel;
 import lk.ijse.etecmanagementsystem.dto.tm.ItemCartTM;
 import lk.ijse.etecmanagementsystem.model.UnitManagementModel;
 import lk.ijse.etecmanagementsystem.server.BarcodeServer;
 import lk.ijse.etecmanagementsystem.util.*;
-import net.sf.jasperreports.engine.*;
-import net.sf.jasperreports.engine.design.JasperDesign;
-import net.sf.jasperreports.engine.util.JRLoader;
-import net.sf.jasperreports.engine.xml.JRXmlLoader;
-import net.sf.jasperreports.view.JasperViewer;
 
 import java.io.IOException;
-import java.io.InputStream;
-import java.math.BigDecimal;
 import java.net.URL;
-import java.sql.Connection;
-import java.sql.Date;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.time.LocalDate;
 import java.util.*;
 import java.util.stream.Collectors;
@@ -160,7 +148,7 @@ public class SalesController implements Initializable {
     private final Stage newStage = new Stage();
 
     private final SalesModel salesModel = new SalesModel();
-    private final CustomersModel customersModel = new CustomersModel();
+    private final CustomerDAOImpl customerDAO = new CustomerDAOImpl();
     private final ProductModel productModel = new ProductModel();
     private final UnitManagementModel unitManagementModel = new UnitManagementModel();
 
@@ -686,7 +674,7 @@ public class SalesController implements Initializable {
         }
         CustomerDTO newCustomer = new CustomerDTO(0, safeGetText(txtCusName), safeGetText(txtCusContact), safeGetText(txtCusEmail), safeGetText(txtCusAddress));
         try {
-            int newId = customersModel.insertCustomerAndGetId(newCustomer);
+            int newId = customerDAO.insertCustomerAndGetId(newCustomer);
             loadCustomers();
             setupCusCmbBox();
             comboCustomer.setValue(String.valueOf(newId));
@@ -708,7 +696,7 @@ public class SalesController implements Initializable {
         }
 
         try {
-            customersModel.updateCustomer(customer);
+            customerDAO.updateCustomer(customer);
             loadCustomers();
             setupCusCmbBox();
             comboCustomer.setValue(String.valueOf(customer.getId()));
@@ -764,7 +752,7 @@ public class SalesController implements Initializable {
         customerList.clear();
         customerMap.clear();
         try {
-            customerList = customersModel.getAllCustomers();
+            customerList = customerDAO.getAllCustomers();
             for (CustomerDTO c : customerList) {
                 customerMap.put(String.valueOf(c.getId()), c.getName());
             }

@@ -10,10 +10,10 @@ import javafx.scene.control.*;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import lk.ijse.etecmanagementsystem.App;
+import lk.ijse.etecmanagementsystem.dao.CustomerDAOImpl;
 import lk.ijse.etecmanagementsystem.db.DBConnection;
 import lk.ijse.etecmanagementsystem.dto.CustomerDTO;
 import lk.ijse.etecmanagementsystem.dto.RepairJobDTO;
-import lk.ijse.etecmanagementsystem.model.CustomersModel; // NEW IMPORT
 import lk.ijse.etecmanagementsystem.model.RepairJobModel; // NEW IMPORT
 import lk.ijse.etecmanagementsystem.util.LoginUtil;
 import lk.ijse.etecmanagementsystem.util.RepairStatus;
@@ -26,7 +26,6 @@ import net.sf.jasperreports.view.JasperViewer;
 
 import java.io.IOException;
 import java.io.InputStream;
-import java.math.BigDecimal;
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.*;
@@ -61,7 +60,7 @@ public class AddRepairTicketController {
     private int selectedCustomerId = -1;
     private RepairDashboardController mainController;
 
-    private final CustomersModel customersModel = new CustomersModel();
+    private final CustomerDAOImpl customerDAO = new CustomerDAOImpl();
     private final RepairJobModel repairJobModel = new RepairJobModel();
 
     public void setMainController(RepairDashboardController mainController) {
@@ -80,7 +79,7 @@ public class AddRepairTicketController {
 
         try {
             // FETCH REAL DATA FROM DB
-            List<CustomerDTO> customers = customersModel.getAllCustomers();
+            List<CustomerDTO> customers = customerDAO.getAllCustomers();
 
             for (CustomerDTO customer : customers) {
                 // Key format: "Name | Contact" for easy searching

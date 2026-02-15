@@ -21,6 +21,7 @@ lk\ijse\etecmanagementsystem\util\ButtonStyle.class
 lk\ijse\etecmanagementsystem\util\BackgroundImageUtil.class
 lk\ijse\etecmanagementsystem\dto\tm\RepairJobTM.class
 lk\ijse\etecmanagementsystem\util\ImageUtils.class
+lk\ijse\etecmanagementsystem\dao\CustomerDAOImpl.class
 lk\ijse\etecmanagementsystem\dto\tm\RepairPartTM.class
 lk\ijse\etecmanagementsystem\dto\TransactionDTO.class
 lk\ijse\etecmanagementsystem\model\UnitManagementModel$ProductMeta.class
@@ -41,6 +42,7 @@ lk\ijse\etecmanagementsystem\server\BarcodeServer$ScanHandler.class
 lk\ijse\etecmanagementsystem\util\EmailService$1.class
 lk\ijse\etecmanagementsystem\controller\TransactionsController$1.class
 lk\ijse\etecmanagementsystem\dto\SalesDTO.class
+lk\ijse\etecmanagementsystem\dao\SupplierDAOImpl.class
 lk\ijse\etecmanagementsystem\model\InventoryModel.class
 lk\ijse\etecmanagementsystem\controller\UnitManagementController.class
 lk\ijse\etecmanagementsystem\server\BarcodeServer.class
@@ -87,6 +89,7 @@ lk\ijse\etecmanagementsystem\model\UnitManagementModel.class
 lk\ijse\etecmanagementsystem\component\ProductCard.class
 lk\ijse\etecmanagementsystem\controller\UpdateRepairTicketController.class
 lk\ijse\etecmanagementsystem\dto\tm\SalesTM.class
+lk\ijse\etecmanagementsystem\dao\CategoryDAOImpl.class
 lk\ijse\etecmanagementsystem\util\LoginUtil.class
 lk\ijse\etecmanagementsystem\db\DBConnection.class
 lk\ijse\etecmanagementsystem\dto\tm\UrgentRepairTM.class

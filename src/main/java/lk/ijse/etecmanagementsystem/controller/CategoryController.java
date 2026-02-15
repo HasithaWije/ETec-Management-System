@@ -5,7 +5,7 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import lk.ijse.etecmanagementsystem.model.CategoryModel;
+import lk.ijse.etecmanagementsystem.dao.CategoryDAOImpl;
 import lk.ijse.etecmanagementsystem.util.Category;
 
 import java.util.List;
@@ -25,7 +25,7 @@ public class CategoryController {
     @FXML
     Label lblMsg;
 
-    CategoryModel categoryModel = new CategoryModel();
+    CategoryDAOImpl categoryDAO = new CategoryDAOImpl();
     private String previousCategoryName = "";
 
     private final String CATEGORY_REGEX = "^[A-Z][a-zA-Z0-9\\s\\-&]{2,29}$";
@@ -41,7 +41,7 @@ public class CategoryController {
 
 
         try {
-            List<String> list = categoryModel.getAllCategories();
+            List<String> list = categoryDAO.getAllCategories();
             if (!list.isEmpty()) {
                 Category.getCategories().clear();// Clear existing categories
                 Category.getCategories().setAll(list);
@@ -81,7 +81,7 @@ public class CategoryController {
 
                 try {
 
-                    if (categoryModel.saveCategory(name)) {
+                    if (categoryDAO.saveCategory(name)) {
                         lblMsg.setText("Category " + name + " added successfully.");
                         lblMsg.setStyle("-fx-text-fill: green;");
 
@@ -115,7 +115,7 @@ public class CategoryController {
                 try {
 
 
-                    boolean result = categoryModel.deleteCategory(name);
+                    boolean result = categoryDAO.deleteCategory(name);
                     if (!result) {
                         lblMsg.setText("Category delete failed.");
                         lblMsg.setStyle("-fx-text-fill: red;");
@@ -154,7 +154,7 @@ public class CategoryController {
             if (alert.getResult() == ButtonType.YES) {
                 try {
 
-                    boolean result = categoryModel.updateCategory(newName, oldName);
+                    boolean result = categoryDAO.updateCategory(newName, oldName);
                     if (!result) {
                         lblMsg.setText("Category update failed.");
                         lblMsg.setStyle("-fx-text-fill: red;");

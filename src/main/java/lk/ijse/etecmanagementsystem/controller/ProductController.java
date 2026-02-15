@@ -13,6 +13,7 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import lk.ijse.etecmanagementsystem.dao.CategoryDAOImpl;
 import lk.ijse.etecmanagementsystem.model.CategoryModel;
 import lk.ijse.etecmanagementsystem.model.ProductModel;
 import lk.ijse.etecmanagementsystem.model.UnitManagementModel;
@@ -173,10 +174,10 @@ public class ProductController implements Initializable {
 
     private void loadCategories() {
 
-        CategoryModel categoryModel = new CategoryModel();
+        CategoryDAOImpl categoryDAO = new CategoryDAOImpl();
         Category.getCategories().clear();
         try {
-            List<String> list = categoryModel.getAllCategories();
+            List<String> list = categoryDAO.getAllCategories();
             if (!list.isEmpty()) {
                 Category.getCategories().setAll(list);
 

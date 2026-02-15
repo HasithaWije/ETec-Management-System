@@ -16,6 +16,7 @@ import javafx.stage.Stage;
 import lk.ijse.etecmanagementsystem.App;
 import lk.ijse.etecmanagementsystem.component.ProductCard;
 import lk.ijse.etecmanagementsystem.component.SkeletonCard;
+import lk.ijse.etecmanagementsystem.dao.CategoryDAOImpl;
 import lk.ijse.etecmanagementsystem.dto.ProductDTO;
 import lk.ijse.etecmanagementsystem.model.CategoryModel;
 import lk.ijse.etecmanagementsystem.model.InventoryModel;
@@ -390,10 +391,10 @@ public class InventoryController {
 
     private void loadCategories() {
 
-        CategoryModel categoryModel = new CategoryModel();
+        CategoryDAOImpl categoryDAO = new CategoryDAOImpl();
         Category.getCategories().clear();
         try {
-            List<String> list = categoryModel.getAllCategories();
+            List<String> list = categoryDAO.getAllCategories();
             if (!list.isEmpty()) {
                 Category.getCategories().setAll(list);
 

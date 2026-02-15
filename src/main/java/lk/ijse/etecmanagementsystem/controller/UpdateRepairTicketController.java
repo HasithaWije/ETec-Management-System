@@ -10,11 +10,11 @@ import javafx.scene.control.*;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import lk.ijse.etecmanagementsystem.App;
+import lk.ijse.etecmanagementsystem.dao.CustomerDAOImpl;
 import lk.ijse.etecmanagementsystem.dto.CustomerDTO;
 import lk.ijse.etecmanagementsystem.dto.RepairJobDTO;
 import lk.ijse.etecmanagementsystem.dto.tm.RepairJobTM;
 import lk.ijse.etecmanagementsystem.dto.tm.RepairPartTM;
-import lk.ijse.etecmanagementsystem.model.CustomersModel; // Model Import
 import lk.ijse.etecmanagementsystem.model.RepairJobModel; // Model Import
 
 import java.io.IOException;
@@ -52,7 +52,7 @@ public class UpdateRepairTicketController {
     private final ObservableList<String> originalList = FXCollections.observableArrayList();
     private int selectedCustomerId = -1;
 
-    private final CustomersModel customersModel = new CustomersModel();
+    private final CustomerDAOImpl customerDAO = new CustomerDAOImpl();
     private final RepairJobModel repairJobModel = new RepairJobModel();
 
     @FXML
@@ -101,7 +101,7 @@ public class UpdateRepairTicketController {
 
         try {
             // FETCH REAL DATA FROM DB
-            List<CustomerDTO> customers = customersModel.getAllCustomers();
+            List<CustomerDTO> customers = customerDAO.getAllCustomers();
 
             for (CustomerDTO customer : customers) {
                 String key = customer.getName() + " | " + customer.getNumber();
