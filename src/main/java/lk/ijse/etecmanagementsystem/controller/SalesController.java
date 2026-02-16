@@ -18,6 +18,7 @@ import javafx.stage.Stage;
 import javafx.util.StringConverter;
 import lk.ijse.etecmanagementsystem.App;
 import lk.ijse.etecmanagementsystem.dao.CustomerDAOImpl;
+import lk.ijse.etecmanagementsystem.dao.ProductDAOImpl;
 import lk.ijse.etecmanagementsystem.dto.*;
 import lk.ijse.etecmanagementsystem.model.ProductModel;
 import lk.ijse.etecmanagementsystem.model.SalesModel;
@@ -150,6 +151,7 @@ public class SalesController implements Initializable {
     private final SalesModel salesModel = new SalesModel();
     private final CustomerDAOImpl customerDAO = new CustomerDAOImpl();
     private final ProductModel productModel = new ProductModel();
+    private final ProductDAOImpl productDAO = new ProductDAOImpl();
     private final UnitManagementModel unitManagementModel = new UnitManagementModel();
 
 
@@ -297,7 +299,7 @@ public class SalesController implements Initializable {
         if (serialNumber.isEmpty() && qty > 1) {
 
             try {
-                int productId = productModel.getIdByName(itemName);
+                int productId = productDAO.getIdByName(itemName);
                 int placeholderCount = salesModel.getPendingItemCount(productId);
                 if (qty > placeholderCount) {
                     ETecAlerts.showAlert(Alert.AlertType.WARNING, "Not enough Quantity", "Insufficient Quantity");
@@ -430,7 +432,7 @@ public class SalesController implements Initializable {
 
         int ProductId = 0;
         try {
-            ProductId = productModel.getIdByName(cartItem.getItemName());
+            ProductId = productDAO.getIdByName(cartItem.getItemName());
 
         } catch (Exception e) {
             showAlert(Alert.AlertType.ERROR, "Failed to retrieve product ID: ");
@@ -742,7 +744,7 @@ public class SalesController implements Initializable {
     private void loadProducts() {
         try {
             productsList.clear();
-            productsList.addAll(productModel.findAll());
+            productsList.addAll(productDAO.findAll());
         } catch (Exception e) {
             showAlert(Alert.AlertType.ERROR, "Failed to load products: " + e.getMessage());
         }

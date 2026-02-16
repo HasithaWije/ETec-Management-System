@@ -14,6 +14,7 @@ import javafx.scene.input.KeyCode;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import lk.ijse.etecmanagementsystem.dao.CategoryDAOImpl;
+import lk.ijse.etecmanagementsystem.dao.ProductDAOImpl;
 import lk.ijse.etecmanagementsystem.model.CategoryModel;
 import lk.ijse.etecmanagementsystem.model.ProductModel;
 import lk.ijse.etecmanagementsystem.model.UnitManagementModel;
@@ -95,6 +96,7 @@ public class ProductController implements Initializable {
     private final ObservableList<ProductDTO> productList = FXCollections.observableArrayList();
     private String selectedImagePath = "";
 
+    private final ProductDAOImpl productDAO = new ProductDAOImpl();
     private final ProductModel productModel = new ProductModel();
 
     private final String NAME_REGEX = "^[ -~]{3,30}$"; // Alphanumeric and special characters, 3-50 chars
@@ -389,22 +391,23 @@ public class ProductController implements Initializable {
                     return;
                 }
 
-                ResultSet product = productModel.findById(id);
-                ProductDTO p;
+//                ResultSet product = productModel.findById(id);
+                ProductDTO p = productDAO.findById(id);
 
-                if (product.next()) {
-                    p = new ProductDTO(
-                            product.getString("stock_id"),
-                            product.getString("name"),
-                            product.getString("description"),
-                            product.getDouble("sell_price"),
-                            product.getString("category"),
-                            fromConditionString(product.getString("p_condition")),
-                            product.getDouble("buy_price"),
-                            product.getInt("warranty_months"),
-                            product.getInt("qty"),
-                            product.getString("image_path")
-                    );
+
+                if (p != null) {
+//                    p = new ProductDTO(
+//                            product.getString("stock_id"),
+//                            product.getString("name"),
+//                            product.getString("description"),
+//                            product.getDouble("sell_price"),
+//                            product.getString("category"),
+//                            fromConditionString(product.getString("p_condition")),
+//                            product.getDouble("buy_price"),
+//                            product.getInt("warranty_months"),
+//                            product.getInt("qty"),
+//                            product.getString("image_path")
+//                    );
                     populateFields(p);
                 } else {
                     new Alert(Alert.AlertType.INFORMATION, "No product found with ID: " + id).showAndWait();
@@ -419,7 +422,7 @@ public class ProductController implements Initializable {
     private void loadProducts() {
         try {
 
-            List<ProductDTO> rawData = productModel.findAll();
+            List<ProductDTO> rawData = productDAO.findAll();
             if (rawData != null) {
 //                ProductUtil.productCache.setAll(rawData);
                 productList.setAll(rawData);
@@ -583,17 +586,17 @@ public class ProductController implements Initializable {
         }
     }
 
-    private ProductCondition fromConditionString(String s) {
-        if (s == null) return null;
-        try {
-            if (s.equals("Used")) {
-                return ProductCondition.USED;
-            } else if (s.equals("Brand New")) {
-                return ProductCondition.BRAND_NEW;
-            }
-            return ProductCondition.BOTH;
-        } catch (IllegalArgumentException ex) {
-            return ProductCondition.BOTH; // unknown condition value
-        }
-    }
+//    private ProductCondition fromConditionString(String s) {
+//        if (s == null) return null;
+//        try {
+//            if (s.equals("Used")) {
+//                return ProductCondition.USED;
+//            } else if (s.equals("Brand New")) {
+//                return ProductCondition.BRAND_NEW;
+//            }
+//            return ProductCondition.BOTH;
+//        } catch (IllegalArgumentException ex) {
+//            return ProductCondition.BOTH; // unknown condition value
+//        }
+//    }
 }

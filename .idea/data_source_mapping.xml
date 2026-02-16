@@ -1,9 +1,0 @@
-<?xml version="1.0" encoding="UTF-8"?>
-<project version="4">
-  <component name="DataSourcePerFileMappings">
-    <file url="file://$APPLICATION_CONFIG_DIR$/consoles/db/b9f611f4-18b7-4609-a6db-33788a574124/console.sql" value="b9f611f4-18b7-4609-a6db-33788a574124" />
-    <file url="file://$APPLICATION_CONFIG_DIR$/consoles/db/fbebc60f-895a-47b8-8c1a-f0fd321fda55/console.sql" value="fbebc60f-895a-47b8-8c1a-f0fd321fda55" />
-    <file url="file://$APPLICATION_CONFIG_DIR$/consoles/db/fbebc60f-895a-47b8-8c1a-f0fd321fda55/console_1.sql" value="fbebc60f-895a-47b8-8c1a-f0fd321fda55" />
-    <file url="file://$PROJECT_DIR$/src/main/resources/lk/ijse/etecmanagementsystem/database/ETec.sql" value="fbebc60f-895a-47b8-8c1a-f0fd321fda55" />
-  </component>
-</project>

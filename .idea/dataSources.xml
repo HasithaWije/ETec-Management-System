@@ -13,7 +13,7 @@
       </jdbc-additional-properties>
       <working-dir>$ProjectFileDir$</working-dir>
     </data-source>
-    <data-source source="LOCAL" name="ETEC" uuid="fbebc60f-895a-47b8-8c1a-f0fd321fda55">
+    <data-source source="LOCAL" name="@localhost" uuid="2e360dd3-e9b1-4d7b-b2d9-07a2c0c2ab29">
       <driver-ref>mysql.8</driver-ref>
       <synchronize>true</synchronize>
       <jdbc-driver>com.mysql.cj.jdbc.Driver</jdbc-driver>
