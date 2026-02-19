@@ -6,7 +6,7 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.*;
 import lk.ijse.etecmanagementsystem.App;
-import lk.ijse.etecmanagementsystem.model.LoginModel;
+import lk.ijse.etecmanagementsystem.dao.UserDAOImpl;
 import lk.ijse.etecmanagementsystem.util.ETecAlerts;
 import lk.ijse.etecmanagementsystem.util.EmailService;
 import lk.ijse.etecmanagementsystem.util.LoginUtil;
@@ -37,7 +37,7 @@ public class LoginController {
     private AnchorPane rootNode;
 
     ButtonStyle buttonStyle = new ButtonStyle();
-    LoginModel loginModel = new LoginModel();
+    UserDAOImpl userDAO = new UserDAOImpl();
 
 
     @FXML
@@ -96,11 +96,11 @@ public class LoginController {
         try {
 
 
-            if (loginModel.validateCredentials(username, password)) {
+            if (userDAO.validateCredentials(username, password)) {
 
                 LoginUtil.setUserName(username);
-                userId = loginModel.getUserId(username);
-                role = loginModel.getUserRole(username);
+                userId = userDAO.getUserId(username);
+                role = userDAO.getUserRole(username);
 
 
                 if (userId == -1) {
@@ -219,7 +219,7 @@ public class LoginController {
 
     private boolean checkUserNameExists(String username) {
         try {
-            return loginModel.validateUserName(username);
+            return userDAO.validateUserName(username);
         } catch (SQLException e) {
             ETecAlerts.showAlert(Alert.AlertType.INFORMATION, "Database Error", "An error occurred while accessing the database. Please try again later.");
             return false;
@@ -228,7 +228,7 @@ public class LoginController {
 
     private String getUserPassword(String username) {
         try {
-            return loginModel.getUserPassword(username);
+            return userDAO.getUserPassword(username);
         } catch (SQLException e) {
             ETecAlerts.showAlert(Alert.AlertType.INFORMATION, "Database Error", "An error occurred while accessing the database. Please try again later.");
             return null;
@@ -238,7 +238,7 @@ public class LoginController {
     private boolean isValidEmailInDatabase(String userName, String email) {
 
         try {
-            return loginModel.validateUserEmail(userName, email);
+            return userDAO.validateUserEmail(userName, email);
         } catch (SQLException e) {
             ETecAlerts.showAlert(Alert.AlertType.INFORMATION, "Database Error", "An error occurred while accessing the database. Please try again later.");
             return false;

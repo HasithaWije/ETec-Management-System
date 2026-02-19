@@ -19,11 +19,10 @@ import javafx.util.StringConverter;
 import lk.ijse.etecmanagementsystem.App;
 import lk.ijse.etecmanagementsystem.dao.CustomerDAOImpl;
 import lk.ijse.etecmanagementsystem.dao.ProductDAOImpl;
+import lk.ijse.etecmanagementsystem.dao.ProductItemDAOImpl;
 import lk.ijse.etecmanagementsystem.dto.*;
-import lk.ijse.etecmanagementsystem.model.ProductModel;
 import lk.ijse.etecmanagementsystem.model.SalesModel;
 import lk.ijse.etecmanagementsystem.dto.tm.ItemCartTM;
-import lk.ijse.etecmanagementsystem.model.UnitManagementModel;
 import lk.ijse.etecmanagementsystem.server.BarcodeServer;
 import lk.ijse.etecmanagementsystem.util.*;
 
@@ -150,9 +149,8 @@ public class SalesController implements Initializable {
 
     private final SalesModel salesModel = new SalesModel();
     private final CustomerDAOImpl customerDAO = new CustomerDAOImpl();
-    private final ProductModel productModel = new ProductModel();
     private final ProductDAOImpl productDAO = new ProductDAOImpl();
-    private final UnitManagementModel unitManagementModel = new UnitManagementModel();
+    ProductItemDAOImpl productItemDAO = new ProductItemDAOImpl();
 
 
     @FXML
@@ -451,13 +449,13 @@ public class SalesController implements Initializable {
 //        );
 
 
-        List<Integer> pendingSlot = new ArrayList<>();
+        ArrayList<ProductItemDTO> pendingSlot = new ArrayList<>();
         try {
-            pendingSlot = unitManagementModel.getAvailablePendingSlot(ProductId);
+            pendingSlot = productItemDAO.getPlaceHolderItems(ProductId);
             if (!pendingSlot.isEmpty()) {
                 for(ItemCartTM item : cartItemList){
 
-                        pendingSlot.removeIf(slot -> slot == item.getItemId());
+                        pendingSlot.removeIf(slot -> slot.getItemId() == item.getItemId());
 
                 }
                 if(pendingSlot.isEmpty()){
@@ -475,13 +473,13 @@ public class SalesController implements Initializable {
                 cartItem.setSerialNo(null);
             }
 
-            boolean isDuplicated = unitManagementModel.checkSerialExists(cartItem.getSerialNo());
+            boolean isDuplicated = productItemDAO.checkSerialExists(cartItem.getSerialNo());
             if(isDuplicated){
                 new Alert(Alert.AlertType.WARNING, "The new serial number already exists. Please use a different serial number.").showAndWait();
                 return;
             }
 
-            cartItem.setItemId(pendingSlot.getFirst());
+            cartItem.setItemId(pendingSlot.getFirst().getItemId());
 
 
         } catch (Exception e) {
@@ -499,9 +497,9 @@ public class SalesController implements Initializable {
 
 
         try {
-            int isUpdated = unitManagementModel.updateSerialNumber(cartItem.getItemId(), cartItem.getSerialNo());
-            if (isUpdated <= 0) {
-                new Alert(Alert.AlertType.ERROR, "Failed to update inventory item serial number.").show();
+            boolean isUpdated = productItemDAO.updateSerialNumber(cartItem.getItemId(), cartItem.getSerialNo());
+            if (!isUpdated) {
+                showAlert(Alert.AlertType.ERROR, "Failed to update serial number in inventory.");
                 return;
             }
 

@@ -13,10 +13,10 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import lk.ijse.etecmanagementsystem.bo.InventoryBOImpl;
 import lk.ijse.etecmanagementsystem.dao.CategoryDAOImpl;
 import lk.ijse.etecmanagementsystem.dao.ProductDAOImpl;
 import lk.ijse.etecmanagementsystem.dao.ProductItemDAOImpl;
-import lk.ijse.etecmanagementsystem.model.ProductModel;
 import lk.ijse.etecmanagementsystem.util.Category;
 import lk.ijse.etecmanagementsystem.App;
 import lk.ijse.etecmanagementsystem.dto.ProductDTO;
@@ -95,7 +95,7 @@ public class ProductController implements Initializable {
 
     private final ProductDAOImpl productDAO = new ProductDAOImpl();
     ProductItemDAOImpl productItemDAO = new ProductItemDAOImpl();
-    private final ProductModel productModel = new ProductModel();
+    InventoryBOImpl inventoryBO = new InventoryBOImpl();
 
     private final String NAME_REGEX = "^[ -~]{3,30}$"; // Alphanumeric and special characters, 3-50 chars
 
@@ -210,7 +210,7 @@ public class ProductController implements Initializable {
 
         try {
             // 1. Save Product and get the new ID (e.g., ID = 50)
-            int newStockId = productModel.saveProductAndGetId(newProduct);
+            int newStockId = inventoryBO.saveProductAndGetId(newProduct);
 
             if (newStockId > 0) {
 
@@ -282,7 +282,7 @@ public class ProductController implements Initializable {
                     selectedImagePath
             );
 
-            boolean result = productModel.updateProductWithQtySync(selected);
+            boolean result = inventoryBO.updateProductWithQtySync(selected);
 
             if (result) {
                 showAlert(Alert.AlertType.INFORMATION, "Success", "Product and Quantity Updated Successfully!");
@@ -329,7 +329,7 @@ public class ProductController implements Initializable {
 
         try {
 
-            ProductModel.ItemDeleteStatus status = productModel.checkItemStatusForDelete(selected.getId());
+            InventoryBOImpl.ItemDeleteStatus status = inventoryBO.checkItemStatusForDelete(selected.getId());
 
             if (status.restrictedCount > 0) {
                 showAlert(Alert.AlertType.ERROR, "Deletion Blocked",
@@ -362,7 +362,7 @@ public class ProductController implements Initializable {
                 }
             }
 
-            boolean result = productModel.deleteById(selected.getId());
+            boolean result = inventoryBO.deleteById(selected.getId());
 
             if (result) {
                 showAlert(Alert.AlertType.INFORMATION, "Success", "Product Deleted Successfully!");

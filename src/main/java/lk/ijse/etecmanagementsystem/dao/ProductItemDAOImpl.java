@@ -3,7 +3,6 @@ package lk.ijse.etecmanagementsystem.dao;
 import lk.ijse.etecmanagementsystem.db.DBConnection;
 import lk.ijse.etecmanagementsystem.dto.ProductDTO;
 import lk.ijse.etecmanagementsystem.dto.ProductItemDTO;
-import lk.ijse.etecmanagementsystem.model.ProductModel;
 import lk.ijse.etecmanagementsystem.util.CrudUtil;
 
 import java.sql.Connection;
@@ -120,6 +119,16 @@ public class ProductItemDAOImpl {
         }
     }
 
+    public boolean updateSerialNumber(int itemId, String serialNumber) throws SQLException {
+        String sql = "UPDATE ProductItem SET serial_number = ? WHERE item_id = ?";
+        return CrudUtil.execute(sql, serialNumber, itemId);
+    }
+
+    public boolean updateStatus(String serialNumber, String status) throws SQLException {
+        String sql = "UPDATE ProductItem SET status = ?, sold_date = CASE WHEN ? = 'SOLD' THEN NOW() ELSE sold_date END WHERE serial_number = ?";
+        return CrudUtil.execute(sql, status, status, serialNumber);
+    }
+
     public boolean updateCustomerWarranty(int customerWarranty, int stockId) throws SQLException {
         String sqlItem = "UPDATE ProductItem SET customer_warranty_mo = ? WHERE stock_id = ? AND status = 'AVAILABLE'";
         return CrudUtil.execute(sqlItem, customerWarranty, stockId);
@@ -150,6 +159,69 @@ public class ProductItemDAOImpl {
         }
     }
 
+    public List<ProductItemDTO> getUnitsByStockId(int stockId, String productName) throws SQLException {
+        List<ProductItemDTO> list = new ArrayList<>();
+        String sql = "SELECT pi.item_id, supplier_id, pi.serial_number, pi.supplier_warranty_mo, pi.customer_warranty_mo, " +
+                "pi.status, pi.added_date, pi.sold_date, s.supplier_name " +
+                "FROM ProductItem pi " +
+                "LEFT JOIN Supplier s ON pi.supplier_id = s.supplier_id " +
+                "WHERE pi.stock_id = ? ORDER BY pi.item_id DESC";
+
+        ResultSet rs = CrudUtil.execute(sql, stockId);
+        while (rs.next()) {
+            String supName = rs.getString("supplier_name");
+            if (supName == null) supName = "No Supplier";
+
+            list.add(new ProductItemDTO(
+                    rs.getInt("item_id"),
+                    stockId,
+                    rs.getInt("supplier_id"),
+                    rs.getString("serial_number") == null ? "" : rs.getString("serial_number"),
+                    productName,
+                    supName,
+                    rs.getInt("supplier_warranty_mo"),
+                    rs.getInt("customer_warranty_mo"),
+                    rs.getString("status"),
+                    rs.getDate("added_date"),
+                    rs.getDate("sold_date")
+            ));
+        }
+        rs.close();
+        return list;
+    }
+
+    public ProductItemDTO getItemBySerial(String serial) throws SQLException {
+        String sql = "SELECT pi.item_id, pi.stock_id, pi.supplier_id, pi.serial_number, p.name as product_name, COALESCE(s.supplier_name, 'No Supplier') as supplier_name, " +
+                "pi.supplier_warranty_mo, pi.customer_warranty_mo, pi.status, pi.added_date, pi.sold_date " +
+                "FROM ProductItem pi " +
+                "LEFT JOIN Supplier s ON pi.supplier_id = s.supplier_id " +
+                "JOIN Product p ON pi.stock_id = p.stock_id " +
+                "WHERE pi.serial_number = ?";
+
+        ResultSet rs = CrudUtil.execute(sql, serial);
+        ProductItemDTO productItemDTO = null;
+
+        if (rs.next()) {
+
+            productItemDTO = new ProductItemDTO(
+                    rs.getInt("item_id"),
+                    rs.getInt("stock_id"),
+                    rs.getInt("supplier_id"),
+                    rs.getString("serial_number") == null ? "" : rs.getString("serial_number"),
+                    rs.getString("product_name"),
+                    rs.getString("supplier_name"),
+                    rs.getInt("supplier_warranty_mo"),
+                    rs.getInt("customer_warranty_mo"),
+                    rs.getString("status"),
+                    rs.getDate("added_date"),
+                    rs.getDate("sold_date")
+            );
+        }
+
+        rs.close();
+        return productItemDTO;
+    }
+
     public boolean deletePlaceHolderItems(int stockId, int removeCount) throws SQLException {
         String deleteSql = "DELETE FROM ProductItem WHERE stock_id = ? AND serial_number LIKE 'PENDING-%' AND status = 'AVAILABLE' LIMIT ?";
         return CrudUtil.execute(deleteSql, stockId, removeCount);
@@ -158,6 +230,14 @@ public class ProductItemDAOImpl {
     public boolean delete(int stockId) throws SQLException {
         String deleteItemsSql = "DELETE FROM ProductItem WHERE stock_id = ?";
         return CrudUtil.execute(deleteItemsSql, stockId);
+    }
+
+    public boolean checkSerialExists(String serial) throws SQLException {
+        String sql = "SELECT 1 FROM ProductItem WHERE serial_number = ?";
+        ResultSet rs = CrudUtil.execute(sql, serial);
+        boolean exists = rs.next();
+        rs.close();
+        return exists;
     }
 
     public int getRestrictedRealItemCount(int stockId) throws SQLException {

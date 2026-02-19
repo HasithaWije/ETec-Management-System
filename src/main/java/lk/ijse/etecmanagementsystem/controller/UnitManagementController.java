@@ -15,8 +15,9 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import lk.ijse.etecmanagementsystem.App;
+import lk.ijse.etecmanagementsystem.bo.InventoryBOImpl;
 import lk.ijse.etecmanagementsystem.dao.ProductItemDAOImpl;
-import lk.ijse.etecmanagementsystem.model.UnitManagementModel;
+import lk.ijse.etecmanagementsystem.dao.SupplierDAOImpl;
 import lk.ijse.etecmanagementsystem.dto.ProductItemDTO;
 import lk.ijse.etecmanagementsystem.server.BarcodeServer;
 
@@ -25,7 +26,6 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-import java.util.stream.Collectors;
 
 public class UnitManagementController {
 
@@ -114,12 +114,15 @@ public class UnitManagementController {
     private final Map<Integer, String> idToProductDisplayMap = new HashMap<>();
     private final Map<Integer, String> idToSupplierDisplayMap = new HashMap<>();
 
-    private final UnitManagementModel model = new UnitManagementModel();
+    private final InventoryBOImpl inventoryBO = new InventoryBOImpl();
 
     private final ObservableList<String> stagingList = FXCollections.observableArrayList();
     private final ObservableList<ProductItemDTO> historyList = FXCollections.observableArrayList();
     private final ObservableList<ProductItemDTO> viewList = FXCollections.observableArrayList();
     private final ObservableList<ProductItemDTO> productItemList = FXCollections.observableArrayList();
+
+    ProductItemDAOImpl productItemDAO = new ProductItemDAOImpl();
+    SupplierDAOImpl supplierDAO = new SupplierDAOImpl();
 
     public void initialize() {
         setupTables();
@@ -159,7 +162,7 @@ public class UnitManagementController {
             productItemList.clear();
 
 
-            Map<Integer, String> dbProducts = model.getAllProductMap();
+            Map<Integer, String> dbProducts = inventoryBO.getAllProductMap();
             ObservableList<String> prodObList = FXCollections.observableArrayList();
 
 
@@ -183,7 +186,7 @@ public class UnitManagementController {
             supplierSelectionMap.clear();
             idToSupplierDisplayMap.clear();
 
-            Map<Integer, String> dbSuppliers = model.getAllSuppliersMap();
+            Map<Integer, String> dbSuppliers = inventoryBO.getAllSuppliersMap();
             ObservableList<String> supObList = FXCollections.observableArrayList();
 
             for (Map.Entry<Integer, String> entry : dbSuppliers.entrySet()) {
@@ -291,7 +294,7 @@ public class UnitManagementController {
 
     private void loadAllItemsToViewTable() {
         try {
-            List<ProductItemDTO> allProductItems = model.getAllProductItems();
+            List<ProductItemDTO> allProductItems = productItemDAO.getAllProductItems();
             productItemList.setAll(allProductItems);
 
             viewList.clear();
@@ -347,7 +350,7 @@ public class UnitManagementController {
             }
 
             viewList.clear();
-            viewList.addAll(model.getUnitsByStockId(stockId, name));
+            viewList.addAll(productItemDAO.getUnitsByStockId(stockId, name));
         } catch (SQLException ex) {
             new Alert(Alert.AlertType.ERROR, "DB Error").show();
             System.out.println(ex.getMessage());
@@ -377,15 +380,15 @@ public class UnitManagementController {
             // Update Label to show ID side-by-side
             if (lblProductId != null) lblProductId.setText("ID: " + stockId);
 
-            UnitManagementModel.ProductMeta meta = model.getProductMetaById(stockId);
+            ProductItemDTO meta = inventoryBO.getProductMetaById(stockId);
             if (meta != null) {
                 selectedStockId = meta.getStockId();
-                txtCustomerWarranty.setText(String.valueOf(meta.getDefaultWarranty()));
+                txtCustomerWarranty.setText(String.valueOf(meta.getSupplierWarranty()));
 
                 historyList.clear();
                 // Pass name for display
                 String cleanName = fullDisplayName.substring(0, fullDisplayName.lastIndexOf(" (ID:"));
-                historyList.addAll(model.getUnitsByStockId(selectedStockId, cleanName));
+                historyList.addAll(productItemDAO.getUnitsByStockId(selectedStockId, cleanName));
             }
         } catch (SQLException e) {
             new Alert(Alert.AlertType.ERROR, "Something went wrong!").show();
@@ -403,7 +406,7 @@ public class UnitManagementController {
         }
 
         try {
-            if (model.getItemBySerial(serial) != null) {
+            if (productItemDAO.getItemBySerial(serial) != null) {
                 showAlert(Alert.AlertType.ERROR, "Duplicate in DB");
                 return;
             }
@@ -491,7 +494,7 @@ public class UnitManagementController {
                 savedItems.add(itemDTO);
 
             }
-            boolean allSaved = model.addNewSerialNo(savedItems);
+            boolean allSaved = inventoryBO.addNewSerialNo(savedItems);
             if (allSaved) {
                 successCount = savedItems.size();
                 System.out.println("DEBUG: All items saved successfully."+" Count: " + successCount);
@@ -509,7 +512,7 @@ public class UnitManagementController {
             if (currentComboVal != null) {
                 historyList.clear();
                 String cleanName = currentComboVal.substring(0, currentComboVal.lastIndexOf(" (ID:"));
-                historyList.addAll(model.getUnitsByStockId(selectedStockId, cleanName));
+                historyList.addAll(productItemDAO.getUnitsByStockId(selectedStockId, cleanName));
             }
 
         } catch (SQLException ex) {
@@ -527,7 +530,7 @@ public class UnitManagementController {
         String s = txtFixSearch.getText().trim();
         if (s.isEmpty()) return;
         try {
-            ProductItemDTO item = model.getItemBySerial(s);
+            ProductItemDTO item = productItemDAO.getItemBySerial(s);
             if (item != null) {
                 currentFixingSerial = item.getSerialNumber();
                 vboxFixDetails.setDisable(false);
@@ -535,19 +538,36 @@ public class UnitManagementController {
                 txtFixSupWar.setText(String.valueOf(item.getSupplierWarranty()));
 
                 // --- CRITICAL FIX: Select correct ID in ComboBox ---
-                UnitManagementModel.ItemIds ids = model.getIdsBySerial(s);
-                if (ids != null) {
+//                UnitManagementModel.ItemIds ids = model.getIdsBySerial(s);
+//                if (ids != null) {
+//                    // Find the string "Cable (ID: 5)" using the ID
+//                    String prodStr = idToProductDisplayMap.get(ids.stockId);
+//                    if (prodStr != null) cmbFixProduct.setValue(prodStr);
+//
+//                    if (ids.supplierId != 0) {
+//                        String supStr = idToSupplierDisplayMap.get(ids.supplierId);
+//                        if (supStr != null) cmbFixSupplier.setValue(supStr);
+//                    } else {
+//                        cmbFixSupplier.setValue(null);
+//                    }
+//                }
+
+                ProductItemDAOImpl itemDAO = new ProductItemDAOImpl();
+
+                ProductItemDTO Item = itemDAO.getItemBySerial(s);
+                if (Item != null) {
                     // Find the string "Cable (ID: 5)" using the ID
-                    String prodStr = idToProductDisplayMap.get(ids.stockId);
+                    String prodStr = idToProductDisplayMap.get(item.getStockId());
                     if (prodStr != null) cmbFixProduct.setValue(prodStr);
 
-                    if (ids.supplierId != 0) {
-                        String supStr = idToSupplierDisplayMap.get(ids.supplierId);
+                    if (item.getSupplierId() != 0) {
+                        String supStr = idToSupplierDisplayMap.get(item.getSupplierId());
                         if (supStr != null) cmbFixSupplier.setValue(supStr);
                     } else {
                         cmbFixSupplier.setValue(null);
                     }
                 }
+
             } else {
                 showAlert(Alert.AlertType.WARNING, "Not Found");
                 vboxFixDetails.setDisable(true);
@@ -570,7 +590,7 @@ public class UnitManagementController {
             Integer newSupId = (cmbFixSupplier.getValue() != null) ? supplierSelectionMap.get(cmbFixSupplier.getValue()) : null;
             int newSupWar = Integer.parseInt(txtFixSupWar.getText());
 
-            if (model.correctItemMistake(currentFixingSerial, newSerial, newStockId, newSupId, newSupWar)) {
+            if (inventoryBO.correctItemMistake(currentFixingSerial, newSerial, newStockId, newSupId, newSupWar)) {
                 showAlert(Alert.AlertType.INFORMATION, "Corrected");
                 vboxFixDetails.setDisable(true);
                 txtFixSearch.clear();
@@ -591,7 +611,7 @@ public class UnitManagementController {
         String s = txtStatusSearch.getText().trim();
         if (s.isEmpty()) return;
         try {
-            ProductItemDTO item = model.getItemBySerial(s);
+            ProductItemDTO item = productItemDAO.getItemBySerial(s);
             if (item != null) {
                 currentStatusSerial = item.getSerialNumber();
                 vboxStatusUpdate.setDisable(false);
@@ -616,7 +636,7 @@ public class UnitManagementController {
         String st = cmbNewStatus.getValue();
         if (st == null) return;
         try {
-            if (model.updateItemStatus(currentStatusSerial, st)) {
+            if (inventoryBO.updateItemStatus(currentStatusSerial, st)) {
                 showAlert(Alert.AlertType.INFORMATION, "Updated");
                 vboxStatusUpdate.setDisable(true);
                 txtStatusSearch.clear();

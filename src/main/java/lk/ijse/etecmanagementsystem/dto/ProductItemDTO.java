@@ -63,6 +63,9 @@ public class ProductItemDTO {
         this.soldDate = soldDate;
     }
 
+    public ProductItemDTO(int stockId, int supplierWarranty) {
+    }
+
     public int getItemId() {
         return itemId;
     }

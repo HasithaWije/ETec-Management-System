@@ -54,9 +54,16 @@ public class ProductDAOImpl {
         );
     }
 
-    public boolean updateQty(int stockId) throws SQLException {
-        String qtySql = "UPDATE Product SET qty = qty + 1 WHERE stock_id = ?";
-        return CrudUtil.execute(qtySql, stockId);
+    public boolean updateQty(int stockId, int value) throws SQLException {
+        if(value < 0){
+            int val = value * -1;
+             String qtySql = "UPDATE Product SET qty = qty - ? WHERE stock_id = ?";
+            return CrudUtil.execute(qtySql, val, stockId);
+        }else {
+            String qtySql = "UPDATE Product SET qty = qty + ? WHERE stock_id = ?";
+            return CrudUtil.execute(qtySql, value, stockId);
+        }
+
     }
 
     public boolean delete(int id) throws SQLException {
