@@ -11,6 +11,9 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import lk.ijse.etecmanagementsystem.App;
+import lk.ijse.etecmanagementsystem.bo.SalesBOImpl;
+import lk.ijse.etecmanagementsystem.dao.SalesDAOImpl;
+import lk.ijse.etecmanagementsystem.dao.TransactionRecordDAOImpl;
 import lk.ijse.etecmanagementsystem.dto.tm.PendingRepairTM;
 import lk.ijse.etecmanagementsystem.dto.tm.PendingSaleTM;
 import lk.ijse.etecmanagementsystem.dto.tm.TransactionTM;
@@ -70,6 +73,8 @@ public class TransactionsController {
 
     // --- Model Instance ---
     private final TransactionsModel transactionsModel = new TransactionsModel();
+    TransactionRecordDAOImpl transactionRecordDAO = new TransactionRecordDAOImpl();
+    SalesDAOImpl salesDAO = new SalesDAOImpl();
 
     public void initialize() {
         setupTables();
@@ -114,7 +119,7 @@ public class TransactionsController {
         try {
             Date fromD = Date.valueOf(dpFromDate.getValue());
             Date toD = Date.valueOf(dpToDate.getValue());
-            List<TransactionTM> list = transactionsModel.getAllTransactions(fromD, toD);
+            List<TransactionTM> list = transactionRecordDAO.getAllTransactions(fromD, toD);
             tblHistory.setItems(FXCollections.observableArrayList(list));
             handleComboTypeFilter();
             handleSearchHistory();
@@ -173,7 +178,7 @@ public class TransactionsController {
 
     public void loadPendingSettlements() {
         try {
-            tblPendingSales.setItems(transactionsModel.getPendingSales());
+            tblPendingSales.setItems(salesDAO.getPendingSales());
             tblPendingRepairs.setItems(transactionsModel.getPendingRepairs());
         } catch (SQLException e) {
             new Alert(Alert.AlertType.ERROR, "Error loading pending items: " + e.getMessage()).show();
@@ -182,7 +187,7 @@ public class TransactionsController {
 
     private void loadDashboardData() {
         try {
-            double[] stats = transactionsModel.getDashboardStats(Date.valueOf(dpFromDate.getValue()), Date.valueOf(dpToDate.getValue()));
+            double[] stats = transactionRecordDAO.getDashboardStats(Date.valueOf(dpFromDate.getValue()), Date.valueOf(dpToDate.getValue()));
             double in = stats[0];
             double out = stats[1];
             double net = in - out;
@@ -235,7 +240,7 @@ public class TransactionsController {
     private void saveManualTransaction(String type, double amount, String method, String note) {
         try {
             // Call Model
-            boolean success = transactionsModel.saveManualTransaction(type, amount, method, note, LoginUtil.getUserId()); // User ID 1
+            boolean success = transactionRecordDAO.saveManualTransaction(type, amount, method, note, LoginUtil.getUserId()); // User ID 1
             if (success) {
                 new Alert(Alert.AlertType.INFORMATION, "Transaction Saved!").show();
                 loadDashboardData();

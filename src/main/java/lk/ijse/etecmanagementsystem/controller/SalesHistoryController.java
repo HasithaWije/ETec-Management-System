@@ -7,7 +7,6 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import lk.ijse.etecmanagementsystem.dao.SalesDAOImpl;
-import lk.ijse.etecmanagementsystem.model.SalesModel;
 import lk.ijse.etecmanagementsystem.dto.tm.SalesTM;
 
 import java.sql.SQLException;
@@ -49,7 +48,6 @@ public class SalesHistoryController {
     @FXML
     private TableColumn<SalesTM, Double> colPaid;
 
-    private final SalesModel salesModel = new SalesModel();
     SalesDAOImpl salesDAO = new SalesDAOImpl();
 
     @FXML

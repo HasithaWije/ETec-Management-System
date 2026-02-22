@@ -1,12 +1,14 @@
 package lk.ijse.etecmanagementsystem.dao;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import lk.ijse.etecmanagementsystem.db.DBConnection;
+import lk.ijse.etecmanagementsystem.dto.SalesDTO;
+import lk.ijse.etecmanagementsystem.dto.tm.PendingSaleTM;
 import lk.ijse.etecmanagementsystem.dto.tm.SalesTM;
+import lk.ijse.etecmanagementsystem.util.CrudUtil;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
@@ -72,5 +74,57 @@ public class SalesDAOImpl {
             }
         }
         return salesList;
+    }
+
+    public ObservableList<PendingSaleTM> getPendingSales() throws SQLException {
+        String saleSql = "SELECT s.sale_id, c.name, s.grand_total, s.paid_amount FROM Sales s LEFT JOIN Customer c ON s.customer_id = c.cus_id " +
+                "WHERE s.payment_status IN ('PENDING', 'PARTIAL') AND s.description LIKE 'Point of Sale Transaction'";
+
+
+        ResultSet rs = CrudUtil.execute(saleSql);
+        ObservableList<PendingSaleTM> pendingSalesList = FXCollections.observableArrayList();
+
+        while (rs.next()) {
+            double total = rs.getDouble("grand_total");
+            double paid = rs.getDouble("paid_amount");
+            pendingSalesList.add(new PendingSaleTM(rs.getInt("sale_id"), rs.getString("name"), total, total - paid));
+        }
+        rs.close();
+        return pendingSalesList;
+    }
+
+    public boolean saveSale(SalesDTO salesDTO) throws SQLException {
+        String sqlSales = "INSERT INTO Sales (customer_id, user_id, sale_date, sub_total, discount, " +
+                "grand_total, paid_amount, payment_status, description) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+//        pstmSales.setObject(1, salesDTO.getCustomerId() == 0 ? null : salesDTO.getCustomerId());
+//        pstmSales.setInt(2, salesDTO.getUserId());
+//        pstmSales.setTimestamp(3, new Timestamp(System.currentTimeMillis()));
+//        pstmSales.setDouble(4, salesDTO.getSubtotal());
+//        pstmSales.setDouble(5, salesDTO.getDiscount());
+//        pstmSales.setDouble(6, salesDTO.getGrandTotal());
+//        pstmSales.setDouble(7, salesDTO.getPaidAmount());
+//        pstmSales.setString(8, salesDTO.getPaymentStatus().toString());
+//        pstmSales.setString(9, salesDTO.getDescription());
+        return CrudUtil.execute(sqlSales,
+                salesDTO.getCustomerId() == 0 ? null : salesDTO.getCustomerId(),
+                salesDTO.getUserId(),
+                new Timestamp(System.currentTimeMillis()),
+                salesDTO.getSubtotal(),
+                salesDTO.getDiscount(),
+                salesDTO.getGrandTotal(),
+                salesDTO.getPaidAmount(),
+                salesDTO.getPaymentStatus().toString(),
+                salesDTO.getDescription()
+        );
+    }
+
+    public int getLastInsertedSalesId() throws SQLException {
+        String idQuery = "SELECT LAST_INSERT_ID() AS id FROM Sales";
+        ResultSet rs = CrudUtil.execute(idQuery);
+        if (rs.next()) {
+            return rs.getInt("id");
+        } else {
+            throw new SQLException("Failed to retrieve sales ID");
+        }
     }
 }

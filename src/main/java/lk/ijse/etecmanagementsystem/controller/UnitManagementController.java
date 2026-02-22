@@ -16,8 +16,10 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import lk.ijse.etecmanagementsystem.App;
 import lk.ijse.etecmanagementsystem.bo.InventoryBOImpl;
+import lk.ijse.etecmanagementsystem.dao.ProductDAOImpl;
 import lk.ijse.etecmanagementsystem.dao.ProductItemDAOImpl;
 import lk.ijse.etecmanagementsystem.dao.SupplierDAOImpl;
+import lk.ijse.etecmanagementsystem.dto.ProductDTO;
 import lk.ijse.etecmanagementsystem.dto.ProductItemDTO;
 import lk.ijse.etecmanagementsystem.server.BarcodeServer;
 
@@ -123,6 +125,7 @@ public class UnitManagementController {
 
     ProductItemDAOImpl productItemDAO = new ProductItemDAOImpl();
     SupplierDAOImpl supplierDAO = new SupplierDAOImpl();
+    ProductDAOImpl productDAO = new ProductDAOImpl();
 
     public void initialize() {
         setupTables();
@@ -380,10 +383,11 @@ public class UnitManagementController {
             // Update Label to show ID side-by-side
             if (lblProductId != null) lblProductId.setText("ID: " + stockId);
 
-            ProductItemDTO meta = inventoryBO.getProductMetaById(stockId);
-            if (meta != null) {
-                selectedStockId = meta.getStockId();
-                txtCustomerWarranty.setText(String.valueOf(meta.getSupplierWarranty()));
+            ProductDTO productDTO = productDAO.findById(String.valueOf(stockId));
+
+            if (productDTO != null) {
+                selectedStockId = stockId;
+                txtCustomerWarranty.setText(String.valueOf(productDTO.getWarrantyMonth()));
 
                 historyList.clear();
                 // Pass name for display
@@ -393,6 +397,8 @@ public class UnitManagementController {
         } catch (SQLException e) {
             new Alert(Alert.AlertType.ERROR, "Something went wrong!").show();
             System.out.println(e.getMessage());
+        } catch (Exception e) {
+            throw new RuntimeException(e);
         }
     }
 
@@ -492,8 +498,10 @@ public class UnitManagementController {
                 itemDTO.setCustomerWarranty(custWar);
 
                 savedItems.add(itemDTO);
+                System.out.println(selectedStockId);
 
             }
+            System.out.println(savedItems);
             boolean allSaved = inventoryBO.addNewSerialNo(savedItems);
             if (allSaved) {
                 successCount = savedItems.size();

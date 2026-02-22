@@ -19,11 +19,13 @@ lk\ijse\etecmanagementsystem\dto\ProductItemDTO.class
 lk\ijse\etecmanagementsystem\util\GenerateReports.class
 lk\ijse\etecmanagementsystem\util\ButtonStyle.class
 lk\ijse\etecmanagementsystem\util\BackgroundImageUtil.class
+lk\ijse\etecmanagementsystem\bo\SalesBOImpl.class
 lk\ijse\etecmanagementsystem\dto\tm\RepairJobTM.class
 lk\ijse\etecmanagementsystem\util\ImageUtils.class
 lk\ijse\etecmanagementsystem\dao\CustomerDAOImpl.class
 lk\ijse\etecmanagementsystem\dto\tm\RepairPartTM.class
 lk\ijse\etecmanagementsystem\dto\TransactionDTO.class
+lk\ijse\etecmanagementsystem\dao\entity\SalesItem.class
 lk\ijse\etecmanagementsystem\controller\ReportsController.class
 lk\ijse\etecmanagementsystem\model\ReportsModel.class
 module-info.class
@@ -88,11 +90,12 @@ lk\ijse\etecmanagementsystem\dao\CategoryDAOImpl.class
 lk\ijse\etecmanagementsystem\util\LoginUtil.class
 lk\ijse\etecmanagementsystem\db\DBConnection.class
 lk\ijse\etecmanagementsystem\dto\tm\UrgentRepairTM.class
-lk\ijse\etecmanagementsystem\model\SalesModel.class
 lk\ijse\etecmanagementsystem\controller\SalesController$1.class
 lk\ijse\etecmanagementsystem\util\RepairStatus.class
 lk\ijse\etecmanagementsystem\util\InventoryUtil.class
 lk\ijse\etecmanagementsystem\controller\SalesHistoryController.class
+lk\ijse\etecmanagementsystem\dao\entity\TransactionRecord.class
+lk\ijse\etecmanagementsystem\dao\TransactionRecordDAOImpl.class
 lk\ijse\etecmanagementsystem\model\RepairJobModel.class
 lk\ijse\etecmanagementsystem\dto\InventoryItemDTO.class
 lk\ijse\etecmanagementsystem\model\DashboardModel.class

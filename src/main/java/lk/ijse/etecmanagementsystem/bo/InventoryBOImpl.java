@@ -207,6 +207,7 @@ public class InventoryBOImpl {
                 }
                 if (placeholderId != -1) {
 
+                    dto.setItemId(placeholderId);
                     boolean isUpdated = productItemDAO.updateItem(dto);
                     if (!isUpdated) {
                         conn.rollback();
@@ -256,17 +257,6 @@ public class InventoryBOImpl {
         }
         return map;
 
-    }
-
-    public ProductItemDTO getProductMetaById(int stockId) throws SQLException {
-
-        List<ProductItemDTO> items = productItemDAO.getAllProductItems();
-        for (ProductItemDTO item : items) {
-            if (item.getStockId() == stockId) {
-                return new ProductItemDTO(stockId, item.getSupplierWarranty());
-            }
-        }
-        return null;
     }
 
     public boolean correctItemMistake(String oldSerial, String newSerial, int newStockId, Integer newSupplierId, int newSupWar) throws SQLException {

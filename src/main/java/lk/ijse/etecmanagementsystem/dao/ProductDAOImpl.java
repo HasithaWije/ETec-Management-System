@@ -28,7 +28,7 @@ public class ProductDAOImpl {
     }
 
     public int getLastInsertedProductId() throws SQLException {
-        String idQuery = "SELECT LAST_INSERT_ID() AS id";
+        String idQuery = "SELECT LAST_INSERT_ID() AS id FROM Product";
         ResultSet rs = CrudUtil.execute(idQuery);
         if (rs.next()) {
             return rs.getInt("id");

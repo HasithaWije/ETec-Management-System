@@ -161,6 +161,12 @@ public class ProductItemDAOImpl {
         return CrudUtil.execute(sqlItem, customerWarranty, stockId);
     }
 
+    public boolean updateItemForSale(ProductItemDTO item) throws SQLException {
+        String sqlUpdItem = "UPDATE ProductItem SET status = 'SOLD', sold_date = NOW(), customer_warranty_mo = ?, serial_number = ? WHERE item_id = ? AND status = 'AVAILABLE'";
+
+        return CrudUtil.execute(sqlUpdItem, item.getCustomerWarranty(), item.getSerialNumber(), item.getItemId());
+    }
+
     public int getRealItemCount(int stockId) throws SQLException {
         System.out.println("DEBUG: Querying Real Item Count for Stock ID: " + stockId);
 
@@ -220,7 +226,7 @@ public class ProductItemDAOImpl {
 
     public List<ProductItemDTO> getUnitsByStockId(int stockId, String productName) throws SQLException {
         List<ProductItemDTO> list = new ArrayList<>();
-        String sql = "SELECT pi.item_id, supplier_id, pi.serial_number, pi.supplier_warranty_mo, pi.customer_warranty_mo, " +
+        String sql = "SELECT pi.item_id, pi.supplier_id, pi.serial_number, pi.supplier_warranty_mo, pi.customer_warranty_mo, " +
                 "pi.status, pi.added_date, pi.sold_date, s.supplier_name " +
                 "FROM ProductItem pi " +
                 "LEFT JOIN Supplier s ON pi.supplier_id = s.supplier_id " +

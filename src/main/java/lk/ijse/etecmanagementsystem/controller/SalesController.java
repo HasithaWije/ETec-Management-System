@@ -21,7 +21,6 @@ import lk.ijse.etecmanagementsystem.dao.CustomerDAOImpl;
 import lk.ijse.etecmanagementsystem.dao.ProductDAOImpl;
 import lk.ijse.etecmanagementsystem.dao.ProductItemDAOImpl;
 import lk.ijse.etecmanagementsystem.dto.*;
-import lk.ijse.etecmanagementsystem.model.SalesModel;
 import lk.ijse.etecmanagementsystem.dto.tm.ItemCartTM;
 import lk.ijse.etecmanagementsystem.server.BarcodeServer;
 import lk.ijse.etecmanagementsystem.util.*;
@@ -147,7 +146,7 @@ public class SalesController implements Initializable {
     private final BarcodeServer barcodeServer = BarcodeServer.getBarcodeServerInstance(barcodeInput);
     private final Stage newStage = new Stage();
 
-    private final SalesModel salesModel = new SalesModel();
+
     private final CustomerDAOImpl customerDAO = new CustomerDAOImpl();
     private final ProductDAOImpl productDAO = new ProductDAOImpl();
     ProductItemDAOImpl productItemDAO = new ProductItemDAOImpl();

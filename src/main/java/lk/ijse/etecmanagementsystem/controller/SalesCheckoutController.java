@@ -10,11 +10,11 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.stage.Stage;
 import javafx.util.Duration;
 import lk.ijse.etecmanagementsystem.App;
+import lk.ijse.etecmanagementsystem.bo.SalesBOImpl;
 import lk.ijse.etecmanagementsystem.db.DBConnection;
 import lk.ijse.etecmanagementsystem.dto.CustomerDTO;
 import lk.ijse.etecmanagementsystem.dto.SalesDTO;
 import lk.ijse.etecmanagementsystem.dto.tm.ItemCartTM;
-import lk.ijse.etecmanagementsystem.model.SalesModel;
 import lk.ijse.etecmanagementsystem.util.GenerateReports;
 import lk.ijse.etecmanagementsystem.util.LoginUtil;
 import lk.ijse.etecmanagementsystem.util.PaymentStatus;
@@ -90,7 +90,7 @@ public class SalesCheckoutController {
     private CustomerDTO customer;
     private SalesController salesControllerInstance;
 
-    private final SalesModel salesModel = new SalesModel();
+    SalesBOImpl salesBO = new SalesBOImpl();
 
     @FXML
     public void initialize() {
@@ -214,7 +214,7 @@ public class SalesCheckoutController {
 
 
         try {
-            boolean isPlaced = salesModel.placeOrder(salesDTO, new ArrayList<>(cartItems));
+            boolean isPlaced = salesBO.placeOrder(salesDTO, new ArrayList<>(cartItems));
 
             if (isPlaced) {
 
