@@ -72,4 +72,25 @@ public class TransactionRecordDAOImpl {
         rs.close();
         return newDoubleArray;
     }
+
+    public boolean settleTransaction(TransactionRecord entity, String type) throws SQLException {
+        String insertTrans = "INSERT INTO TransactionRecord (transaction_type, payment_method, amount, flow, " +
+                (type.equals("SALE") ? "sale_id" : "repair_id") + ", user_id, reference_note) VALUES (?, 'CASH', ?, 'IN', ?, ?, 'Partial Settlement')";
+
+            if (type .equals("SALE")) {
+                return CrudUtil.execute(insertTrans,
+                        "SALE_PAYMENT",
+                        entity.getAmount(),
+                        entity.getSale_id(),
+                        entity.getUser_id()
+                );
+            } else {
+                return CrudUtil.execute(insertTrans,
+                        "REPAIR_PAYMENT",
+                        entity.getAmount(),
+                        entity.getRepair_id(),
+                        entity.getUser_id()
+                );
+            }
+    }
 }

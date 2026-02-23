@@ -12,6 +12,8 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import lk.ijse.etecmanagementsystem.App;
 import lk.ijse.etecmanagementsystem.bo.SalesBOImpl;
+import lk.ijse.etecmanagementsystem.bo.TransactionBOImpl;
+import lk.ijse.etecmanagementsystem.dao.QueryDAOImpl;
 import lk.ijse.etecmanagementsystem.dao.SalesDAOImpl;
 import lk.ijse.etecmanagementsystem.dao.TransactionRecordDAOImpl;
 import lk.ijse.etecmanagementsystem.dto.tm.PendingRepairTM;
@@ -75,6 +77,8 @@ public class TransactionsController {
     private final TransactionsModel transactionsModel = new TransactionsModel();
     TransactionRecordDAOImpl transactionRecordDAO = new TransactionRecordDAOImpl();
     SalesDAOImpl salesDAO = new SalesDAOImpl();
+    QueryDAOImpl queryDAO = new QueryDAOImpl();
+    TransactionBOImpl transactionBO = new TransactionBOImpl();
 
     public void initialize() {
         setupTables();
@@ -179,7 +183,7 @@ public class TransactionsController {
     public void loadPendingSettlements() {
         try {
             tblPendingSales.setItems(salesDAO.getPendingSales());
-            tblPendingRepairs.setItems(transactionsModel.getPendingRepairs());
+            tblPendingRepairs.setItems(queryDAO.getPendingRepairs());
         } catch (SQLException e) {
             new Alert(Alert.AlertType.ERROR, "Error loading pending items: " + e.getMessage()).show();
         }
@@ -338,7 +342,7 @@ public class TransactionsController {
     private void processPayment(String type, int id, double amount, String newPayStatus) {
         try {
             // Delegate complex logic to Model
-            boolean success = transactionsModel.settlePayment(type, id, amount, LoginUtil.getUserId(), newPayStatus); // User ID 1
+            boolean success = transactionBO.settlePayment(type, id, amount, LoginUtil.getUserId(), newPayStatus); // User ID 1
             if (success) {
                 new Alert(Alert.AlertType.INFORMATION, "Payment Successful!").show();
                 loadPendingSettlements();

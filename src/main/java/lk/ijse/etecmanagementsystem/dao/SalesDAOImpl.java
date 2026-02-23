@@ -127,4 +127,9 @@ public class SalesDAOImpl {
             throw new SQLException("Failed to retrieve sales ID");
         }
     }
+
+    public boolean updateSalePayment(int saleId, double newPaidAmount, String newPaymentStatus) throws SQLException {
+        String updateSql = "UPDATE Sales SET paid_amount = paid_amount + ?, payment_status = ? WHERE sale_id = ?";
+        return CrudUtil.execute(updateSql, newPaidAmount, newPaymentStatus, saleId);
+    }
 }
