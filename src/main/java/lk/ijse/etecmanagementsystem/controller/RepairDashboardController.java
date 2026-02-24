@@ -14,6 +14,10 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import lk.ijse.etecmanagementsystem.App;
+import lk.ijse.etecmanagementsystem.bo.RepairsBOimpl;
+import lk.ijse.etecmanagementsystem.dao.CustomerDAOImpl;
+import lk.ijse.etecmanagementsystem.dto.CustomerDTO;
+import lk.ijse.etecmanagementsystem.dto.RepairJobDTO;
 import lk.ijse.etecmanagementsystem.dto.tm.RepairJobTM;
 import lk.ijse.etecmanagementsystem.dto.tm.RepairPartTM;
 import lk.ijse.etecmanagementsystem.model.RepairJobModel;
@@ -106,6 +110,8 @@ public class RepairDashboardController {
     private final List<RepairPartTM> partsToReturnList = new ArrayList<>(); // Hidden list for removed items (Restocking)
 
     private final RepairJobModel repairModel = new RepairJobModel();
+    RepairsBOimpl repairsBOimpl = new RepairsBOimpl();
+    CustomerDAOImpl customerDAO = new CustomerDAOImpl();
 
     @FXML
     public void initialize() {
@@ -285,7 +291,20 @@ public class RepairDashboardController {
 
     private void loadDataFromDB() {
         try {
-            List<RepairJobTM> dbList = repairModel.getAllRepairJobs();
+            List<RepairJobDTO> dtoList = repairsBOimpl.getAllRepairJobs();
+            List<RepairJobTM> dbList = new ArrayList<>();
+            for (RepairJobDTO dto : dtoList) {
+                CustomerDTO customer = customerDAO.getCustomerById(dto.getCusId());
+                RepairJobTM tm = new RepairJobTM(
+                        dto,
+                        customer.getName(),
+                        customer.getEmailAddress(),
+                        customer.getNumber(),
+                        customer.getAddress()
+                );
+                dbList.add(tm);
+            }
+//            List<RepairJobTM> dbList = repairModel.getAllRepairJobs();
             masterData.clear();
             masterData.addAll(dbList);
             listRepairJobs.refresh();

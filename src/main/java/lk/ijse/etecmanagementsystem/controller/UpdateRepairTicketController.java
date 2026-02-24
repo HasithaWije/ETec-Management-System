@@ -11,6 +11,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import lk.ijse.etecmanagementsystem.App;
 import lk.ijse.etecmanagementsystem.dao.CustomerDAOImpl;
+import lk.ijse.etecmanagementsystem.dao.RepairJobDAOImpl;
 import lk.ijse.etecmanagementsystem.dto.CustomerDTO;
 import lk.ijse.etecmanagementsystem.dto.RepairJobDTO;
 import lk.ijse.etecmanagementsystem.dto.tm.RepairJobTM;
@@ -54,6 +55,7 @@ public class UpdateRepairTicketController {
 
     private final CustomerDAOImpl customerDAO = new CustomerDAOImpl();
     private final RepairJobModel repairJobModel = new RepairJobModel();
+    RepairJobDAOImpl repairJobDAO = new RepairJobDAOImpl();
 
     @FXML
     public void initialize() {
@@ -218,7 +220,7 @@ public class UpdateRepairTicketController {
             jobDTO.setProblemDesc(txtProblem.getText());
 
             // CALL MODEL
-            boolean success = repairJobModel.updateRepairJob(jobDTO);
+            boolean success = repairJobDAO.updateRepairJob(jobDTO);
 
             if (success) {
                 showAlert(Alert.AlertType.INFORMATION, "Success", "Details Updated Successfully.");

@@ -14,9 +14,7 @@ public class RepairsBOimpl {
     public List<RepairJobDTO> getAllRepairJobs() throws SQLException {
 
         List<RepairJobDTO> repairJobs = repairJobDAO.getAllRepairJobs();
-        for (RepairJobDTO job : repairJobs) {
-
-        }
+        return repairJobs;
 
     }
 }

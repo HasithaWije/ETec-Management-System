@@ -15,96 +15,96 @@ import java.util.List;
 
 public class RepairJobModel {
 
-    public List<RepairJobTM> getAllRepairJobs() throws SQLException {
-        List<RepairJobTM> list = new ArrayList<>();
-
-        Connection connection = DBConnection.getInstance().getConnection();
-
-        String sql = "SELECT r.repair_id, r.cus_id, r.user_id, r.device_name, r.device_sn, " +
-                "r.problem_desc, r.diagnosis_desc, r.repair_results, " + // <--- Added here
-                "r.status, r.date_in, r.date_out, r.labor_cost, r.parts_cost, r.total_amount, r.discount, r.payment_status, r.paid_amount, " +
-                "c.name AS cus_name, c.number AS cus_contact, " +
-                "c.email AS cus_email, c.address AS cus_address " +
-                "FROM RepairJob r " +
-                "JOIN Customer c ON r.cus_id = c.cus_id " +
-                "ORDER BY r.date_in DESC";
-
-        PreparedStatement pstm = connection.prepareStatement(sql);
-        ResultSet resultSet = pstm.executeQuery();
-
-        while (resultSet.next()) {
-            RepairJobDTO dto = new RepairJobDTO(
-                    resultSet.getInt("repair_id"),
-                    resultSet.getInt("cus_id"),
-                    resultSet.getInt("user_id"),
-                    resultSet.getString("device_name"),
-                    resultSet.getString("device_sn"),
-                    resultSet.getString("problem_desc"),
-                    resultSet.getString("diagnosis_desc"),
-                    resultSet.getString("repair_results"),
-                    RepairStatus.valueOf(resultSet.getString("status")),
-                    resultSet.getTimestamp("date_in"),
-                    resultSet.getTimestamp("date_out"),
-                    resultSet.getDouble("labor_cost"),
-                    resultSet.getDouble("parts_cost"),
-                    resultSet.getDouble("total_amount"),
-                    resultSet.getDouble("paid_amount"),
-                    resultSet.getDouble("discount"),
-                    PaymentStatus.valueOf(resultSet.getString("payment_status"))
-            );
-
-            String cusName = resultSet.getString("cus_name");
-            String cusContact = resultSet.getString("cus_contact");
-            String email = resultSet.getString("cus_email");
-            String address = resultSet.getString("cus_address");
-
-            RepairJobTM tm = new RepairJobTM(dto, cusName, cusContact, email, address);
-            list.add(tm);
-        }
-
-        return list;
-    }
-
-
-    public boolean saveRepairJob(RepairJobDTO dto) throws SQLException {
-        String sql = "INSERT INTO RepairJob " +
-                "(cus_id, user_id, device_name, device_sn, problem_desc, status, date_in, payment_status) " +
-                "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
-
-        Connection connection = DBConnection.getInstance().getConnection();
-        PreparedStatement pstm = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
-
-        pstm.setInt(1, dto.getCusId());
-        pstm.setInt(2, dto.getUserId());
-        pstm.setString(3, dto.getDeviceName());
-        pstm.setString(4, dto.getDeviceSn());
-        pstm.setString(5, dto.getProblemDesc());
-        pstm.setString(6, dto.getStatus().name());
-
-        if (dto.getDateIn() != null) {
-            pstm.setTimestamp(7, new java.sql.Timestamp(dto.getDateIn().getTime()));
-        } else {
-            pstm.setTimestamp(7, new java.sql.Timestamp(System.currentTimeMillis()));
-        }
+//    public List<RepairJobTM> getAllRepairJobs() throws SQLException {
+//        List<RepairJobTM> list = new ArrayList<>();
+//
+//        Connection connection = DBConnection.getInstance().getConnection();
+//
+//        String sql = "SELECT r.repair_id, r.cus_id, r.user_id, r.device_name, r.device_sn, " +
+//                "r.problem_desc, r.diagnosis_desc, r.repair_results, " + // <--- Added here
+//                "r.status, r.date_in, r.date_out, r.labor_cost, r.parts_cost, r.total_amount, r.discount, r.payment_status, r.paid_amount, " +
+//                "c.name AS cus_name, c.number AS cus_contact, " +
+//                "c.email AS cus_email, c.address AS cus_address " +
+//                "FROM RepairJob r " +
+//                "JOIN Customer c ON r.cus_id = c.cus_id " +
+//                "ORDER BY r.date_in DESC";
+//
+//        PreparedStatement pstm = connection.prepareStatement(sql);
+//        ResultSet resultSet = pstm.executeQuery();
+//
+//        while (resultSet.next()) {
+//            RepairJobDTO dto = new RepairJobDTO(
+//                    resultSet.getInt("repair_id"),
+//                    resultSet.getInt("cus_id"),
+//                    resultSet.getInt("user_id"),
+//                    resultSet.getString("device_name"),
+//                    resultSet.getString("device_sn"),
+//                    resultSet.getString("problem_desc"),
+//                    resultSet.getString("diagnosis_desc"),
+//                    resultSet.getString("repair_results"),
+//                    RepairStatus.valueOf(resultSet.getString("status")),
+//                    resultSet.getTimestamp("date_in"),
+//                    resultSet.getTimestamp("date_out"),
+//                    resultSet.getDouble("labor_cost"),
+//                    resultSet.getDouble("parts_cost"),
+//                    resultSet.getDouble("total_amount"),
+//                    resultSet.getDouble("paid_amount"),
+//                    resultSet.getDouble("discount"),
+//                    PaymentStatus.valueOf(resultSet.getString("payment_status"))
+//            );
+//
+//            String cusName = resultSet.getString("cus_name");
+//            String cusContact = resultSet.getString("cus_contact");
+//            String email = resultSet.getString("cus_email");
+//            String address = resultSet.getString("cus_address");
+//
+//            RepairJobTM tm = new RepairJobTM(dto, cusName, cusContact, email, address);
+//            list.add(tm);
+//        }
+//
+//        return list;
+//    }
 
 
-        pstm.setString(8, "PENDING");
-
-        if (pstm.executeUpdate() <= 0) {
-            return false;
-        }
-
-        int repairId = -1;
-        ResultSet rs = pstm.getGeneratedKeys();
-        if (rs.next()) {
-            repairId = rs.getInt(1);
-        }
-        if (repairId > 0) {
-            dto.setRepairId(repairId);
-            return true;
-        }
-        return false;
-    }
+//    public boolean saveRepairJob(RepairJobDTO dto) throws SQLException {
+//        String sql = "INSERT INTO RepairJob " +
+//                "(cus_id, user_id, device_name, device_sn, problem_desc, status, date_in, payment_status) " +
+//                "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+//
+//        Connection connection = DBConnection.getInstance().getConnection();
+//        PreparedStatement pstm = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+//
+//        pstm.setInt(1, dto.getCusId());
+//        pstm.setInt(2, dto.getUserId());
+//        pstm.setString(3, dto.getDeviceName());
+//        pstm.setString(4, dto.getDeviceSn());
+//        pstm.setString(5, dto.getProblemDesc());
+//        pstm.setString(6, dto.getStatus().name());
+//
+//        if (dto.getDateIn() != null) {
+//            pstm.setTimestamp(7, new java.sql.Timestamp(dto.getDateIn().getTime()));
+//        } else {
+//            pstm.setTimestamp(7, new java.sql.Timestamp(System.currentTimeMillis()));
+//        }
+//
+//
+//        pstm.setString(8, "PENDING");
+//
+//        if (pstm.executeUpdate() <= 0) {
+//            return false;
+//        }
+//
+//        int repairId = -1;
+//        ResultSet rs = pstm.getGeneratedKeys();
+//        if (rs.next()) {
+//            repairId = rs.getInt(1);
+//        }
+//        if (repairId > 0) {
+//            dto.setRepairId(repairId);
+//            return true;
+//        }
+//        return false;
+//    }
 
     public boolean updateRepairJob(RepairJobDTO dto) throws SQLException {
         String sql = "UPDATE RepairJob SET cus_id=?, device_name=?, device_sn=?, problem_desc=? WHERE repair_id=?";

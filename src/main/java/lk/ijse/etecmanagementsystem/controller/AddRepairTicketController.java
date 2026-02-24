@@ -11,6 +11,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import lk.ijse.etecmanagementsystem.App;
 import lk.ijse.etecmanagementsystem.dao.CustomerDAOImpl;
+import lk.ijse.etecmanagementsystem.dao.RepairJobDAOImpl;
 import lk.ijse.etecmanagementsystem.db.DBConnection;
 import lk.ijse.etecmanagementsystem.dto.CustomerDTO;
 import lk.ijse.etecmanagementsystem.dto.RepairJobDTO;
@@ -62,6 +63,7 @@ public class AddRepairTicketController {
 
     private final CustomerDAOImpl customerDAO = new CustomerDAOImpl();
     private final RepairJobModel repairJobModel = new RepairJobModel();
+    RepairJobDAOImpl repairJobDAO = new RepairJobDAOImpl();
 
     public void setMainController(RepairDashboardController mainController) {
         this.mainController = mainController;
@@ -201,9 +203,15 @@ public class AddRepairTicketController {
 
             newJob.setUserId(LoginUtil.getUserId());
 
-            boolean isSaved = repairJobModel.saveRepairJob(newJob);
+            boolean isSaved = repairJobDAO.saveRepairJob(newJob);
 
             if (isSaved) {
+                int generatedId = repairJobDAO.getLastInsertedRepairId();
+                if(generatedId <= 0){
+                    showAlert(Alert.AlertType.WARNING, "Warning", "Ticket saved but failed to retrieve ID for receipt.");
+                } else {
+                    newJob.setRepairId(generatedId);
+                }
                 Alert alert = new Alert(Alert.AlertType.INFORMATION, "Ticket saved successfully with ID: " + newJob.getRepairId());
                 alert.setTitle("Success");
                 alert.setHeaderText("Repair Ticket Saved");

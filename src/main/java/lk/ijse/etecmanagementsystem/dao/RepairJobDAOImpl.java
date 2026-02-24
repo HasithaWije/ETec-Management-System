@@ -7,11 +7,9 @@ import lk.ijse.etecmanagementsystem.util.CrudUtil;
 import lk.ijse.etecmanagementsystem.util.PaymentStatus;
 import lk.ijse.etecmanagementsystem.util.RepairStatus;
 
-import java.sql.Connection;
-import java.sql.PreparedStatement;
-import java.sql.ResultSet;
-import java.sql.SQLException;
+import java.sql.*;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 public class RepairJobDAOImpl {
@@ -52,6 +50,53 @@ public class RepairJobDAOImpl {
         return list;
     }
 
+    public boolean saveRepairJob(RepairJobDTO dto) throws SQLException {
+        String sql = "INSERT INTO RepairJob " +
+                "(cus_id, user_id, device_name, device_sn, problem_desc, status, date_in, payment_status) " +
+                "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
+
+        Date date;
+        if (dto.getDateIn() != null) {
+            date = new java.sql.Timestamp(dto.getDateIn().getTime());
+        } else {
+            date = new java.sql.Timestamp(System.currentTimeMillis());
+        }
+        return CrudUtil.execute(
+                sql,
+                dto.getCusId(),
+                dto.getUserId(),
+                dto.getDeviceName(),
+                dto.getDeviceSn(),
+                dto.getProblemDesc(),
+                dto.getStatus().name(),
+                date,
+                "PENDING"
+        );
+    }
+
+    public int getLastInsertedRepairId() throws SQLException {
+        String idQuery = "SELECT LAST_INSERT_ID() AS id FROM RepairJob";
+        ResultSet rs = CrudUtil.execute(idQuery);
+        if (rs.next()) {
+            return rs.getInt("id");
+        } else {
+            throw new SQLException("Failed to retrieve Repair ID");
+        }
+    }
+
+    public boolean updateRepairJob(RepairJobDTO dto) throws SQLException {
+        String sql = "UPDATE RepairJob SET cus_id=?, device_name=?, device_sn=?, problem_desc=? WHERE repair_id=?";
+
+        return CrudUtil.execute(
+                sql,
+                dto.getCusId(),
+                dto.getDeviceName(),
+                dto.getDeviceSn(),
+                dto.getProblemDesc(),
+                dto.getRepairId()
+
+        );
+    }
 
 
     public boolean updateRepairPayment(double amount, String paymentStatus, int repairId) throws SQLException {
