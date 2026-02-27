@@ -22,6 +22,7 @@ public class RepairPartsModel {
                 "JOIN Product p ON pi.stock_id = p.stock_id " +
                 "WHERE pi.status = 'AVAILABLE'";
 
+
         Connection connection = DBConnection.getInstance().getConnection();
         PreparedStatement pstm = connection.prepareStatement(sql);
         ResultSet resultSet = pstm.executeQuery();
