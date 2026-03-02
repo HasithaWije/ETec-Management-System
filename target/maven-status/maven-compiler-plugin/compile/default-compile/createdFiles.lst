@@ -114,6 +114,7 @@ lk\ijse\etecmanagementsystem\bo\custom\SalesBO.class
 lk\ijse\etecmanagementsystem\dao\custom\impl\ProductItemDAOImpl.class
 lk\ijse\etecmanagementsystem\util\ThreadService.class
 lk\ijse\etecmanagementsystem\bo\SuperBO.class
+lk\ijse\etecmanagementsystem\bo\BOFactory$BOTypes.class
 lk\ijse\etecmanagementsystem\dao\custom\SalesDAO.class
 lk\ijse\etecmanagementsystem\dao\custom\UserDAO.class
 lk\ijse\etecmanagementsystem\dto\CustomerDTO.class
@@ -128,6 +129,7 @@ lk\ijse\etecmanagementsystem\controller\AddRepairTicketController.class
 lk\ijse\etecmanagementsystem\dao\custom\impl\RepairItemDAOImpl.class
 lk\ijse\etecmanagementsystem\dto\tm\InventoryReportTM.class
 lk\ijse\etecmanagementsystem\dao\custom\impl\CategoryDAOImpl.class
+lk\ijse\etecmanagementsystem\entity\Customer.class
 lk\ijse\etecmanagementsystem\controller\InventoryController.class
 lk\ijse\etecmanagementsystem\dao\custom\impl\RepairJobDAOImpl.class
 lk\ijse\etecmanagementsystem\controller\UserController.class

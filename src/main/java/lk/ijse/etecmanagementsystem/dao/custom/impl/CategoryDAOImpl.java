@@ -33,7 +33,7 @@ public class CategoryDAOImpl implements CategoryDAO {
     }
 
     @Override
-    public boolean update(int id) throws SQLException {
+    public boolean update(Category entity) throws SQLException {
         return false;
     }
 

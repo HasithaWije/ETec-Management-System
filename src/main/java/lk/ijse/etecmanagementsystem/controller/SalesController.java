@@ -17,6 +17,8 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.util.StringConverter;
 import lk.ijse.etecmanagementsystem.App;
+import lk.ijse.etecmanagementsystem.bo.BOFactory;
+import lk.ijse.etecmanagementsystem.bo.custom.CustomerBO;
 import lk.ijse.etecmanagementsystem.dao.custom.impl.CustomerDAOImpl;
 import lk.ijse.etecmanagementsystem.dao.custom.impl.ProductDAOImpl;
 import lk.ijse.etecmanagementsystem.dao.custom.impl.ProductItemDAOImpl;
@@ -152,6 +154,7 @@ public class SalesController implements Initializable {
     private final ProductDAOImpl productDAO = new ProductDAOImpl();
     ProductItemDAOImpl productItemDAO = new ProductItemDAOImpl();
     QueryDAOImpl queryDAO = new QueryDAOImpl();
+    CustomerBO customerBO = (CustomerBO) BOFactory.getInstance().getBO(BOFactory.BOTypes.CUSTOMER);
 
 
     @FXML
@@ -675,7 +678,11 @@ public class SalesController implements Initializable {
         }
         CustomerDTO newCustomer = new CustomerDTO(0, safeGetText(txtCusName), safeGetText(txtCusContact), safeGetText(txtCusEmail), safeGetText(txtCusAddress));
         try {
-            int newId = customerDAO.insertCustomerAndGetId(newCustomer);
+            int newId = customerBO.insertCustomerAndGetId(newCustomer);
+            if(newId <= 0){
+                showAlert(Alert.AlertType.ERROR, "Failed to retrieve new customer ID after insertion.");
+                return -2;
+            }
             loadCustomers();
             setupCusCmbBox();
             comboCustomer.setValue(String.valueOf(newId));
@@ -697,7 +704,7 @@ public class SalesController implements Initializable {
         }
 
         try {
-            customerDAO.updateCustomer(customer);
+            customerBO.updateCustomer(customer);
             loadCustomers();
             setupCusCmbBox();
             comboCustomer.setValue(String.valueOf(customer.getId()));
@@ -753,7 +760,7 @@ public class SalesController implements Initializable {
         customerList.clear();
         customerMap.clear();
         try {
-            customerList = customerDAO.getAllCustomers();
+            customerList = customerBO.getAllCustomers();
             for (CustomerDTO c : customerList) {
                 customerMap.put(String.valueOf(c.getId()), c.getName());
             }

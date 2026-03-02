@@ -6,6 +6,8 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import lk.ijse.etecmanagementsystem.bo.BOFactory;
+import lk.ijse.etecmanagementsystem.bo.custom.CustomerBO;
 import lk.ijse.etecmanagementsystem.dao.custom.impl.CustomerDAOImpl;
 import lk.ijse.etecmanagementsystem.dao.custom.impl.QueryDAOImpl;
 import lk.ijse.etecmanagementsystem.dao.custom.impl.SalesDAOImpl;
@@ -58,6 +60,8 @@ public class SalesHistoryController {
     QueryDAOImpl queryDAO = new QueryDAOImpl();
     CustomerDAOImpl customerDAO = new CustomerDAOImpl();
     UserDAOImpl userDAO = new UserDAOImpl();
+    CustomerBO customerBO = (CustomerBO) BOFactory.getInstance().getBO(BOFactory.BOTypes.CUSTOMER);
+
 
     @FXML
     public void initialize() {
@@ -81,7 +85,7 @@ public class SalesHistoryController {
             ObservableList<SalesTM> sales = FXCollections.observableArrayList();
             List<SalesDTO> salesList = salesDAO.getAllSale();
             for(SalesDTO sale : salesList) {
-                CustomerDTO customer = customerDAO.getCustomerById(sale.getCustomerId());
+                CustomerDTO customer = customerBO.getCustomerById(sale.getCustomerId());
                 UserDTO user = userDAO.getUserById(sale.getUserId());
                 sales.add(new SalesTM(
                         sale.getSaleId(),

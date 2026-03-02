@@ -7,6 +7,8 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
+import lk.ijse.etecmanagementsystem.bo.BOFactory;
+import lk.ijse.etecmanagementsystem.bo.custom.CustomerBO;
 import lk.ijse.etecmanagementsystem.dao.custom.impl.CustomerDAOImpl;
 import lk.ijse.etecmanagementsystem.dto.CustomerDTO;
 import lk.ijse.etecmanagementsystem.util.FieldsValidation;
@@ -59,6 +61,7 @@ public class CustomersController {
 
     private final CustomerDAOImpl customerDAO = new CustomerDAOImpl();
     private final ObservableList<CustomerDTO> customerObservableList = FXCollections.observableArrayList();
+    CustomerBO customerBO = (CustomerBO) BOFactory.getInstance().getBO(BOFactory.BOTypes.CUSTOMER);
 
     @FXML
     public void initialize() {
@@ -97,7 +100,7 @@ public class CustomersController {
                     txtAddress.getText().trim()
             );
 
-            boolean isSaved = customerDAO.saveCustomer(customer);
+            boolean isSaved = customerBO.saveCustomer(customer);
             if (isSaved) {
                 new Alert(Alert.AlertType.INFORMATION, "Customer Saved Successfully!").show();
                 handleReset();
@@ -127,7 +130,7 @@ public class CustomersController {
                     txtAddress.getText()
             );
 
-            boolean isUpdated = customerDAO.updateCustomer(customer);
+            boolean isUpdated = customerBO.updateCustomer(customer);
             if (isUpdated) {
                 new Alert(Alert.AlertType.INFORMATION, "Customer Updated Successfully!").show();
                 handleReset();
@@ -154,7 +157,7 @@ public class CustomersController {
         if (result.isPresent() && result.get() == ButtonType.YES) {
             try {
                 int id = Integer.parseInt(txtId.getText().trim());
-                boolean isDeleted = customerDAO.deleteCustomer(id);
+                boolean isDeleted = customerBO.deleteCustomer(id);
                 if (isDeleted) {
                     new Alert(Alert.AlertType.INFORMATION, "Customer Deleted Successfully!").show();
                     handleReset();
@@ -187,7 +190,7 @@ public class CustomersController {
             try {
                 int cID = Integer.parseInt(idText);
 
-                CustomerDTO c = customerDAO.getCustomerById(cID);
+                CustomerDTO c = customerBO.getCustomerById(cID);
 
                 if (c != null) {
                     populateFields(c);
@@ -242,7 +245,7 @@ public class CustomersController {
 
     private void loadProducts() {
         try {
-            List<CustomerDTO> rawData = customerDAO.getAllCustomers();
+            List<CustomerDTO> rawData = customerBO.getAllCustomers();
             customerObservableList.clear(); // Always clear before adding
             if (rawData != null) {
                 customerObservableList.addAll(rawData);

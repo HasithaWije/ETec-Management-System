@@ -9,7 +9,7 @@ public interface CrudDAO<T> {
 
     boolean save(T entity) throws SQLException;
 
-    boolean update(int id) throws SQLException;
+    boolean update(T entity) throws SQLException;
 
     boolean delete(int id) throws SQLException;
 

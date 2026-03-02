@@ -15,7 +15,6 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import lk.ijse.etecmanagementsystem.bo.custom.impl.CategoryBOImpl;
 import lk.ijse.etecmanagementsystem.bo.custom.impl.InventoryBOImpl;
-import lk.ijse.etecmanagementsystem.dao.custom.impl.CategoryDAOImpl;
 import lk.ijse.etecmanagementsystem.dao.custom.impl.ProductDAOImpl;
 import lk.ijse.etecmanagementsystem.dao.custom.impl.ProductItemDAOImpl;
 import lk.ijse.etecmanagementsystem.util.CategoryScene;
@@ -163,7 +162,7 @@ public class ProductController implements Initializable {
         btnDelete.setOnAction(event -> deleteProduct());
         btnClear.setOnAction(event -> clearForm());
 
-        // Logic for the "+" button next to CategoryScene
+        // Logic for the "+" button next to Category
         btnNewCategory.setOnAction(event -> {
             setCategoryStage();
             loadCategories();
@@ -498,7 +497,7 @@ public class ProductController implements Initializable {
             return true;
         }
         if (cmbCategory.getValue() == null) {
-            showAlert(Alert.AlertType.ERROR, "Validation Error", "Please select a CategoryScene.");
+            showAlert(Alert.AlertType.ERROR, "Validation Error", "Please select a Category.");
             return true;
         }
         if (cmbCondition.getValue() == null) {
@@ -577,7 +576,7 @@ public class ProductController implements Initializable {
         try {
             Stage newStage = new Stage();
             newStage.initModality(Modality.APPLICATION_MODAL);
-            newStage.setTitle("CategoryScene");
+            newStage.setTitle("Category");
 
             newStage.setScene(new Scene(App.loadFXML("category"), 400, 200));
             newStage.setResizable(false);
@@ -585,7 +584,7 @@ public class ProductController implements Initializable {
 
 
         } catch (IOException e) {
-            Alert alert = new Alert(Alert.AlertType.ERROR, "Failed to open CategoryScene window: " + e.getMessage());
+            Alert alert = new Alert(Alert.AlertType.ERROR, "Failed to open Category window: " + e.getMessage());
             alert.showAndWait();
         }
     }

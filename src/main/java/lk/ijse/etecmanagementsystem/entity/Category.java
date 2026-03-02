@@ -34,7 +34,7 @@ public class Category {
 
     @Override
     public String toString() {
-        return "CategoryScene{" +
+        return "Category{" +
                 "category_name='" + category_name + '\'' +
                 ", description='" + description + '\'' +
                 '}';

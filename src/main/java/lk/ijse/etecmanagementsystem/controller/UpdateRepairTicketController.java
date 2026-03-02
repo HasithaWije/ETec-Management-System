@@ -10,6 +10,8 @@ import javafx.scene.control.*;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import lk.ijse.etecmanagementsystem.App;
+import lk.ijse.etecmanagementsystem.bo.BOFactory;
+import lk.ijse.etecmanagementsystem.bo.custom.CustomerBO;
 import lk.ijse.etecmanagementsystem.dao.custom.impl.CustomerDAOImpl;
 import lk.ijse.etecmanagementsystem.dao.custom.impl.QueryDAOImpl;
 import lk.ijse.etecmanagementsystem.dao.custom.impl.RepairJobDAOImpl;
@@ -56,6 +58,8 @@ public class UpdateRepairTicketController {
     private final CustomerDAOImpl customerDAO = new CustomerDAOImpl();
     RepairJobDAOImpl repairJobDAO = new RepairJobDAOImpl();
     QueryDAOImpl queryDAO = new QueryDAOImpl();
+    CustomerBO customerBO = (CustomerBO) BOFactory.getInstance().getBO(BOFactory.BOTypes.CUSTOMER);
+
 
     @FXML
     public void initialize() {
@@ -103,7 +107,7 @@ public class UpdateRepairTicketController {
 
         try {
             // FETCH REAL DATA FROM DB
-            List<CustomerDTO> customers = customerDAO.getAllCustomers();
+            List<CustomerDTO> customers = customerBO.getAllCustomers();
 
             for (CustomerDTO customer : customers) {
                 String key = customer.getName() + " | " + customer.getNumber();

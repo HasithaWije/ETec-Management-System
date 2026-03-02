@@ -93,7 +93,7 @@ public class InventoryUtil {
                 // 1. Filter by Name
                 .filter(p -> p.getName().toLowerCase().contains(finalSearch))
 
-                // 2. Filter by CategoryScene
+                // 2. Filter by Category
                 .filter(p -> isCategoryMatch(p, category))
 
                 // 3. Filter by Condition (Enum)

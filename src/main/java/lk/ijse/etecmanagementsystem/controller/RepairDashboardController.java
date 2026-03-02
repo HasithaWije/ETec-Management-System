@@ -14,8 +14,9 @@ import javafx.scene.layout.VBox;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import lk.ijse.etecmanagementsystem.App;
+import lk.ijse.etecmanagementsystem.bo.BOFactory;
+import lk.ijse.etecmanagementsystem.bo.custom.CustomerBO;
 import lk.ijse.etecmanagementsystem.bo.custom.impl.RepairsBOimpl;
-import lk.ijse.etecmanagementsystem.dao.custom.impl.CustomerDAOImpl;
 import lk.ijse.etecmanagementsystem.dao.custom.impl.QueryDAOImpl;
 import lk.ijse.etecmanagementsystem.dao.custom.impl.RepairJobDAOImpl;
 import lk.ijse.etecmanagementsystem.dto.CustomerDTO;
@@ -111,9 +112,10 @@ public class RepairDashboardController {
     private final List<RepairPartTM> partsToReturnList = new ArrayList<>(); // Hidden list for removed items (Restocking)
 
     RepairsBOimpl repairsBOimpl = new RepairsBOimpl();
-    CustomerDAOImpl customerDAO = new CustomerDAOImpl();
     RepairJobDAOImpl repairJobDAO = new RepairJobDAOImpl();
     QueryDAOImpl queryDAO = new QueryDAOImpl();
+    CustomerBO customerBO = (CustomerBO) BOFactory.getInstance().getBO(BOFactory.BOTypes.CUSTOMER);
+
 
     @FXML
     public void initialize() {
@@ -296,7 +298,7 @@ public class RepairDashboardController {
             List<RepairJobDTO> dtoList = repairsBOimpl.getAllRepairJobs();
             List<RepairJobTM> dbList = new ArrayList<>();
             for (RepairJobDTO dto : dtoList) {
-                CustomerDTO customer = customerDAO.getCustomerById(dto.getCusId());
+                CustomerDTO customer = customerBO.getCustomerById(dto.getCusId());
                 RepairJobTM tm = new RepairJobTM(
                         dto,
                         customer.getName(),

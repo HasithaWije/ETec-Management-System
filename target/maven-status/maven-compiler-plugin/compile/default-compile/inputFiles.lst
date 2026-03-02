@@ -109,6 +109,7 @@ E:\ETec-Management-System\src\main\java\lk\ijse\etecmanagementsystem\dto\TopProd
 E:\ETec-Management-System\src\main\java\lk\ijse\etecmanagementsystem\dto\TransactionDTO.java
 E:\ETec-Management-System\src\main\java\lk\ijse\etecmanagementsystem\dto\UserDTO.java
 E:\ETec-Management-System\src\main\java\lk\ijse\etecmanagementsystem\entity\Category.java
+E:\ETec-Management-System\src\main\java\lk\ijse\etecmanagementsystem\entity\Customer.java
 E:\ETec-Management-System\src\main\java\lk\ijse\etecmanagementsystem\entity\SalesItem.java
 E:\ETec-Management-System\src\main\java\lk\ijse\etecmanagementsystem\entity\TransactionRecord.java
 E:\ETec-Management-System\src\main\java\lk\ijse\etecmanagementsystem\model\CategoryModel.java

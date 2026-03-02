@@ -10,7 +10,8 @@ import javafx.scene.control.*;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import lk.ijse.etecmanagementsystem.App;
-import lk.ijse.etecmanagementsystem.dao.custom.impl.CustomerDAOImpl;
+import lk.ijse.etecmanagementsystem.bo.BOFactory;
+import lk.ijse.etecmanagementsystem.bo.custom.CustomerBO;
 import lk.ijse.etecmanagementsystem.dao.custom.impl.RepairJobDAOImpl;
 import lk.ijse.etecmanagementsystem.db.DBConnection;
 import lk.ijse.etecmanagementsystem.dto.CustomerDTO;
@@ -60,8 +61,8 @@ public class AddRepairTicketController {
     private int selectedCustomerId = -1;
     private RepairDashboardController mainController;
 
-    private final CustomerDAOImpl customerDAO = new CustomerDAOImpl();
     RepairJobDAOImpl repairJobDAO = new RepairJobDAOImpl();
+    CustomerBO customerBO = (CustomerBO) BOFactory.getInstance().getBO(BOFactory.BOTypes.CUSTOMER);
 
     public void setMainController(RepairDashboardController mainController) {
         this.mainController = mainController;
@@ -79,7 +80,7 @@ public class AddRepairTicketController {
 
         try {
             // FETCH REAL DATA FROM DB
-            List<CustomerDTO> customers = customerDAO.getAllCustomers();
+            List<CustomerDTO> customers = customerBO.getAllCustomers();
 
             for (CustomerDTO customer : customers) {
                 // Key format: "Name | Contact" for easy searching

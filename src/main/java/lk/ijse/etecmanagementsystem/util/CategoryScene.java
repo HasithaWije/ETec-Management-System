@@ -19,24 +19,6 @@ public class CategoryScene {
         categories = FXCollections.observableArrayList();
     }
 
-
-    public static void setCategoryStage(ComboBox<String> cmbCategory) {
-        Stage newStage = new Stage();
-        newStage.initModality(Modality.APPLICATION_MODAL);
-        newStage.setTitle("CategoryScene");
-        try {
-            newStage.setScene(new Scene(App.loadFXML("category"), 400, 200));
-            newStage.showAndWait();
-            newStage.setResizable(false);
-            // After closing, refresh categories
-            ObservableList<String> updatedCategories = FXCollections.observableArrayList(categories);
-            cmbCategory.setItems(updatedCategories);
-        } catch (IOException e) {
-            Alert alert = new Alert(Alert.AlertType.ERROR, "Failed to open CategoryScene window: " + e.getMessage());
-            alert.showAndWait();
-        }
-    }
-
     public static ObservableList<String> getCategories() {
         return categories;
     }

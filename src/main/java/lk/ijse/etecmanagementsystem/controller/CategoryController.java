@@ -5,12 +5,10 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
-import lk.ijse.etecmanagementsystem.bo.custom.impl.CategoryBOImpl;
-import lk.ijse.etecmanagementsystem.dao.custom.impl.CategoryDAOImpl;
-import lk.ijse.etecmanagementsystem.entity.Category;
+import lk.ijse.etecmanagementsystem.bo.BOFactory;
+import lk.ijse.etecmanagementsystem.bo.custom.CategoryBO;
 import lk.ijse.etecmanagementsystem.util.CategoryScene;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class CategoryController {
@@ -28,9 +26,7 @@ public class CategoryController {
     @FXML
     Label lblMsg;
 
-    CategoryDAOImpl categoryDAO = new CategoryDAOImpl();
-    CategoryBOImpl categoryBO = new CategoryBOImpl();
-    CategoryBOImpl categoryBOImpl = new CategoryBOImpl();
+    CategoryBO categoryBO = (CategoryBO) BOFactory.getInstance().getBO(BOFactory.BOTypes.CATEGORY);
     private String previousCategoryName = "";
 
     private final String CATEGORY_REGEX = "^[A-Z][a-zA-Z0-9\\s\\-&]{2,29}$";
@@ -70,7 +66,7 @@ public class CategoryController {
         System.out.println("Add category method called");
         String name = categoryName.getText().trim();
         if (name.isEmpty()) {
-            lblMsg.setText("CategoryScene name cannot be empty.");
+            lblMsg.setText("Category name cannot be empty.");
             lblMsg.setStyle("-fx-text-fill: red;");
         } else {
             ObservableList<String> categories = CategoryScene.getCategories();
@@ -80,7 +76,7 @@ public class CategoryController {
 
 
             } else if (categories.contains(name) && !checkNomatch(name)) {
-                lblMsg.setText("CategoryScene Already exists.");
+                lblMsg.setText("Category Already exists.");
                 lblMsg.setStyle("-fx-text-fill: red;");
 
             } else {
@@ -88,7 +84,7 @@ public class CategoryController {
                 try {
 
                     if (categoryBO.saveCategory(name)) {
-                        lblMsg.setText("CategoryScene " + name + " added successfully.");
+                        lblMsg.setText("Category " + name + " added successfully.");
                         lblMsg.setStyle("-fx-text-fill: green;");
 
                         categoryName.clear();
@@ -96,7 +92,7 @@ public class CategoryController {
                         return;
                     }
 
-                    lblMsg.setText("CategoryScene add failed.");
+                    lblMsg.setText("Category add failed.");
                     lblMsg.setStyle("-fx-text-fill: red;");
 
                 } catch (Exception e) {
@@ -123,12 +119,12 @@ public class CategoryController {
 
                     boolean result = categoryBO.deleteCategory(name);
                     if (!result) {
-                        lblMsg.setText("CategoryScene delete failed.");
+                        lblMsg.setText("Category delete failed.");
                         lblMsg.setStyle("-fx-text-fill: red;");
                         return;
                     }
 
-                    lblMsg.setText("CategoryScene " + name + " delete successfully.");
+                    lblMsg.setText("Category " + name + " delete successfully.");
                     lblMsg.setStyle("-fx-text-fill: green;");
 
                     categoryName.clear();
@@ -138,7 +134,7 @@ public class CategoryController {
                     new Alert(Alert.AlertType.ERROR, "Failed to save category: " + e.getMessage()).show();
                 }
             } else {
-                lblMsg.setText("CategoryScene deletion cancelled.");
+                lblMsg.setText("Category deletion cancelled.");
                 lblMsg.setStyle("-fx-text-fill: orange;");
             }
 
@@ -162,11 +158,11 @@ public class CategoryController {
 
                     boolean result = categoryBO.updateCategory(newName, oldName);
                     if (!result) {
-                        lblMsg.setText("CategoryScene update failed.");
+                        lblMsg.setText("Category update failed.");
                         lblMsg.setStyle("-fx-text-fill: red;");
                         return;
                     }
-                    lblMsg.setText("CategoryScene " + newName + " update successfully.");
+                    lblMsg.setText("Category " + newName + " update successfully.");
                     lblMsg.setStyle("-fx-text-fill: green;");
 
                     categoryName.clear();
@@ -176,7 +172,7 @@ public class CategoryController {
                     new Alert(Alert.AlertType.ERROR, "Failed to save category: " + e.getMessage()).show();
                 }
             } else {
-                lblMsg.setText("CategoryScene update cancelled.");
+                lblMsg.setText("Category update cancelled.");
                 lblMsg.setStyle("-fx-text-fill: orange;");
             }
 
@@ -195,7 +191,7 @@ public class CategoryController {
     private void resetCategory() {
         System.out.println("Reset category method called");
         categoryName.clear();
-        lblMsg.setText("Message: Type CategoryScene and Press Enter to Find.");
+        lblMsg.setText("Message: Type Category and Press Enter to Find.");
     }
 
     @FXML
@@ -204,7 +200,7 @@ public class CategoryController {
             String name = categoryName.getText().trim();
 
             if (categoryName.getText().isEmpty()) {
-                lblMsg.setText("CategoryScene name cannot be empty.");
+                lblMsg.setText("Category name cannot be empty.");
                 lblMsg.setStyle("-fx-text-fill: red;");
 
             } else {
@@ -221,12 +217,12 @@ public class CategoryController {
                     if (index != -1) {
                         categoryName.setText(categories.get(index));
                         previousCategoryName = categories.get(index);
-                        lblMsg.setText("CategoryScene " + name + " Found! You can delete or update now.");
+                        lblMsg.setText("Category " + name + " Found! You can delete or update now.");
                         lblMsg.setStyle("-fx-text-fill: green;");
                     }
 
                 } else {
-                    lblMsg.setText("CategoryScene not exists.");
+                    lblMsg.setText("Category not exists.");
                     lblMsg.setStyle("-fx-text-fill: red;");
 
                 }

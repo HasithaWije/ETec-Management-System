@@ -4,6 +4,7 @@ import lk.ijse.etecmanagementsystem.dao.custom.CustomerDAO;
 import lk.ijse.etecmanagementsystem.db.DBConnection;
 import lk.ijse.etecmanagementsystem.dto.CustomerDTO;
 import lk.ijse.etecmanagementsystem.dao.CrudUtil;
+import lk.ijse.etecmanagementsystem.entity.Customer;
 import lk.ijse.etecmanagementsystem.util.GenerateReports;
 
 import java.sql.*;
@@ -12,13 +13,44 @@ import java.util.List;
 
 public class CustomerDAOImpl implements CustomerDAO {
 
-    public List<CustomerDTO> getAllCustomers() throws SQLException {
+    @Override
+    public boolean insertCustomerAndGetId(CustomerDTO customer) throws SQLException {
+        String sql = "INSERT INTO Customer(name,number,email,address) VALUES(?,?,?,?)";
+
+        return CrudUtil.execute(sql,
+                customer.getName(),
+                customer.getNumber() == null ? "" : customer.getNumber(),
+                customer.getEmailAddress() == null ? "" : customer.getEmailAddress(),
+                customer.getAddress() == null ? "" : customer.getAddress());
+
+
+    }
+
+    @Override
+    public int getLastInsertedCustomerId() throws SQLException {
+        String idQuery = "SELECT LAST_INSERT_ID() AS id FROM Customer";
+        ResultSet rs = CrudUtil.execute(idQuery);
+        if (rs.next()) {
+            return rs.getInt("id");
+        } else {
+            throw new SQLException("Failed to retrieve Customer ID");
+        }
+    }
+
+    @Override
+    public int getCustomerCount() throws SQLException {
+        String sql = "SELECT COUNT(*) FROM Customer";
+        return GenerateReports.getTotalCount(sql);
+    }
+
+    @Override
+    public List<Customer> getAll() throws SQLException {
         String sql = "SELECT * FROM Customer";
-        List<CustomerDTO> customers = new ArrayList<>();
+        List<Customer> customers = new ArrayList<>();
 
         try (ResultSet rs = CrudUtil.execute(sql)) {
             while (rs.next()) {
-                customers.add(new CustomerDTO(
+                customers.add(new Customer(
                         rs.getInt("cus_id"),
                         rs.getString("name"),
                         rs.getString("number"),
@@ -31,84 +63,50 @@ public class CustomerDAOImpl implements CustomerDAO {
         return customers;
     }
 
-    public CustomerDTO getCustomerById(int id) throws SQLException {
-        String sql = "SELECT * FROM Customer WHERE cus_id=?";
-
-        CustomerDTO customer = null;
-
-        try (ResultSet rs = CrudUtil.execute(sql, id)) {
-            if (rs.next()) {
-                customer = new CustomerDTO(
-                        rs.getInt("cus_id"),
-                        rs.getString("name"),
-                        rs.getString("number"),
-                        rs.getString("email"),
-                        rs.getString("address")
-                );
-            }
-        }
-        return customer;
-    }
-
-    public boolean saveCustomer(CustomerDTO customer) throws SQLException {
+    @Override
+    public boolean save(Customer entity) throws SQLException {
         String sql = "INSERT INTO Customer(name,number,email,address) VALUES(?,?,?,?)";
+
         return CrudUtil.execute(sql,
-                customer.getName(),
-                customer.getNumber(),
-                customer.getEmailAddress() == null ? "" : customer.getEmailAddress(),
-                customer.getAddress());
+                entity.getName(),
+                entity.getNumber(),
+                entity.getEmail() == null ? "" : entity.getEmail(),
+                entity.getAddress() == null ? "" : entity.getAddress());
     }
 
-    public int insertCustomerAndGetId(CustomerDTO customer) throws SQLException {
-        String sql = "INSERT INTO Customer(name,number,email,address) VALUES(?,?,?,?)";
-
-        int generatedKey = -2;
-
-        // 1. Pass 'Statement.RETURN_GENERATED_KEYS' as the second argument
-        Connection conn = DBConnection.getInstance().getConnection();
-        try (PreparedStatement pstmt = conn.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
-
-            pstmt.setString(1, customer.getName());
-            pstmt.setString(2, customer.getNumber() == null ? "" : customer.getNumber());
-            pstmt.setString(3, customer.getEmailAddress() == null ? "" : customer.getEmailAddress());
-            pstmt.setString(4, customer.getAddress() == null ? "" : customer.getAddress());
-
-            int affectedRows = pstmt.executeUpdate();
-
-            if (affectedRows > 0) {
-                // 2. Retrieve the generated keys ResultSet
-                try (ResultSet rs = pstmt.getGeneratedKeys()) {
-                    if (rs.next()) {
-                        // 3. Get the ID (usually the first column)
-                        generatedKey = rs.getInt(1);
-                        System.out.println("Inserted Record ID: " + generatedKey);
-                    }
-                }
-            }
-        } catch (SQLException e) {
-            throw e;
-        }
-
-        return generatedKey;
-    }
-
-    public boolean updateCustomer(CustomerDTO customer) throws SQLException {
+    @Override
+    public boolean update(Customer entity) throws SQLException {
         String sql = "UPDATE Customer SET name=?,number=?,email=?,address=? WHERE cus_id=?";
         return CrudUtil.execute(sql,
-                customer.getName(),
-                customer.getNumber(),
-                customer.getEmailAddress() == null ? "" : customer.getEmailAddress(),
-                customer.getAddress(),
-                customer.getId());
+                entity.getName(),
+                entity.getNumber(),
+                entity.getEmail() == null ? "" : entity.getEmail(),
+                entity.getAddress() == null ? "" : entity.getAddress(),
+                entity.getCus_id());
     }
 
-    public boolean deleteCustomer(int id) throws SQLException {
+    @Override
+    public boolean delete(int id) throws SQLException {
         String sql = "DELETE FROM Customer WHERE cus_id=?";
         return CrudUtil.execute(sql, id);
     }
 
-    public int getCustomerCount() throws SQLException {
-        String sql = "SELECT COUNT(*) FROM Customer";
-        return GenerateReports.getTotalCount(sql);
+    @Override
+    public Customer search(int id) throws SQLException {
+        String sql = "SELECT * FROM Customer WHERE cus_id=?";
+
+        ResultSet rs = CrudUtil.execute(sql, id);
+        Customer customer = null;
+        if (rs.next()) {
+            customer = new Customer(
+                    rs.getInt("cus_id"),
+                    rs.getString("name"),
+                    rs.getString("number"),
+                    rs.getString("email"),
+                    rs.getString("address")
+            );
+        }
+        rs.close();
+        return customer;
     }
 }
