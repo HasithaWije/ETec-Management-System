@@ -776,7 +776,20 @@ public class SalesController implements Initializable {
     private void loadProductItems() {
         try {
             inventoryItemsList.clear();
-            inventoryItemsList.addAll(queryDAO.getAllAvailableRealItems());
+            List<InventoryItemDTO> itemsFromDB = new ArrayList<>();
+            List<CustomDTO> customItems = inventoryBO.getAllAvailableRealItems();
+            for (CustomDTO c : customItems) {
+                InventoryItemDTO item = new InventoryItemDTO(
+                        c.getInventoryItemId(),
+                        c.getInventoryProductName(),
+                        c.getInventorySerialNumber(),
+                        c.getInventoryCustomerWarranty(),
+                        c.getInventoryItemPrice(),
+                        c.getInventoryProductCondition()
+                );
+                itemsFromDB.add(item);
+            }
+            inventoryItemsList.addAll(itemsFromDB);
         } catch (SQLException e) {
             showAlert(Alert.AlertType.ERROR, "Failed to load inventory: " + e.getMessage());
         }

@@ -354,7 +354,7 @@ public class UnitManagementController {
             }
 
             viewList.clear();
-            viewList.addAll(queryDAO.getUnitsByStockId(stockId, name));
+            viewList.addAll(inventoryBO.getUnitsByStockId(stockId, name));
         } catch (SQLException ex) {
             new Alert(Alert.AlertType.ERROR, "DB Error").show();
             System.out.println(ex.getMessage());
@@ -393,7 +393,7 @@ public class UnitManagementController {
                 historyList.clear();
                 // Pass name for display
                 String cleanName = fullDisplayName.substring(0, fullDisplayName.lastIndexOf(" (ID:"));
-                historyList.addAll(queryDAO.getUnitsByStockId(selectedStockId, cleanName));
+                historyList.addAll(inventoryBO.getUnitsByStockId(selectedStockId, cleanName));
             }
         } catch (SQLException e) {
             new Alert(Alert.AlertType.ERROR, "Something went wrong!").show();
@@ -413,7 +413,7 @@ public class UnitManagementController {
         }
 
         try {
-            if (queryDAO.getItemBySerial(serial) != null) {
+            if (inventoryBO.getItemBySerial(serial) != null) {
                 showAlert(Alert.AlertType.ERROR, "Duplicate in DB");
                 return;
             }
@@ -521,7 +521,7 @@ public class UnitManagementController {
             if (currentComboVal != null) {
                 historyList.clear();
                 String cleanName = currentComboVal.substring(0, currentComboVal.lastIndexOf(" (ID:"));
-                historyList.addAll(queryDAO.getUnitsByStockId(selectedStockId, cleanName));
+                historyList.addAll(inventoryBO.getUnitsByStockId(selectedStockId, cleanName));
             }
 
         } catch (SQLException ex) {
@@ -539,7 +539,7 @@ public class UnitManagementController {
         String s = txtFixSearch.getText().trim();
         if (s.isEmpty()) return;
         try {
-            ProductItemDTO item = queryDAO.getItemBySerial(s);
+            ProductItemDTO item = inventoryBO.getItemBySerial(s);
             if (item != null) {
                 currentFixingSerial = item.getSerialNumber();
                 vboxFixDetails.setDisable(false);
@@ -562,7 +562,7 @@ public class UnitManagementController {
 //                }
 
 
-                ProductItemDTO Item = queryDAO.getItemBySerial(s);
+                ProductItemDTO Item = inventoryBO.getItemBySerial(s);
                 if (Item != null) {
                     // Find the string "Cable (ID: 5)" using the ID
                     String prodStr = idToProductDisplayMap.get(item.getStockId());
@@ -619,7 +619,7 @@ public class UnitManagementController {
         String s = txtStatusSearch.getText().trim();
         if (s.isEmpty()) return;
         try {
-            ProductItemDTO item = queryDAO.getItemBySerial(s);
+            ProductItemDTO item = inventoryBO.getItemBySerial(s);
             if (item != null) {
                 currentStatusSerial = item.getSerialNumber();
                 vboxStatusUpdate.setDisable(false);

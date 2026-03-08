@@ -3,8 +3,12 @@ package lk.ijse.etecmanagementsystem.bo.custom.impl;
 import lk.ijse.etecmanagementsystem.dao.custom.impl.RepairJobDAOImpl;
 import lk.ijse.etecmanagementsystem.dao.custom.impl.SalesDAOImpl;
 import lk.ijse.etecmanagementsystem.dao.custom.impl.TransactionRecordDAOImpl;
+import lk.ijse.etecmanagementsystem.dto.RepairJobDTO;
+import lk.ijse.etecmanagementsystem.entity.RepairJob;
 import lk.ijse.etecmanagementsystem.entity.TransactionRecord;
 import lk.ijse.etecmanagementsystem.db.DBConnection;
+import lk.ijse.etecmanagementsystem.util.PaymentStatus;
+import lk.ijse.etecmanagementsystem.util.RepairStatus;
 
 import java.sql.Connection;
 import java.sql.SQLException;
@@ -43,9 +47,29 @@ public class TransactionBOImpl {
                 currentPaidAmount = salesDAO.getSaleById(id).getPaidAmount();
                 isSettled = salesDAO.updateSalePayment(id, currentPaidAmount + amount, newPaymentStatus);
             } else {
-                currentPaidAmount = repairDAO.getRepairJobById(id).getPaidAmount();
-                double totalAmount = repairDAO.getRepairJobById(id).getTotalAmount();
-                double discount = repairDAO.getRepairJobById(id).getDiscount();
+                RepairJob entity = repairDAO.search(id);
+                RepairJobDTO repairJobDTO = new RepairJobDTO(
+                        entity.getRepair_id(),
+                        entity.getCus_id(),
+                        entity.getUser_id(),
+                        entity.getDevice_name(),
+                        entity.getDevice_sn(),
+                        entity.getProblem_desc(),
+                        entity.getDiagnosis_desc(),
+                        entity.getRepair_results(),
+                        RepairStatus.valueOf(entity.getStatus()),
+                        entity.getDate_in(),
+                        entity.getDate_out(),
+                        entity.getLabor_cost(),
+                        entity.getParts_cost(),
+                        entity.getTotal_amount(),
+                        entity.getPaid_amount(),
+                        entity.getDiscount(),
+                        PaymentStatus.valueOf(entity.getPayment_status()));
+
+                currentPaidAmount = repairJobDTO.getPaidAmount();
+                double totalAmount = repairJobDTO.getTotalAmount();
+                double discount = repairJobDTO.getDiscount();
                 isSettled = repairDAO.updateRepairPayment(currentPaidAmount + amount, totalAmount, discount, newPaymentStatus, id);
             }
 

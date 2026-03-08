@@ -8,10 +8,7 @@ import lk.ijse.etecmanagementsystem.dao.custom.impl.ProductItemDAOImpl;
 import lk.ijse.etecmanagementsystem.dao.custom.impl.QueryDAOImpl;
 import lk.ijse.etecmanagementsystem.dao.custom.impl.SupplierDAOImpl;
 import lk.ijse.etecmanagementsystem.db.DBConnection;
-import lk.ijse.etecmanagementsystem.dto.CustomDTO;
-import lk.ijse.etecmanagementsystem.dto.ProductDTO;
-import lk.ijse.etecmanagementsystem.dto.ProductItemDTO;
-import lk.ijse.etecmanagementsystem.dto.SupplierDTO;
+import lk.ijse.etecmanagementsystem.dto.*;
 import lk.ijse.etecmanagementsystem.entity.Product;
 import lk.ijse.etecmanagementsystem.entity.ProductItem;
 import lk.ijse.etecmanagementsystem.util.ProductCondition;
@@ -213,14 +210,14 @@ public class InventoryBOImpl implements InventoryBO {
     }
 
     @Override
-    public ItemDeleteStatus checkItemStatusForDelete(String stockId) throws SQLException {
+    public CustomDTO checkItemStatusForDelete(String stockId) throws SQLException {
 
         int realAvailableCount = getRealItemCount(Integer.parseInt(stockId));
         System.out.println("DEBUG: Real Available Item Count for Stock ID " + stockId + " is " + realAvailableCount);
         int restrictedCount = getRestrictedRealItemCount(Integer.parseInt(stockId));
         System.out.println("DEBUG: Restricted Item Count for Stock ID " + stockId + " is " + restrictedCount);
 
-        return new ItemDeleteStatus(realAvailableCount, restrictedCount);
+        return new CustomDTO(realAvailableCount, restrictedCount);
     }
 
     @Override
@@ -261,14 +258,14 @@ public class InventoryBOImpl implements InventoryBO {
                 if (placeholderId != -1) {
 
                     entity.setItem_id(placeholderId);
-                    boolean isUpdated = productItemDAO.updateItem(entity);
+                    boolean isUpdated = productItemDAO.update(entity);
                     if (!isUpdated) {
                         conn.rollback();
                         throw new SQLException("Failed to update placeholder item with ID " + placeholderId);
                     }
                 } else {
 
-                    boolean isAdded = productItemDAO.addProductItem(entity);
+                    boolean isAdded = productItemDAO.save(entity);
                     if (!isAdded) {
                         conn.rollback();
                         throw new SQLException("Failed to add new item for Stock ID " + entity.getStock_id());
@@ -341,7 +338,7 @@ public class InventoryBOImpl implements InventoryBO {
             con.setAutoCommit(false);
 
 
-            ProductItemDTO oldItem = queryDAO.getItemBySerial(oldSerial);
+            ProductItemDTO oldItem = getItemBySerial(oldSerial);
             if (oldItem == null) return false;
             int oldStockId = oldItem.getStockId();
 
@@ -353,7 +350,7 @@ public class InventoryBOImpl implements InventoryBO {
             newItem.setSupplierWarranty(newSupWar);
 
 
-            boolean isUpdated = productItemDAO.updateItem(new ProductItem(
+            boolean isUpdated = productItemDAO.update(new ProductItem(
                     oldItem.getItemId(),
                     newItem.getStockId(),
                     newItem.getSupplierId(),
@@ -398,7 +395,7 @@ public class InventoryBOImpl implements InventoryBO {
     @Override
     public boolean updateItemStatus(String serial, String newStatus) throws SQLException {
 
-        ProductItemDTO item = queryDAO.getItemBySerial(serial);
+        ProductItemDTO item = getItemBySerial(serial);
         if (item == null) {
             throw new SQLException("Item with serial number " + serial + " does not exist.");
         }
@@ -471,7 +468,7 @@ public class InventoryBOImpl implements InventoryBO {
     @Override
     public List<ProductItemDTO> getAllAvailableItems() throws SQLException {
 
-        List<ProductItem> entity = productItemDAO.getAllAvailableItems();
+        List<ProductItem> entity = productItemDAO.getAll();
         List<ProductItemDTO> productItemDTOS = new ArrayList<>();
 
         for (ProductItem productItem : entity) {
@@ -541,6 +538,55 @@ public class InventoryBOImpl implements InventoryBO {
         return productItemDTOS;
     }
 
+    @Override
+    public List<CustomDTO> getAllAvailableRealItems() throws SQLException {
+
+        return queryDAO.getAllAvailableRealItems();
+    }
+
+    @Override
+    public List<ProductItemDTO> getUnitsByStockId(int stockId, String productName) throws SQLException {
+        List<ProductItemDTO> list = new ArrayList<>();
+        List<CustomDTO> entities = queryDAO.getUnitsByStockId(stockId, productName);
+        for (CustomDTO customDTO : entities) {
+            list.add(new ProductItemDTO(
+                    customDTO.getProductItemId(),
+                    stockId,
+                    customDTO.getProductItemSupplierId(),
+                    customDTO.getProductItemSerialNumber(),
+                    productName,
+                    customDTO.getProductItemSupplierName(),
+                     customDTO.getProductItemSupplierWarranty(),
+                    customDTO.getProductItemCustomerWarranty(),
+                    customDTO.getProductItemStatus(),
+                    customDTO.getProductItemAddedDate(),
+                    customDTO.getProductItemSoldDate()
+            ));
+        }
+        return list;
+    }
+
+    @Override
+    public ProductItemDTO getItemBySerial(String serial) throws SQLException {
+
+        CustomDTO customDTO = queryDAO.getItemBySerial(serial);
+        if (customDTO == null) {
+            return null;
+        }
+            return new ProductItemDTO(
+                    customDTO.getProductItemId(),
+                    customDTO.getProductItemStockId(),
+                    customDTO.getProductItemSupplierId(),
+                    customDTO.getProductItemSerialNumber(),
+                    customDTO.getProductItemProductName(),
+                    customDTO.getProductItemSupplierName(),
+                    customDTO.getProductItemSupplierWarranty(),
+                    customDTO.getProductItemCustomerWarranty(),
+                    customDTO.getProductItemStatus(),
+                    customDTO.getProductItemAddedDate(),
+                    customDTO.getProductItemSoldDate()
+            );
+    }
 
     private ProductCondition fromConditionString(String s) {
         if (s == null) return null;
@@ -553,16 +599,6 @@ public class InventoryBOImpl implements InventoryBO {
             return ProductCondition.BOTH;
         } catch (IllegalArgumentException ex) {
             return ProductCondition.BOTH; // unknown condition value
-        }
-    }
-
-    public static class ItemDeleteStatus {
-        public final int realAvailableCount;
-        public final int restrictedCount;
-
-        public ItemDeleteStatus(int real, int restricted) {
-            this.realAvailableCount = real;
-            this.restrictedCount = restricted;
         }
     }
 }

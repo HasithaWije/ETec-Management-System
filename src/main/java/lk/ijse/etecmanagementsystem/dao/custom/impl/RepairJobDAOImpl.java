@@ -4,6 +4,7 @@ import javafx.scene.chart.XYChart;
 import lk.ijse.etecmanagementsystem.dao.custom.RepairJobDAO;
 import lk.ijse.etecmanagementsystem.dto.RepairJobDTO;
 import lk.ijse.etecmanagementsystem.dao.CrudUtil;
+import lk.ijse.etecmanagementsystem.entity.RepairJob;
 import lk.ijse.etecmanagementsystem.util.GenerateReports;
 import lk.ijse.etecmanagementsystem.util.PaymentStatus;
 import lk.ijse.etecmanagementsystem.util.RepairStatus;
@@ -16,8 +17,9 @@ import java.util.List;
 
 public class RepairJobDAOImpl implements RepairJobDAO {
 
-    public List<RepairJobDTO> getAllRepairJobs() throws SQLException {
-        List<RepairJobDTO> list = new ArrayList<>();
+    @Override
+    public List<RepairJob> getAll() throws SQLException {
+        List<RepairJob> list = new ArrayList<>();
 
         String sql = "SELECT * FROM RepairJob ORDER BY date_in DESC";
 
@@ -25,84 +27,51 @@ public class RepairJobDAOImpl implements RepairJobDAO {
         ResultSet resultSet = CrudUtil.execute(sql);
 
         while (resultSet.next()) {
-            RepairJobDTO dto = new RepairJobDTO(
-                    resultSet.getInt("repair_id"),
-                    resultSet.getInt("cus_id"),
-                    resultSet.getInt("user_id"),
-                    resultSet.getString("device_name"),
-                    resultSet.getString("device_sn"),
-                    resultSet.getString("problem_desc"),
-                    resultSet.getString("diagnosis_desc"),
-                    resultSet.getString("repair_results"),
-                    RepairStatus.valueOf(resultSet.getString("status")),
-                    resultSet.getTimestamp("date_in"),
-                    resultSet.getTimestamp("date_out"),
-                    resultSet.getDouble("labor_cost"),
-                    resultSet.getDouble("parts_cost"),
-                    resultSet.getDouble("total_amount"),
-                    resultSet.getDouble("paid_amount"),
-                    resultSet.getDouble("discount"),
-                    PaymentStatus.valueOf(resultSet.getString("payment_status"))
-            );
 
-            list.add(dto);
+            RepairJob entity = getEntity(resultSet);
+
+            list.add(entity);
         }
 
         resultSet.close();
         return list;
     }
 
-    public RepairJobDTO getRepairJobById(int repair_id) throws SQLException {
+    @Override
+    public RepairJob search(int repair_id) throws SQLException {
         String sql = "SELECT * FROM RepairJob WHERE repair_id = ?";
         ResultSet resultSet = CrudUtil.execute(sql, repair_id);
 
         if (resultSet.next()) {
-            RepairJobDTO dto = new RepairJobDTO(
-                    resultSet.getInt("repair_id"),
-                    resultSet.getInt("cus_id"),
-                    resultSet.getInt("user_id"),
-                    resultSet.getString("device_name"),
-                    resultSet.getString("device_sn"),
-                    resultSet.getString("problem_desc"),
-                    resultSet.getString("diagnosis_desc"),
-                    resultSet.getString("repair_results"),
-                    RepairStatus.valueOf(resultSet.getString("status")),
-                    resultSet.getTimestamp("date_in"),
-                    resultSet.getTimestamp("date_out"),
-                    resultSet.getDouble("labor_cost"),
-                    resultSet.getDouble("parts_cost"),
-                    resultSet.getDouble("total_amount"),
-                    resultSet.getDouble("paid_amount"),
-                    resultSet.getDouble("discount"),
-                    PaymentStatus.valueOf(resultSet.getString("payment_status"))
-            );
+            RepairJob entity = getEntity(resultSet);
             resultSet.close();
-            return dto;
+            return entity;
         } else {
             resultSet.close();
             return null; // Not found
         }
     }
 
-    public boolean saveRepairJob(RepairJobDTO dto) throws SQLException {
+    @Override
+    public boolean saveRepairJob(RepairJob entity) throws SQLException {
         String sql = "INSERT INTO RepairJob " +
                 "(cus_id, user_id, device_name, device_sn, problem_desc, status, date_in, payment_status) " +
                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
 
         Date date;
-        if (dto.getDateIn() != null) {
-            date = new java.sql.Timestamp(dto.getDateIn().getTime());
+        if (entity.getDate_in() != null) {
+            date = new java.sql.Timestamp(entity.getDate_in().getTime());
         } else {
             date = new java.sql.Timestamp(System.currentTimeMillis());
         }
         return CrudUtil.execute(
                 sql,
-                dto.getCusId(),
-                dto.getUserId(),
-                dto.getDeviceName(),
-                dto.getDeviceSn(),
-                dto.getProblemDesc(),
-                dto.getStatus().name(),
+                entity.getCus_id(),
+                entity.getUser_id(),
+                entity.getDevice_name(),
+                entity.getDevice_sn(),
+                entity.getProblem_desc(),
+                entity.getStatus(),
                 date,
                 "PENDING"
         );
@@ -118,17 +87,17 @@ public class RepairJobDAOImpl implements RepairJobDAO {
         }
     }
 
-    public boolean updateRepairJob(RepairJobDTO dto) throws SQLException {
+    @Override
+    public boolean updateRepairJob(RepairJob entity) throws SQLException {
         String sql = "UPDATE RepairJob SET cus_id=?, device_name=?, device_sn=?, problem_desc=? WHERE repair_id=?";
 
         return CrudUtil.execute(
                 sql,
-                dto.getCusId(),
-                dto.getDeviceName(),
-                dto.getDeviceSn(),
-                dto.getProblemDesc(),
-                dto.getRepairId()
-
+                entity.getCus_id(),
+                entity.getDevice_name(),
+                entity.getDevice_sn(),
+                entity.getProblem_desc(),
+                entity.getRepair_id()
         );
     }
 
@@ -136,7 +105,7 @@ public class RepairJobDAOImpl implements RepairJobDAO {
     public boolean updateRepairPayment(double amount, double totalAmount, double discount, String paymentStatus, int repairId) throws SQLException {
         String updateSql = "UPDATE RepairJob SET paid_amount = paid_amount + ?, total_amount = ?, discount = ?, payment_status = ? " +
                 "WHERE repair_id = ?";
-        return CrudUtil.execute(updateSql, amount,totalAmount, discount, paymentStatus, repairId);
+        return CrudUtil.execute(updateSql, amount, totalAmount, discount, paymentStatus, repairId);
     }
 
     public boolean updateRepairCosts(RepairJobDTO dto) throws SQLException {
@@ -163,7 +132,7 @@ public class RepairJobDAOImpl implements RepairJobDAO {
 
     public boolean updateDateOut(String paymentStatus, int repairId) throws SQLException {
         String sqlUpdateJob = "UPDATE RepairJob SET status='DELIVERED', date_out=NOW(), payment_status=? WHERE repair_id=?";
-        return  CrudUtil.execute(sqlUpdateJob, paymentStatus, repairId);
+        return CrudUtil.execute(sqlUpdateJob, paymentStatus, repairId);
     }
 
     public boolean deleteRepairJob(int repairId) throws SQLException {
@@ -205,5 +174,27 @@ public class RepairJobDAOImpl implements RepairJobDAO {
         if (rs.next()) repairs = rs.getInt(1);
         rs.close();
         return repairs;
+    }
+
+    public RepairJob getEntity(ResultSet resultSet) throws SQLException {
+        return new RepairJob(
+                resultSet.getInt("repair_id"),
+                resultSet.getInt("cus_id"),
+                resultSet.getInt("user_id"),
+                resultSet.getString("device_name"),
+                resultSet.getString("device_sn"),
+                resultSet.getString("problem_desc"),
+                resultSet.getString("diagnosis_desc"),
+                resultSet.getString("repair_results"),
+                resultSet.getString("status"),
+                resultSet.getTimestamp("date_in"),
+                resultSet.getTimestamp("date_out"),
+                resultSet.getDouble("labor_cost"),
+                resultSet.getDouble("parts_cost"),
+                resultSet.getDouble("discount"),
+                resultSet.getDouble("total_amount"),
+                resultSet.getDouble("paid_amount"),
+                resultSet.getString("payment_status")
+        );
     }
 }

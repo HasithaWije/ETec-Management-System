@@ -4,7 +4,7 @@ import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
-import lk.ijse.etecmanagementsystem.bo.custom.impl.RepairsBOimpl;
+import lk.ijse.etecmanagementsystem.bo.custom.impl.RepairsBOImpl;
 import lk.ijse.etecmanagementsystem.dto.tm.RepairJobTM;
 import lk.ijse.etecmanagementsystem.dto.tm.RepairPartTM;
 import lk.ijse.etecmanagementsystem.util.GenerateReports;
@@ -43,7 +43,7 @@ public class RepairCheckoutController {
     // --- DATA ---
     private RepairJobTM jobTM;
     private RepairDashboardController mainController;
-    RepairsBOimpl repairsBOimpl = new RepairsBOimpl();
+    RepairsBOImpl repairsBOimpl = new RepairsBOImpl();
 
     private double subTotal = 0.0;
     private double grandTotal = 0.0;

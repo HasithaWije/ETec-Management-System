@@ -1,23 +1,62 @@
 package lk.ijse.etecmanagementsystem.bo.custom.impl;
 
+import lk.ijse.etecmanagementsystem.bo.BOFactory;
+import lk.ijse.etecmanagementsystem.bo.custom.InventoryBO;
+import lk.ijse.etecmanagementsystem.bo.custom.RepairsBO;
+import lk.ijse.etecmanagementsystem.dao.custom.QueryDAO;
+import lk.ijse.etecmanagementsystem.dao.custom.RepairItemDAO;
 import lk.ijse.etecmanagementsystem.dao.custom.impl.*;
+import lk.ijse.etecmanagementsystem.dto.CustomDTO;
+import lk.ijse.etecmanagementsystem.dto.ProductItemDTO;
+import lk.ijse.etecmanagementsystem.entity.RepairItem;
+import lk.ijse.etecmanagementsystem.entity.RepairJob;
 import lk.ijse.etecmanagementsystem.entity.TransactionRecord;
 import lk.ijse.etecmanagementsystem.db.DBConnection;
 import lk.ijse.etecmanagementsystem.dto.RepairJobDTO;
 import lk.ijse.etecmanagementsystem.dto.SalesDTO;
 import lk.ijse.etecmanagementsystem.dto.tm.RepairPartTM;
 import lk.ijse.etecmanagementsystem.util.PaymentStatus;
+import lk.ijse.etecmanagementsystem.util.RepairStatus;
 
 import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
-public class RepairsBOimpl {
+public class RepairsBOImpl implements RepairsBO {
     RepairJobDAOImpl repairJobDAO = new RepairJobDAOImpl();
+    QueryDAO queryDAO = new QueryDAOImpl();
+    RepairItemDAO repairItemDAO = new RepairItemDAOImpl();
+    ProductItemDAOImpl productItemDAO = new ProductItemDAOImpl();
+    SalesDAOImpl salesDAO = new SalesDAOImpl();
+    TransactionRecordDAOImpl transactionRecordDAO = new TransactionRecordDAOImpl();
+
 
     public List<RepairJobDTO> getAllRepairJobs() throws SQLException {
 
-        List<RepairJobDTO> repairJobs = repairJobDAO.getAllRepairJobs();
+        List<RepairJob> entities = repairJobDAO.getAll();
+        List<RepairJobDTO> repairJobs = new java.util.ArrayList<>();
+
+        for (RepairJob entity : entities) {
+            repairJobs.add(new RepairJobDTO(
+                    entity.getRepair_id(),
+                    entity.getCus_id(),
+                    entity.getUser_id(),
+                    entity.getDevice_name(),
+                    entity.getDevice_sn(),
+                    entity.getProblem_desc(),
+                    entity.getDiagnosis_desc(),
+                    entity.getRepair_results(),
+                    RepairStatus.valueOf(entity.getStatus()),
+                    entity.getDate_in(),
+                    entity.getDate_out(),
+                    entity.getLabor_cost(),
+                    entity.getParts_cost(),
+                    entity.getTotal_amount(),
+                    entity.getPaid_amount(),
+                    entity.getDiscount(),
+                    PaymentStatus.valueOf(entity.getPayment_status())
+            ));
+        }
         return repairJobs;
 
     }
@@ -53,7 +92,14 @@ public class RepairsBOimpl {
                 repairItemId = repairItemDAO.getRepairItemId(repairId, part.getItemId());
 
                 if (repairItemId == -1) {
-                    boolean linkSaved = repairItemDAO.saveRepairItem(repairId, part.getItemId(), part.getUnitPrice());
+
+                    boolean linkSaved = repairItemDAO.save(new RepairItem(
+                            0,
+                            repairId,
+                            part.getItemId(),
+                            part.getUnitPrice()
+                    ));
+
                     if (!linkSaved) {
                         connection.rollback();
                         System.out.println("Failed to update repair job details 2");
@@ -74,7 +120,7 @@ public class RepairsBOimpl {
 //                        return false;
 //                    }
 
-                    int stockId = queryDAO.getProductItem(part.getItemId()).getStockId();
+                    int stockId = getProductItem(part.getItemId()).getStockId();
                     if (stockId <= 0) {
                         connection.rollback();
                         System.out.println("Failed to update repair job details 5");
@@ -120,7 +166,7 @@ public class RepairsBOimpl {
                     return false;
                 }
 
-                int stockId = queryDAO.getProductItem(part.getItemId()).getStockId();
+                int stockId = getProductItem(part.getItemId()).getStockId();
                 if (stockId <= 0) {
                     connection.rollback();
                     System.out.println("Failed to update repair job details 10");
@@ -153,13 +199,6 @@ public class RepairsBOimpl {
                                     double totalAmount, double discount, double partsTotal, double paidAmount, String paymentMethod, String serialNumber) throws SQLException {
 
 
-        RepairItemDAOImpl repairItemDAO = new RepairItemDAOImpl();
-        RepairJobDAOImpl repairJobDAO = new RepairJobDAOImpl();
-        ProductItemDAOImpl productItemDAO = new ProductItemDAOImpl();
-        QueryDAOImpl queryDAO = new QueryDAOImpl();
-        SalesDAOImpl salesDAO = new SalesDAOImpl();
-        TransactionRecordDAOImpl transactionRecordDAO = new TransactionRecordDAOImpl();
-
         Connection connection = null;
         try {
             connection = DBConnection.getInstance().getConnection();
@@ -181,13 +220,13 @@ public class RepairsBOimpl {
 
             int saleId = -1;
 
-            boolean hasParts = repairItemDAO.getRepairItemByRepairId(repairId) != null;
+            boolean hasParts = repairItemDAO.search(repairId) != null;
             System.out.println("Repair ID " + repairId + " has parts: " + hasParts);
 
             if (hasParts) {
                 List<RepairPartTM> partsToMark = queryDAO.getUsedParts(repairId);
                 for (RepairPartTM repairPart : partsToMark) {
-                    String sn = queryDAO.getProductItem(repairPart.getItemId()).getSerialNumber();
+                    String sn = getProductItem(repairPart.getItemId()).getSerialNumber();
                     boolean marked = productItemDAO.updateStatus(sn, "SOLD");
                     if (!marked) {
                         connection.rollback();
@@ -265,6 +304,27 @@ public class RepairsBOimpl {
         } finally {
             if (connection != null) connection.setAutoCommit(true);
         }
+    }
+
+    @Override
+    public ProductItemDTO getProductItem(int itemId) throws SQLException {
+        CustomDTO customDTO = queryDAO.getProductItem(itemId);
+        if (customDTO == null) {
+            return null;
+        }
+        return new ProductItemDTO(
+                customDTO.getProductItemId(),
+                customDTO.getProductItemStockId(),
+                customDTO.getProductItemSupplierId(),
+                customDTO.getProductItemSerialNumber(),
+                customDTO.getProductItemProductName(),
+                customDTO.getProductItemSupplierName(),
+                customDTO.getProductItemSupplierWarranty(),
+                customDTO.getProductItemCustomerWarranty(),
+                customDTO.getProductItemStatus(),
+                customDTO.getProductItemAddedDate(),
+                customDTO.getProductItemSoldDate()
+        );
     }
 
 }

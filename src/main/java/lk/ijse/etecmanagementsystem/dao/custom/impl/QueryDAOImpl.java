@@ -157,8 +157,8 @@ public class QueryDAOImpl implements QueryDAO {
         return itemList;
     }
 
-    public List<InventoryItemDTO> getAllAvailableRealItems() throws SQLException {
-        List<InventoryItemDTO> itemList = new ArrayList<>();
+    public List<CustomDTO> getAllAvailableRealItems() throws SQLException {
+        List<CustomDTO> itemList = new ArrayList<>();
 
         String sql = "SELECT pi.item_id, p.name AS product_name, pi.serial_number, " +
                 "p.warranty_months, p.sell_price, p.p_condition " +
@@ -169,20 +169,21 @@ public class QueryDAOImpl implements QueryDAO {
         ResultSet rs = CrudUtil.execute(sql);
 
         while (rs.next()) {
-            InventoryItemDTO item = new InventoryItemDTO(
+            CustomDTO item = new CustomDTO(
                     rs.getInt("item_id"),
                     rs.getString("product_name"),
                     rs.getString("serial_number") == null ? "" : rs.getString("serial_number"),
+                    ProductCondition.fromString(rs.getString("p_condition")),
                     rs.getInt("warranty_months"), // Default warranty from Product definition
-                    rs.getDouble("sell_price"),
-                    ProductCondition.fromString(rs.getString("p_condition"))
+                    rs.getDouble("sell_price")
             );
             itemList.add(item);
         }
+        rs.close();
         return itemList;
     }
 
-    public ProductItemDTO getProductItem(int itemId) throws SQLException {
+    public CustomDTO getProductItem(int itemId) throws SQLException {
         String sql = "SELECT pi.item_id, pi.stock_id, pi.supplier_id, pi.serial_number, p.name as product_name, COALESCE(s.supplier_name, 'No Supplier') as supplier_name, " +
                 "pi.supplier_warranty_mo, pi.customer_warranty_mo, pi.status, pi.added_date, pi.sold_date " +
                 "FROM ProductItem pi " +
@@ -191,32 +192,20 @@ public class QueryDAOImpl implements QueryDAO {
                 "WHERE pi.item_id = ?";
 
         ResultSet rs = CrudUtil.execute(sql, itemId);
-        ProductItemDTO productItemDTO = null;
+        CustomDTO item = null;
 
         if (rs.next()) {
 
-            productItemDTO = new ProductItemDTO(
-                    rs.getInt("item_id"),
-                    rs.getInt("stock_id"),
-                    rs.getInt("supplier_id"),
-                    rs.getString("serial_number") == null ? "" : rs.getString("serial_number"),
-                    rs.getString("product_name"),
-                    rs.getString("supplier_name"),
-                    rs.getInt("supplier_warranty_mo"),
-                    rs.getInt("customer_warranty_mo"),
-                    rs.getString("status"),
-                    rs.getDate("added_date"),
-                    rs.getDate("sold_date")
-            );
+            item = getProductItemCustomDTO(rs);
         }
 
         rs.close();
-        return productItemDTO;
+        return item;
     }
 
 
-    public List<ProductItemDTO> getUnitsByStockId(int stockId, String productName) throws SQLException {
-        List<ProductItemDTO> list = new ArrayList<>();
+    public List<CustomDTO> getUnitsByStockId(int stockId, String productName) throws SQLException {
+        List<CustomDTO> list = new ArrayList<>();
         String sql = "SELECT pi.item_id, pi.supplier_id, pi.serial_number, pi.supplier_warranty_mo, pi.customer_warranty_mo, " +
                 "pi.status, pi.added_date, pi.sold_date, s.supplier_name " +
                 "FROM ProductItem pi " +
@@ -228,7 +217,7 @@ public class QueryDAOImpl implements QueryDAO {
             String supName = rs.getString("supplier_name");
             if (supName == null) supName = "No Supplier";
 
-            list.add(new ProductItemDTO(
+            list.add(new CustomDTO(
                     rs.getInt("item_id"),
                     stockId,
                     rs.getInt("supplier_id"),
@@ -247,7 +236,7 @@ public class QueryDAOImpl implements QueryDAO {
     }
 
 
-    public ProductItemDTO getItemBySerial(String serial) throws SQLException {
+    public CustomDTO getItemBySerial(String serial) throws SQLException {
         String sql = "SELECT pi.item_id, pi.stock_id, pi.supplier_id, pi.serial_number, p.name as product_name, COALESCE(s.supplier_name, 'No Supplier') as supplier_name, " +
                 "pi.supplier_warranty_mo, pi.customer_warranty_mo, pi.status, pi.added_date, pi.sold_date " +
                 "FROM ProductItem pi " +
@@ -256,27 +245,15 @@ public class QueryDAOImpl implements QueryDAO {
                 "WHERE pi.serial_number = ?";
 
         ResultSet rs = CrudUtil.execute(sql, serial);
-        ProductItemDTO productItemDTO = null;
+        CustomDTO customDTO = null;
 
         if (rs.next()) {
 
-            productItemDTO = new ProductItemDTO(
-                    rs.getInt("item_id"),
-                    rs.getInt("stock_id"),
-                    rs.getInt("supplier_id"),
-                    rs.getString("serial_number") == null ? "" : rs.getString("serial_number"),
-                    rs.getString("product_name"),
-                    rs.getString("supplier_name"),
-                    rs.getInt("supplier_warranty_mo"),
-                    rs.getInt("customer_warranty_mo"),
-                    rs.getString("status"),
-                    rs.getDate("added_date"),
-                    rs.getDate("sold_date")
-            );
+            customDTO = getProductItemCustomDTO(rs);
         }
 
         rs.close();
-        return productItemDTO;
+        return customDTO;
     }
 
     public List<SalesTM> getSalesByDateRange(LocalDate from, LocalDate to) throws SQLException {
@@ -322,6 +299,22 @@ public class QueryDAOImpl implements QueryDAO {
         }
         rs.close();
         return pendingSalesList;
+    }
+
+    public CustomDTO getProductItemCustomDTO(ResultSet rs) throws SQLException {
+        return new CustomDTO(
+                rs.getInt("item_id"),
+                rs.getInt("stock_id"),
+                rs.getInt("supplier_id"),
+                rs.getString("serial_number") == null ? "" : rs.getString("serial_number"),
+                rs.getString("product_name"),
+                rs.getString("supplier_name"),
+                rs.getInt("supplier_warranty_mo"),
+                rs.getInt("customer_warranty_mo"),
+                rs.getString("status"),
+                rs.getDate("added_date"),
+                rs.getDate("sold_date")
+        );
     }
 
     private ProductCondition fromConditionString(String s) {

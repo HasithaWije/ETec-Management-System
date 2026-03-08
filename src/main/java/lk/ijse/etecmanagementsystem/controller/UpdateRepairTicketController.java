@@ -19,6 +19,7 @@ import lk.ijse.etecmanagementsystem.dto.CustomerDTO;
 import lk.ijse.etecmanagementsystem.dto.RepairJobDTO;
 import lk.ijse.etecmanagementsystem.dto.tm.RepairJobTM;
 import lk.ijse.etecmanagementsystem.dto.tm.RepairPartTM;
+import lk.ijse.etecmanagementsystem.entity.RepairJob;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -224,7 +225,13 @@ public class UpdateRepairTicketController {
             jobDTO.setProblemDesc(txtProblem.getText());
 
             // CALL MODEL
-            boolean success = repairJobDAO.updateRepairJob(jobDTO);
+            boolean success = repairJobDAO.updateRepairJob(new RepairJob(
+                    currentJob.getRepairId(),
+                    selectedCustomerId,
+                    txtDeviceName.getText(),
+                    txtSerial.getText(),
+                    txtProblem.getText()
+            ));
 
             if (success) {
                 showAlert(Alert.AlertType.INFORMATION, "Success", "Details Updated Successfully.");

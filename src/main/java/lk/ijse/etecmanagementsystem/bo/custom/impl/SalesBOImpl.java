@@ -1,7 +1,11 @@
 package lk.ijse.etecmanagementsystem.bo.custom.impl;
 
 import javafx.scene.control.Alert;
+import lk.ijse.etecmanagementsystem.bo.BOFactory;
+import lk.ijse.etecmanagementsystem.bo.custom.InventoryBO;
+import lk.ijse.etecmanagementsystem.bo.custom.SalesBO;
 import lk.ijse.etecmanagementsystem.dao.custom.impl.*;
+import lk.ijse.etecmanagementsystem.dto.CustomDTO;
 import lk.ijse.etecmanagementsystem.entity.ProductItem;
 import lk.ijse.etecmanagementsystem.entity.SalesItem;
 import lk.ijse.etecmanagementsystem.entity.TransactionRecord;
@@ -15,7 +19,7 @@ import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 
-public class SalesBOImpl {
+public class SalesBOImpl implements SalesBO {
 
     ProductItemDAOImpl productItemDAO = new ProductItemDAOImpl();
     ProductDAOImpl productDAO = new ProductDAOImpl();
@@ -36,7 +40,7 @@ public class SalesBOImpl {
                 if (item.getQuantity() > 1) {
 
                     // A. Get Stock ID
-                    int stockId = queryDAO.getProductItem(item.getItemId()).getStockId();
+                    int stockId = getProductItem(item.getItemId()).getStockId();
                     if (stockId <= 0) {
                         throw new SQLException("Product ID not found in database: " + stockId);
                     }
@@ -138,7 +142,7 @@ public class SalesBOImpl {
 
 
                 // Batch 3: Reduce Global Qty
-                int stockId = queryDAO.getProductItem(item.getItemId()).getStockId();
+                int stockId = getProductItem(item.getItemId()).getStockId();
                 if (stockId <= 0) {
                     con.rollback();
                     new Alert(Alert.AlertType.ERROR, "Product ID not found in database").show();
@@ -184,5 +188,26 @@ public class SalesBOImpl {
         } finally {
             if (con != null) con.setAutoCommit(true);
         }
+    }
+
+    @Override
+    public ProductItemDTO getProductItem(int itemId) throws SQLException {
+        CustomDTO customDTO = queryDAO.getProductItem(itemId);
+        if (customDTO == null) {
+            return null;
+        }
+        return new ProductItemDTO(
+                customDTO.getProductItemId(),
+                customDTO.getProductItemStockId(),
+                customDTO.getProductItemSupplierId(),
+                customDTO.getProductItemSerialNumber(),
+                customDTO.getProductItemProductName(),
+                customDTO.getProductItemSupplierName(),
+                customDTO.getProductItemSupplierWarranty(),
+                customDTO.getProductItemCustomerWarranty(),
+                customDTO.getProductItemStatus(),
+                customDTO.getProductItemAddedDate(),
+                customDTO.getProductItemSoldDate()
+        );
     }
 }

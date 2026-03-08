@@ -7,7 +7,7 @@ E:\ETec-Management-System\src\main\java\lk\ijse\etecmanagementsystem\bo\custom\i
 E:\ETec-Management-System\src\main\java\lk\ijse\etecmanagementsystem\bo\custom\impl\CustomerBOImpl.java
 E:\ETec-Management-System\src\main\java\lk\ijse\etecmanagementsystem\bo\custom\impl\DashboardBOImpl.java
 E:\ETec-Management-System\src\main\java\lk\ijse\etecmanagementsystem\bo\custom\impl\InventoryBOImpl.java
-E:\ETec-Management-System\src\main\java\lk\ijse\etecmanagementsystem\bo\custom\impl\RepairsBOimpl.java
+E:\ETec-Management-System\src\main\java\lk\ijse\etecmanagementsystem\bo\custom\impl\RepairsBOImpl.java
 E:\ETec-Management-System\src\main\java\lk\ijse\etecmanagementsystem\bo\custom\impl\ReportBOImpl.java
 E:\ETec-Management-System\src\main\java\lk\ijse\etecmanagementsystem\bo\custom\impl\SalesBOImpl.java
 E:\ETec-Management-System\src\main\java\lk\ijse\etecmanagementsystem\bo\custom\impl\SupplierBOImpl.java
@@ -112,6 +112,8 @@ E:\ETec-Management-System\src\main\java\lk\ijse\etecmanagementsystem\entity\Cate
 E:\ETec-Management-System\src\main\java\lk\ijse\etecmanagementsystem\entity\Customer.java
 E:\ETec-Management-System\src\main\java\lk\ijse\etecmanagementsystem\entity\Product.java
 E:\ETec-Management-System\src\main\java\lk\ijse\etecmanagementsystem\entity\ProductItem.java
+E:\ETec-Management-System\src\main\java\lk\ijse\etecmanagementsystem\entity\RepairItem.java
+E:\ETec-Management-System\src\main\java\lk\ijse\etecmanagementsystem\entity\RepairJob.java
 E:\ETec-Management-System\src\main\java\lk\ijse\etecmanagementsystem\entity\SalesItem.java
 E:\ETec-Management-System\src\main\java\lk\ijse\etecmanagementsystem\entity\TransactionRecord.java
 E:\ETec-Management-System\src\main\java\lk\ijse\etecmanagementsystem\server\BarcodeServer.java

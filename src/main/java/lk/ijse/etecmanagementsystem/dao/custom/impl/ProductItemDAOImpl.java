@@ -1,12 +1,9 @@
 package lk.ijse.etecmanagementsystem.dao.custom.impl;
 
 import lk.ijse.etecmanagementsystem.dao.custom.ProductItemDAO;
-import lk.ijse.etecmanagementsystem.dto.InventoryItemDTO;
 import lk.ijse.etecmanagementsystem.dto.ProductItemDTO;
 import lk.ijse.etecmanagementsystem.dao.CrudUtil;
-import lk.ijse.etecmanagementsystem.entity.Product;
 import lk.ijse.etecmanagementsystem.entity.ProductItem;
-import lk.ijse.etecmanagementsystem.util.ProductCondition;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -15,32 +12,70 @@ import java.util.List;
 
 public class ProductItemDAOImpl implements ProductItemDAO {
 
-    public List<ProductItem> getAllAvailableItems() throws SQLException {
-
+    @Override
+    public List<ProductItem> getAll() throws SQLException {
         String sql = "SELECT * FROM ProductItem WHERE status = 'AVAILABLE'";
-         ResultSet rs = CrudUtil.execute(sql);
+        ResultSet rs = CrudUtil.execute(sql);
 
         List<ProductItem> items = new ArrayList<>();
-            while (rs.next()) {
+        while (rs.next()) {
 
 
-                ProductItem item = new ProductItem(
-                        rs.getInt("item_id"),
-                        rs.getInt("stock_id"),
-                        rs.getInt("supplier_id"),
-                        rs.getString("serial_number"),
-                        rs.getString("status"),
-                        rs.getDate("added_date"),
-                        rs.getInt("supplier_warranty_mo"),
-                        rs.getDate("added_date"),
-                        rs.getInt("customer_warranty_mo")
-                );
-                items.add(item);
-            }
+            ProductItem item = new ProductItem(
+                    rs.getInt("item_id"),
+                    rs.getInt("stock_id"),
+                    rs.getInt("supplier_id"),
+                    rs.getString("serial_number"),
+                    rs.getString("status"),
+                    rs.getDate("added_date"),
+                    rs.getInt("supplier_warranty_mo"),
+                    rs.getDate("added_date"),
+                    rs.getInt("customer_warranty_mo")
+            );
+            items.add(item);
+        }
         rs.close();
         return items;
     }
 
+    @Override
+    public boolean save(ProductItem entity) throws SQLException {
+        String insertSql = "INSERT INTO ProductItem (stock_id, supplier_id, serial_number, supplier_warranty_mo, " +
+                "customer_warranty_mo, status, added_date) VALUES (?, ?, ?, ?, ?, 'AVAILABLE', NOW())";
+
+        if (entity.getSupplier_id() > 0) {
+            return CrudUtil.execute(insertSql, entity.getStock_id(), entity.getSupplier_id(), entity.getSerial_number(),
+                    entity.getSupplier_warranty_mo(), entity.getCustomer_warranty_mo());
+        } else {
+            return CrudUtil.execute(insertSql, entity.getStock_id(), null, entity.getSerial_number(),
+                    entity.getSupplier_warranty_mo(), entity.getCustomer_warranty_mo());
+        }
+    }
+
+    @Override
+    public boolean update(ProductItem entity) throws SQLException {
+        String updateSql = "UPDATE ProductItem SET serial_number = ?, supplier_id = ?, " +
+                "supplier_warranty_mo = ?, customer_warranty_mo = ?, status = 'AVAILABLE', added_date = NOW() WHERE item_id = ?";
+
+        if (entity.getSupplier_id() > 0) {
+            return CrudUtil.execute(updateSql, entity.getSerial_number(), entity.getSupplier_id(),
+                    entity.getSupplier_warranty_mo(), entity.getCustomer_warranty_mo(), entity.getItem_id());
+        } else {
+            return CrudUtil.execute(updateSql, entity.getSerial_number(), null,
+                    entity.getSupplier_warranty_mo(), entity.getCustomer_warranty_mo(), entity.getItem_id());
+        }
+    }
+
+    @Override
+    public boolean delete(int stockId) throws SQLException {
+        String deleteItemsSql = "DELETE FROM ProductItem WHERE stock_id = ?";
+        return CrudUtil.execute(deleteItemsSql, stockId);
+    }
+
+    @Override
+    public ProductItem search(int id) throws SQLException {
+        return null;
+    }
 
     @Override
     public boolean addPlaceHolderItem(int stockId, int limit) throws SQLException {
@@ -56,23 +91,8 @@ public class ProductItemDAOImpl implements ProductItemDAO {
         return true;
     }
 
-    public boolean addProductItem(ProductItem entity) throws SQLException {
-        String insertSql = "INSERT INTO ProductItem (stock_id, supplier_id, serial_number, supplier_warranty_mo, " +
-                "customer_warranty_mo, status, added_date) VALUES (?, ?, ?, ?, ?, 'AVAILABLE', NOW())";
-
-        if (entity.getSupplier_id() > 0) {
-            return CrudUtil.execute(insertSql, entity.getStock_id(), entity.getSupplier_id(), entity.getSerial_number(),
-                    entity.getSupplier_warranty_mo(), entity.getCustomer_warranty_mo());
-        } else {
-            return CrudUtil.execute(insertSql, entity.getStock_id(), null, entity.getSerial_number(),
-                    entity.getSupplier_warranty_mo(), entity.getCustomer_warranty_mo());
-        }
-
-    }
-
     @Override
     public ArrayList<ProductItem> getPlaceHolderItems(int stockId) throws SQLException {
-//        ArrayList<ProductItemDTO> placeholderItems = new ArrayList<>();
         ArrayList<ProductItem> placeholderItems = new ArrayList<>();
         String sql = "SELECT item_id, stock_id, serial_number FROM ProductItem WHERE stock_id = ? AND serial_number LIKE 'PENDING-%' AND status = 'AVAILABLE'";
         ResultSet rs = CrudUtil.execute(sql, stockId);
@@ -95,24 +115,6 @@ public class ProductItemDAOImpl implements ProductItemDAO {
         }
         rs.close();
         return placeholderItems;
-    }
-
-
-    @Override
-    public boolean updateItem(ProductItem entity) throws SQLException {
-        String updateSql = "UPDATE ProductItem SET serial_number = ?, supplier_id = ?, " +
-                "supplier_warranty_mo = ?, customer_warranty_mo = ?, status = 'AVAILABLE', added_date = NOW() WHERE item_id = ?";
-
-
-
-
-        if (entity.getSupplier_id() > 0) {
-            return CrudUtil.execute(updateSql, entity.getSerial_number(), entity.getSupplier_id(),
-                    entity.getSupplier_warranty_mo(), entity.getCustomer_warranty_mo(), entity.getItem_id());
-        } else {
-            return CrudUtil.execute(updateSql, entity.getSerial_number(), null,
-                    entity.getSupplier_warranty_mo(), entity.getCustomer_warranty_mo(), entity.getItem_id());
-        }
     }
 
     @Override
@@ -142,7 +144,6 @@ public class ProductItemDAOImpl implements ProductItemDAO {
     @Override
     public boolean updateItemForSale(ProductItemDTO item) throws SQLException {
         String sqlUpdItem = "UPDATE ProductItem SET status = 'SOLD', sold_date = NOW(), customer_warranty_mo = ?, serial_number = ? WHERE item_id = ? AND status = 'AVAILABLE'";
-
         return CrudUtil.execute(sqlUpdItem, item.getCustomerWarranty(), item.getSerialNumber(), item.getItemId());
     }
 
@@ -184,8 +185,6 @@ public class ProductItemDAOImpl implements ProductItemDAO {
         }
     }
 
-
-
     @Override
     public int getAvailableItemCount(int stockId) throws SQLException {
         String countSql = "SELECT COUNT(*) AS count FROM ProductItem WHERE stock_id = ? AND status = 'AVAILABLE'";
@@ -201,12 +200,6 @@ public class ProductItemDAOImpl implements ProductItemDAO {
     public boolean deletePlaceHolderItems(int stockId, int removeCount) throws SQLException {
         String deleteSql = "DELETE FROM ProductItem WHERE stock_id = ? AND serial_number LIKE 'PENDING-%' AND status = 'AVAILABLE' LIMIT ?";
         return CrudUtil.execute(deleteSql, stockId, removeCount);
-    }
-
-    @Override
-    public boolean delete(int stockId) throws SQLException {
-        String deleteItemsSql = "DELETE FROM ProductItem WHERE stock_id = ?";
-        return CrudUtil.execute(deleteItemsSql, stockId);
     }
 
     @Override

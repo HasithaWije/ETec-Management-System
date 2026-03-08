@@ -16,6 +16,7 @@ import lk.ijse.etecmanagementsystem.dao.custom.impl.RepairJobDAOImpl;
 import lk.ijse.etecmanagementsystem.db.DBConnection;
 import lk.ijse.etecmanagementsystem.dto.CustomerDTO;
 import lk.ijse.etecmanagementsystem.dto.RepairJobDTO;
+import lk.ijse.etecmanagementsystem.entity.RepairJob;
 import lk.ijse.etecmanagementsystem.util.LoginUtil;
 import lk.ijse.etecmanagementsystem.util.RepairStatus;
 import net.sf.jasperreports.engine.JRException;
@@ -202,7 +203,17 @@ public class AddRepairTicketController {
 
             newJob.setUserId(LoginUtil.getUserId());
 
-            boolean isSaved = repairJobDAO.saveRepairJob(newJob);
+
+
+            boolean isSaved = repairJobDAO.saveRepairJob(new RepairJob(
+                    selectedCustomerId,
+                    LoginUtil.getUserId(),
+                    txtDeviceName.getText(),
+                    txtSerial.getText(),
+                    txtProblem.getText(),
+                    RepairStatus.PENDING.getLabel(),
+                    new Date()
+            ));
 
             if (isSaved) {
                 int generatedId = repairJobDAO.getLastInsertedRepairId();

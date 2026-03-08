@@ -17,6 +17,7 @@ import lk.ijse.etecmanagementsystem.bo.custom.impl.CategoryBOImpl;
 import lk.ijse.etecmanagementsystem.bo.custom.impl.InventoryBOImpl;
 import lk.ijse.etecmanagementsystem.dao.custom.impl.ProductDAOImpl;
 import lk.ijse.etecmanagementsystem.dao.custom.impl.ProductItemDAOImpl;
+import lk.ijse.etecmanagementsystem.dto.CustomDTO;
 import lk.ijse.etecmanagementsystem.util.CategoryScene;
 import lk.ijse.etecmanagementsystem.App;
 import lk.ijse.etecmanagementsystem.dto.ProductDTO;
@@ -330,22 +331,28 @@ public class ProductController implements Initializable {
 
         try {
 
-            InventoryBOImpl.ItemDeleteStatus status = inventoryBO.checkItemStatusForDelete(selected.getId());
+            CustomDTO status = inventoryBO.checkItemStatusForDelete(selected.getId());
+            if (status == null) {
+                showAlert(Alert.AlertType.ERROR, "Error", "Failed to retrieve item status for deletion.");
+                return;
+            }
+            int restrictedCount = status.getRestrictedCount();
+            int realAvailableCount = status.getRealAvailableCount();
 
-            if (status.restrictedCount > 0) {
+            if (restrictedCount > 0) {
                 showAlert(Alert.AlertType.ERROR, "Deletion Blocked",
                         "Cannot delete this product.\n\n" +
-                                "Reason: It has " + status.restrictedCount + " items with history (SOLD, RMA, DAMAGED, RETURN_TO_SUPPLIER or IN_REPAIR_USE).\n" +
+                                "Reason: It has " + restrictedCount + " items with history (SOLD, RMA, DAMAGED, RETURN_TO_SUPPLIER or IN_REPAIR_USE).\n" +
                                 "You cannot delete records that are part of business history.");
                 return;
             }
 
-            if (status.realAvailableCount > 0) {
+            if (realAvailableCount > 0) {
                 Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
                 alert.setTitle("Confirm Deletion of Physical Stock");
                 alert.setHeaderText("Warning: Physical Items Found");
                 alert.setContentText(
-                        "This product has " + status.realAvailableCount + " REAL items currently in stock.\n\n" +
+                        "This product has " + realAvailableCount + " REAL items currently in stock.\n\n" +
                                 "Deleting this product will remove these items from the database permanently.\n" +
                                 "Are you sure you want to proceed?");
 

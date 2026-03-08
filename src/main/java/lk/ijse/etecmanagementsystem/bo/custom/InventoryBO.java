@@ -2,10 +2,11 @@ package lk.ijse.etecmanagementsystem.bo.custom;
 
 import lk.ijse.etecmanagementsystem.bo.SuperBO;
 import lk.ijse.etecmanagementsystem.bo.custom.impl.InventoryBOImpl;
-import lk.ijse.etecmanagementsystem.dto.ProductDTO;
-import lk.ijse.etecmanagementsystem.dto.ProductItemDTO;
-import lk.ijse.etecmanagementsystem.dto.SupplierDTO;
+import lk.ijse.etecmanagementsystem.dao.CrudUtil;
+import lk.ijse.etecmanagementsystem.dto.*;
+import lk.ijse.etecmanagementsystem.util.ProductCondition;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -22,7 +23,7 @@ public interface InventoryBO extends SuperBO {
 
     ProductDTO findById(String id) throws SQLException;
 
-    InventoryBOImpl.ItemDeleteStatus checkItemStatusForDelete(String stockId) throws SQLException;
+    CustomDTO checkItemStatusForDelete(String stockId) throws SQLException;
 
     boolean addNewSerialNo(ArrayList<ProductItemDTO> itemDTOS) throws SQLException;
 
@@ -51,5 +52,11 @@ public interface InventoryBO extends SuperBO {
     boolean delete(int stockId) throws SQLException;
 
     int getRestrictedRealItemCount(int stockId) throws SQLException;
+
+    List<CustomDTO> getAllAvailableRealItems() throws SQLException;
+
+    List<ProductItemDTO> getUnitsByStockId(int stockId, String productName) throws SQLException;
+
+    ProductItemDTO getItemBySerial(String serial) throws SQLException;
 }
 
