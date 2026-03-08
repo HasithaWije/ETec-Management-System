@@ -2,11 +2,9 @@ package lk.ijse.etecmanagementsystem.dao.custom.impl;
 
 import javafx.scene.chart.XYChart;
 import lk.ijse.etecmanagementsystem.dao.custom.RepairJobDAO;
-import lk.ijse.etecmanagementsystem.dto.RepairJobDTO;
 import lk.ijse.etecmanagementsystem.dao.CrudUtil;
 import lk.ijse.etecmanagementsystem.entity.RepairJob;
 import lk.ijse.etecmanagementsystem.util.GenerateReports;
-import lk.ijse.etecmanagementsystem.util.PaymentStatus;
 import lk.ijse.etecmanagementsystem.util.RepairStatus;
 
 import java.sql.*;
@@ -53,7 +51,7 @@ public class RepairJobDAOImpl implements RepairJobDAO {
     }
 
     @Override
-    public boolean saveRepairJob(RepairJob entity) throws SQLException {
+    public boolean save(RepairJob entity) throws SQLException {
         String sql = "INSERT INTO RepairJob " +
                 "(cus_id, user_id, device_name, device_sn, problem_desc, status, date_in, payment_status) " +
                 "VALUES (?, ?, ?, ?, ?, ?, ?, ?)";
@@ -77,6 +75,19 @@ public class RepairJobDAOImpl implements RepairJobDAO {
         );
     }
 
+    @Override
+    public boolean update(RepairJob entity) throws SQLException {
+        return false;
+    }
+
+    @Override
+    public boolean delete(int repairId) throws SQLException {
+        String sql = "DELETE FROM RepairJob WHERE repair_id=?";
+
+        return CrudUtil.execute(sql, repairId);
+    }
+
+    @Override
     public int getLastInsertedRepairId() throws SQLException {
         String idQuery = "SELECT LAST_INSERT_ID() AS id FROM RepairJob";
         ResultSet rs = CrudUtil.execute(idQuery);
@@ -101,56 +112,56 @@ public class RepairJobDAOImpl implements RepairJobDAO {
         );
     }
 
-
+    @Override
     public boolean updateRepairPayment(double amount, double totalAmount, double discount, String paymentStatus, int repairId) throws SQLException {
         String updateSql = "UPDATE RepairJob SET paid_amount = paid_amount + ?, total_amount = ?, discount = ?, payment_status = ? " +
                 "WHERE repair_id = ?";
         return CrudUtil.execute(updateSql, amount, totalAmount, discount, paymentStatus, repairId);
     }
 
-    public boolean updateRepairCosts(RepairJobDTO dto) throws SQLException {
+    @Override
+    public boolean updateRepairCosts(RepairJob entity) throws SQLException {
         String sqlJob = "UPDATE RepairJob SET problem_desc=?, diagnosis_desc=?, repair_results=?, " +
                 "labor_cost=?, parts_cost=?, total_amount=? WHERE repair_id=?";
 
         return CrudUtil.execute(
                 sqlJob,
-                dto.getProblemDesc(),
-                dto.getDiagnosisDesc(),
-                dto.getRepairResults(),
-                dto.getLaborCost(),
-                dto.getPartsCost(),
-                dto.getTotalAmount(),
-                dto.getRepairId()
+                entity.getProblem_desc(),
+                entity.getDiagnosis_desc(),
+                entity.getRepair_results(),
+                entity.getLabor_cost(),
+                entity.getParts_cost(),
+                entity.getTotal_amount(),
+                entity.getRepair_id()
         );
     }
 
+    @Override
     public boolean updateStatus(int repairId, RepairStatus newStatus) throws SQLException {
         String sql = "UPDATE RepairJob SET status = ? WHERE repair_id = ?";
 
         return CrudUtil.execute(sql, newStatus.name(), repairId);
     }
 
+    @Override
     public boolean updateDateOut(String paymentStatus, int repairId) throws SQLException {
         String sqlUpdateJob = "UPDATE RepairJob SET status='DELIVERED', date_out=NOW(), payment_status=? WHERE repair_id=?";
         return CrudUtil.execute(sqlUpdateJob, paymentStatus, repairId);
     }
 
-    public boolean deleteRepairJob(int repairId) throws SQLException {
-        String sql = "DELETE FROM RepairJob WHERE repair_id=?";
-
-        return CrudUtil.execute(sql, repairId);
-    }
-
+    @Override
     public int getRepairCount(LocalDate from, LocalDate to) throws SQLException {
         String sql = "SELECT COUNT(*) FROM RepairJob WHERE date_in BETWEEN ? AND ?";
         return GenerateReports.getCountByDateRange(sql, from, to);
     }
 
+    @Override
     public boolean isRepairExist(String repairId) throws SQLException {
         String sql = "SELECT repair_id FROM RepairJob WHERE repair_id = ?";
         return GenerateReports.checkIdExists(sql, repairId);
     }
 
+    @Override
     public XYChart.Series<String, Number> getRepairChartData() throws SQLException {
         String sqlRepairs = "SELECT DATE(date_in) as d, COUNT(*) as c FROM RepairJob " +
                 "WHERE date_in >= DATE(NOW()) - INTERVAL 7 DAY AND status = 'DELIVERED'" +
@@ -167,6 +178,7 @@ public class RepairJobDAOImpl implements RepairJobDAO {
         return seriesRepairs;
     }
 
+    @Override
     public int getActiveRepairCount() throws SQLException {
         String sql = "SELECT COUNT(*) FROM RepairJob WHERE status NOT IN ('COMPLETED', 'DELIVERED', 'CANCELLED')";
         int repairs = 0;

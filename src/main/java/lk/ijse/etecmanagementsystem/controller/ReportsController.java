@@ -6,6 +6,8 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.HBox;
+import lk.ijse.etecmanagementsystem.bo.BOFactory;
+import lk.ijse.etecmanagementsystem.bo.custom.ReportBO;
 import lk.ijse.etecmanagementsystem.bo.custom.impl.ReportBOImpl;
 import lk.ijse.etecmanagementsystem.util.ETecAlerts;
 import lk.ijse.etecmanagementsystem.util.GenerateReports;
@@ -97,7 +99,7 @@ public class ReportsController {
     @FXML
     private TextField txtSalesId;
 
-    private final ReportBOImpl reportBO = new ReportBOImpl();
+    ReportBO reportBO = (ReportBO) BOFactory.getInstance().getBO(BOFactory.BOTypes.REPORT);
 
 
     @FXML

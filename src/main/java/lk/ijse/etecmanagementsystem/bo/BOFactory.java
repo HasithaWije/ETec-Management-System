@@ -1,10 +1,7 @@
 package lk.ijse.etecmanagementsystem.bo;
 
 
-import lk.ijse.etecmanagementsystem.bo.custom.impl.CategoryBOImpl;
-import lk.ijse.etecmanagementsystem.bo.custom.impl.CustomerBOImpl;
-import lk.ijse.etecmanagementsystem.bo.custom.impl.DashboardBOImpl;
-import lk.ijse.etecmanagementsystem.bo.custom.impl.InventoryBOImpl;
+import lk.ijse.etecmanagementsystem.bo.custom.impl.*;
 
 public class BOFactory {
     private static BOFactory instance;
@@ -19,7 +16,7 @@ public class BOFactory {
     }
 
     public enum BOTypes {
-        CATEGORY, CUSTOMER, DASHBOARD, INVENTORY
+        CATEGORY, CUSTOMER, DASHBOARD, INVENTORY, REPAIRS, REPORT, SALES
     }
 
     public SuperBO getBO(BOTypes boType) {
@@ -32,6 +29,12 @@ public class BOFactory {
                 return new DashboardBOImpl();
             case INVENTORY:
                 return new InventoryBOImpl();
+            case REPAIRS:
+                return new RepairsBOImpl();
+            case REPORT:
+                return new ReportBOImpl();
+            case SALES:
+                return new SalesBOImpl();
             default:
                 return null;
         }

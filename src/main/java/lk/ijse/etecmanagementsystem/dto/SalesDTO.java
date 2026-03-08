@@ -49,7 +49,7 @@ public class SalesDTO {
         this.description = description;
     }
 
-    public SalesDTO(int saleId, int customerId, int userId, Timestamp saleDate, double subTotal, double discount, double grandTotal, double paidAmount, String paymentStatus, String description) {
+    public SalesDTO(int saleId, int customerId, int userId, Date saleDate, double subTotal, double discount, double grandTotal, double paidAmount, String paymentStatus, String description) {
         this.saleId = saleId;
         this.customerId = customerId;
         this.userId = userId;

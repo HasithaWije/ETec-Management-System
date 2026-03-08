@@ -62,6 +62,16 @@ public class RepairJob {
         this.problem_desc = problemDesc;
     }
 
+    public RepairJob(int repair_id, String problem_desc, String diagnosis_desc, String repair_results, double labor_cost, double parts_cost, double total_amount) {
+        this.repair_id = repair_id;
+        this.problem_desc = problem_desc;
+        this.diagnosis_desc = diagnosis_desc;
+        this.repair_results = repair_results;
+        this.labor_cost = labor_cost;
+        this.parts_cost = parts_cost;
+        this.total_amount = total_amount;
+    }
+
     public int getRepair_id() {
         return repair_id;
     }

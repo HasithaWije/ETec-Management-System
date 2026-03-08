@@ -114,6 +114,7 @@ E:\ETec-Management-System\src\main\java\lk\ijse\etecmanagementsystem\entity\Prod
 E:\ETec-Management-System\src\main\java\lk\ijse\etecmanagementsystem\entity\ProductItem.java
 E:\ETec-Management-System\src\main\java\lk\ijse\etecmanagementsystem\entity\RepairItem.java
 E:\ETec-Management-System\src\main\java\lk\ijse\etecmanagementsystem\entity\RepairJob.java
+E:\ETec-Management-System\src\main\java\lk\ijse\etecmanagementsystem\entity\Sales.java
 E:\ETec-Management-System\src\main\java\lk\ijse\etecmanagementsystem\entity\SalesItem.java
 E:\ETec-Management-System\src\main\java\lk\ijse\etecmanagementsystem\entity\TransactionRecord.java
 E:\ETec-Management-System\src\main\java\lk\ijse\etecmanagementsystem\server\BarcodeServer.java

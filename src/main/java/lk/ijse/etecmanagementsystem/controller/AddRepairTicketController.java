@@ -12,11 +12,11 @@ import javafx.stage.Stage;
 import lk.ijse.etecmanagementsystem.App;
 import lk.ijse.etecmanagementsystem.bo.BOFactory;
 import lk.ijse.etecmanagementsystem.bo.custom.CustomerBO;
+import lk.ijse.etecmanagementsystem.bo.custom.RepairsBO;
 import lk.ijse.etecmanagementsystem.dao.custom.impl.RepairJobDAOImpl;
 import lk.ijse.etecmanagementsystem.db.DBConnection;
 import lk.ijse.etecmanagementsystem.dto.CustomerDTO;
 import lk.ijse.etecmanagementsystem.dto.RepairJobDTO;
-import lk.ijse.etecmanagementsystem.entity.RepairJob;
 import lk.ijse.etecmanagementsystem.util.LoginUtil;
 import lk.ijse.etecmanagementsystem.util.RepairStatus;
 import net.sf.jasperreports.engine.JRException;
@@ -64,6 +64,8 @@ public class AddRepairTicketController {
 
     RepairJobDAOImpl repairJobDAO = new RepairJobDAOImpl();
     CustomerBO customerBO = (CustomerBO) BOFactory.getInstance().getBO(BOFactory.BOTypes.CUSTOMER);
+
+    RepairsBO repairsBO = (RepairsBO) BOFactory.getInstance().getBO(BOFactory.BOTypes.REPAIRS);
 
     public void setMainController(RepairDashboardController mainController) {
         this.mainController = mainController;
@@ -205,18 +207,10 @@ public class AddRepairTicketController {
 
 
 
-            boolean isSaved = repairJobDAO.saveRepairJob(new RepairJob(
-                    selectedCustomerId,
-                    LoginUtil.getUserId(),
-                    txtDeviceName.getText(),
-                    txtSerial.getText(),
-                    txtProblem.getText(),
-                    RepairStatus.PENDING.getLabel(),
-                    new Date()
-            ));
+            boolean isSaved = repairsBO.saveRepairJob(newJob);
 
             if (isSaved) {
-                int generatedId = repairJobDAO.getLastInsertedRepairId();
+                int generatedId = repairsBO.getLastInsertedRepairId();
                 if(generatedId <= 0){
                     showAlert(Alert.AlertType.WARNING, "Warning", "Ticket saved but failed to retrieve ID for receipt.");
                 } else {

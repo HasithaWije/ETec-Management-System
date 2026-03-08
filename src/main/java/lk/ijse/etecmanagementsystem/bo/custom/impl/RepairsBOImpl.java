@@ -3,6 +3,7 @@ package lk.ijse.etecmanagementsystem.bo.custom.impl;
 import lk.ijse.etecmanagementsystem.bo.BOFactory;
 import lk.ijse.etecmanagementsystem.bo.custom.InventoryBO;
 import lk.ijse.etecmanagementsystem.bo.custom.RepairsBO;
+import lk.ijse.etecmanagementsystem.dao.CrudUtil;
 import lk.ijse.etecmanagementsystem.dao.custom.QueryDAO;
 import lk.ijse.etecmanagementsystem.dao.custom.RepairItemDAO;
 import lk.ijse.etecmanagementsystem.dao.custom.impl.*;
@@ -10,16 +11,20 @@ import lk.ijse.etecmanagementsystem.dto.CustomDTO;
 import lk.ijse.etecmanagementsystem.dto.ProductItemDTO;
 import lk.ijse.etecmanagementsystem.entity.RepairItem;
 import lk.ijse.etecmanagementsystem.entity.RepairJob;
+import lk.ijse.etecmanagementsystem.entity.Sales;
 import lk.ijse.etecmanagementsystem.entity.TransactionRecord;
 import lk.ijse.etecmanagementsystem.db.DBConnection;
 import lk.ijse.etecmanagementsystem.dto.RepairJobDTO;
 import lk.ijse.etecmanagementsystem.dto.SalesDTO;
 import lk.ijse.etecmanagementsystem.dto.tm.RepairPartTM;
+import lk.ijse.etecmanagementsystem.util.LoginUtil;
 import lk.ijse.etecmanagementsystem.util.PaymentStatus;
 import lk.ijse.etecmanagementsystem.util.RepairStatus;
 
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.List;
 
 public class RepairsBOImpl implements RepairsBO {
@@ -77,7 +82,7 @@ public class RepairsBOImpl implements RepairsBO {
             connection = DBConnection.getInstance().getConnection();
             connection.setAutoCommit(false); // START TRANSACTION
 
-            boolean jobUpdated = repairJobDAO.updateRepairCosts(new RepairJobDTO(
+            boolean jobUpdated = repairJobDAO.updateRepairCosts(new RepairJob(
                     repairId, intake, diagnosis, resolution,
                     laborCost, partsCost, totalAmount
             ));
@@ -235,17 +240,19 @@ public class RepairsBOImpl implements RepairsBO {
                     }
                 }
 
-                SalesDTO salesDTO = new SalesDTO();
-                salesDTO.setCustomerId(customerId);
-                salesDTO.setUserId(userId);
-                salesDTO.setSubtotal(partsTotal);
-                salesDTO.setDiscount(0);
-                salesDTO.setGrandTotal(partsTotal);
-                salesDTO.setPaidAmount(partsTotal);
-                salesDTO.setPaymentStatus(payStatus.equals("PAID") ? PaymentStatus.PAID : payStatus.equals("PARTIAL") ? PaymentStatus.PARTIAL : PaymentStatus.PENDING);
-                salesDTO.setDescription("Repair Job Checkout - Job #" + repairId);
-
-                boolean saleSaved = salesDAO.saveSale(salesDTO);
+                PaymentStatus paymentStatus = payStatus.equals("PAID") ? PaymentStatus.PAID : payStatus.equals("PARTIAL") ? PaymentStatus.PARTIAL : PaymentStatus.PENDING;
+                boolean saleSaved = salesDAO.save(new Sales(
+                        0,
+                        customerId,
+                        userId,
+                        null,
+                        partsTotal,
+                        0,
+                        partsTotal,
+                        partsTotal,
+                        paymentStatus.getLabel(),
+                        "Repair Job Checkout - Job #" + repairId
+                ));
                 if (!saleSaved) {
                     connection.rollback();
                     return false;
@@ -325,6 +332,42 @@ public class RepairsBOImpl implements RepairsBO {
                 customDTO.getProductItemAddedDate(),
                 customDTO.getProductItemSoldDate()
         );
+    }
+
+    public boolean saveRepairJob(RepairJobDTO repairJobDTO) throws SQLException {
+        return repairJobDAO.save(new RepairJob(
+                repairJobDTO.getCusId(),
+                repairJobDTO.getUserId(),
+                repairJobDTO.getDeviceName(),
+                repairJobDTO.getDeviceSn(),
+                repairJobDTO.getProblemDesc(),
+                RepairStatus.PENDING.getLabel(),
+                new Date()
+        ));
+    }
+
+    public int getLastInsertedRepairId() throws SQLException {
+        return repairJobDAO.getLastInsertedRepairId();
+    }
+
+    public boolean updateRepairJob(RepairJobDTO repairJobDTO) throws SQLException {
+        return repairJobDAO.updateRepairJob(new RepairJob(
+
+                repairJobDTO.getRepairId(),
+                repairJobDTO.getCusId(),
+                repairJobDTO.getDeviceName(),
+                repairJobDTO.getDeviceSn(),
+                repairJobDTO.getProblemDesc()
+
+        ));
+    }
+
+    public boolean updateStatus(int repairId, RepairStatus newStatus) throws SQLException {
+        return repairJobDAO.updateStatus(repairId, newStatus);
+    }
+
+    public boolean deleteRepairJob(int repairId) throws SQLException {
+        return repairJobDAO.delete(repairId);
     }
 
 }

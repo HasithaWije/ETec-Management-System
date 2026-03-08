@@ -5,6 +5,7 @@ import lk.ijse.etecmanagementsystem.dao.custom.impl.SalesDAOImpl;
 import lk.ijse.etecmanagementsystem.dao.custom.impl.TransactionRecordDAOImpl;
 import lk.ijse.etecmanagementsystem.dto.RepairJobDTO;
 import lk.ijse.etecmanagementsystem.entity.RepairJob;
+import lk.ijse.etecmanagementsystem.entity.Sales;
 import lk.ijse.etecmanagementsystem.entity.TransactionRecord;
 import lk.ijse.etecmanagementsystem.db.DBConnection;
 import lk.ijse.etecmanagementsystem.util.PaymentStatus;
@@ -14,10 +15,13 @@ import java.sql.Connection;
 import java.sql.SQLException;
 
 public class TransactionBOImpl {
+
+    TransactionRecordDAOImpl transactionDAO = new TransactionRecordDAOImpl();
+    SalesDAOImpl salesDAO = new SalesDAOImpl();
+    RepairJobDAOImpl repairDAO = new RepairJobDAOImpl();
+
     public boolean settlePayment(String type, int id, double amount, int userId, String newPaymentStatus) throws SQLException {
-        TransactionRecordDAOImpl transactionDAO = new TransactionRecordDAOImpl();
-        SalesDAOImpl salesDAO = new SalesDAOImpl();
-        RepairJobDAOImpl repairDAO = new RepairJobDAOImpl();
+
 
         Connection conn = null;
         try {
@@ -44,7 +48,8 @@ public class TransactionBOImpl {
             boolean isSettled;
 
             if (type.equals("SALE")) {
-                currentPaidAmount = salesDAO.getSaleById(id).getPaidAmount();
+
+                currentPaidAmount = salesDAO.search(id).getPaid_amount();
                 isSettled = salesDAO.updateSalePayment(id, currentPaidAmount + amount, newPaymentStatus);
             } else {
                 RepairJob entity = repairDAO.search(id);

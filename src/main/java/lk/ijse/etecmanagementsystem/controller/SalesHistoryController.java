@@ -8,6 +8,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import lk.ijse.etecmanagementsystem.bo.BOFactory;
 import lk.ijse.etecmanagementsystem.bo.custom.CustomerBO;
+import lk.ijse.etecmanagementsystem.bo.custom.SalesBO;
 import lk.ijse.etecmanagementsystem.dao.custom.impl.CustomerDAOImpl;
 import lk.ijse.etecmanagementsystem.dao.custom.impl.QueryDAOImpl;
 import lk.ijse.etecmanagementsystem.dao.custom.impl.SalesDAOImpl;
@@ -61,6 +62,7 @@ public class SalesHistoryController {
     CustomerDAOImpl customerDAO = new CustomerDAOImpl();
     UserDAOImpl userDAO = new UserDAOImpl();
     CustomerBO customerBO = (CustomerBO) BOFactory.getInstance().getBO(BOFactory.BOTypes.CUSTOMER);
+    SalesBO salesBO = (SalesBO) BOFactory.getInstance().getBO(BOFactory.BOTypes.SALES);
 
 
     @FXML
@@ -83,13 +85,20 @@ public class SalesHistoryController {
     private void loadAllSales() {
         try {
             ObservableList<SalesTM> sales = FXCollections.observableArrayList();
-            List<SalesDTO> salesList = salesDAO.getAllSale();
+            List<SalesDTO> salesList = salesBO.getAllSale();
             for(SalesDTO sale : salesList) {
-                CustomerDTO customer = customerBO.getCustomerById(sale.getCustomerId());
+
+
+
+                String CustomerName = "Walk-in";
+                if(sale.getCustomerId() != 0){
+                    CustomerName = customerBO.getCustomerById(sale.getCustomerId()).getName();
+                }
+
                 UserDTO user = userDAO.getUserById(sale.getUserId());
                 sales.add(new SalesTM(
                         sale.getSaleId(),
-                        customer != null ? customer.getName() : "Walk-in",
+                        CustomerName,
                         user != null ? user.getUserName() : "Unknown",
                         sale.getDescription(),
                         sale.getSubtotal(),
@@ -98,6 +107,8 @@ public class SalesHistoryController {
                         sale.getPaidAmount()
                 ));
             }
+
+            System.out.println("Debug - Sales loaded: " + sales.size());
 //            ObservableList<SalesTM> obList = FXCollections.observableArrayList(salesList);
 
             tblSalesHistory.setItems(sales);

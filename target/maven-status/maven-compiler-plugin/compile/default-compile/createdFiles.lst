@@ -91,6 +91,7 @@ lk\ijse\etecmanagementsystem\util\ButtonStyle.class
 lk\ijse\etecmanagementsystem\util\BackgroundImageUtil.class
 lk\ijse\etecmanagementsystem\util\ImageUtils.class
 lk\ijse\etecmanagementsystem\dto\tm\RepairPartTM.class
+lk\ijse\etecmanagementsystem\entity\Sales.class
 lk\ijse\etecmanagementsystem\dao\custom\RepairItemDAO.class
 lk\ijse\etecmanagementsystem\dto\TransactionDTO.class
 lk\ijse\etecmanagementsystem\dao\custom\impl\RepairSalesDAOImpl.class

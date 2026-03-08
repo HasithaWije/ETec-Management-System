@@ -12,6 +12,7 @@ import javafx.stage.Stage;
 import lk.ijse.etecmanagementsystem.App;
 import lk.ijse.etecmanagementsystem.bo.BOFactory;
 import lk.ijse.etecmanagementsystem.bo.custom.CustomerBO;
+import lk.ijse.etecmanagementsystem.bo.custom.RepairsBO;
 import lk.ijse.etecmanagementsystem.dao.custom.impl.CustomerDAOImpl;
 import lk.ijse.etecmanagementsystem.dao.custom.impl.QueryDAOImpl;
 import lk.ijse.etecmanagementsystem.dao.custom.impl.RepairJobDAOImpl;
@@ -60,6 +61,7 @@ public class UpdateRepairTicketController {
     RepairJobDAOImpl repairJobDAO = new RepairJobDAOImpl();
     QueryDAOImpl queryDAO = new QueryDAOImpl();
     CustomerBO customerBO = (CustomerBO) BOFactory.getInstance().getBO(BOFactory.BOTypes.CUSTOMER);
+    RepairsBO repairsBO = (RepairsBO) BOFactory.getInstance().getBO(BOFactory.BOTypes.REPAIRS);
 
 
     @FXML
@@ -225,13 +227,7 @@ public class UpdateRepairTicketController {
             jobDTO.setProblemDesc(txtProblem.getText());
 
             // CALL MODEL
-            boolean success = repairJobDAO.updateRepairJob(new RepairJob(
-                    currentJob.getRepairId(),
-                    selectedCustomerId,
-                    txtDeviceName.getText(),
-                    txtSerial.getText(),
-                    txtProblem.getText()
-            ));
+            boolean success = repairsBO.updateRepairJob(jobDTO);
 
             if (success) {
                 showAlert(Alert.AlertType.INFORMATION, "Success", "Details Updated Successfully.");
@@ -279,7 +275,7 @@ public class UpdateRepairTicketController {
         Optional<ButtonType> result = alert.showAndWait();
         if (result.isPresent() && result.get() == ButtonType.OK) {
             try {
-                boolean success = repairJobDAO.deleteRepairJob(currentJob.getRepairId());
+                boolean success = repairsBO.deleteRepairJob(currentJob.getRepairId());
 
                 if (success) {
                     mainController.refreshList();

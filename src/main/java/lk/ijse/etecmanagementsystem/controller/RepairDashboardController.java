@@ -503,7 +503,7 @@ public class RepairDashboardController {
 
     private void updateStatus(RepairStatus newStatus) {
         try {
-            boolean isUpdated = repairJobDAO.updateStatus(currentSelection.getRepairId(), newStatus);
+            boolean isUpdated = repairsBOimpl.updateStatus(currentSelection.getRepairId(), newStatus);
             if (isUpdated) {
                 currentSelection.setStatus(newStatus);
 

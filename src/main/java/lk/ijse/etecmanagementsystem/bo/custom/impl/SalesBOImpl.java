@@ -4,9 +4,12 @@ import javafx.scene.control.Alert;
 import lk.ijse.etecmanagementsystem.bo.BOFactory;
 import lk.ijse.etecmanagementsystem.bo.custom.InventoryBO;
 import lk.ijse.etecmanagementsystem.bo.custom.SalesBO;
+import lk.ijse.etecmanagementsystem.dao.CrudUtil;
+import lk.ijse.etecmanagementsystem.dao.custom.SalesDAO;
 import lk.ijse.etecmanagementsystem.dao.custom.impl.*;
 import lk.ijse.etecmanagementsystem.dto.CustomDTO;
 import lk.ijse.etecmanagementsystem.entity.ProductItem;
+import lk.ijse.etecmanagementsystem.entity.Sales;
 import lk.ijse.etecmanagementsystem.entity.SalesItem;
 import lk.ijse.etecmanagementsystem.entity.TransactionRecord;
 import lk.ijse.etecmanagementsystem.db.DBConnection;
@@ -15,6 +18,7 @@ import lk.ijse.etecmanagementsystem.dto.SalesDTO;
 import lk.ijse.etecmanagementsystem.dto.tm.ItemCartTM;
 
 import java.sql.Connection;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -26,6 +30,7 @@ public class SalesBOImpl implements SalesBO {
     SalesItemDAOImpl salesItemDAO = new SalesItemDAOImpl();
     TransactionRecordDAOImpl transactionRecordDAO = new TransactionRecordDAOImpl();
     QueryDAOImpl queryDAO = new QueryDAOImpl();
+    SalesDAOImpl salesDAO = new SalesDAOImpl();
 
     public boolean placeOrder(SalesDTO salesDTO, List<ItemCartTM> cartItems) throws SQLException {
         Connection con = null;
@@ -93,8 +98,18 @@ public class SalesBOImpl implements SalesBO {
             String sqlSales = "INSERT INTO Sales (customer_id, user_id, sale_date, sub_total, discount, grand_total, paid_amount, payment_status, description) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
             int saleId = 0;
-            SalesDAOImpl salesDAO = new SalesDAOImpl();
-            boolean isSaved = salesDAO.saveSale(salesDTO);
+            boolean isSaved = salesDAO.save(new Sales(
+                    saleId,
+                    salesDTO.getCustomerId(),
+                    salesDTO.getUserId(),
+                    new java.sql.Timestamp(System.currentTimeMillis()),
+                    salesDTO.getSubtotal(),
+                    salesDTO.getDiscount(),
+                    salesDTO.getGrandTotal(),
+                    salesDTO.getPaidAmount(),
+                    salesDTO.getPaymentStatus().getLabel(),
+                    salesDTO.getDescription()
+            ));
             if (!isSaved) {
                 con.rollback();
                 return false;
@@ -209,5 +224,26 @@ public class SalesBOImpl implements SalesBO {
                 customDTO.getProductItemAddedDate(),
                 customDTO.getProductItemSoldDate()
         );
+    }
+
+    public List<SalesDTO> getAllSale() throws SQLException {
+        List<SalesDTO> salesList = new ArrayList<>();
+
+        List<Sales> sales = salesDAO.getAll();
+        for(Sales sale : sales) {
+            salesList.add(new SalesDTO(
+                    sale.getSale_id(),
+                    sale.getCustomer_id(),
+                    sale.getUser_id(),
+                    sale.getSale_date(),
+                    sale.getSub_total(),
+                    sale.getDiscount(),
+                    sale.getGrand_total(),
+                    sale.getPaid_amount(),
+                    sale.getPayment_status(),
+                    sale.getDescription()
+            ));
+        }
+        return salesList;
     }
 }

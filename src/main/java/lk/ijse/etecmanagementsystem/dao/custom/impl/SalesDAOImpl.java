@@ -1,14 +1,9 @@
 package lk.ijse.etecmanagementsystem.dao.custom.impl;
 
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import javafx.scene.chart.XYChart;
 import lk.ijse.etecmanagementsystem.dao.custom.SalesDAO;
-import lk.ijse.etecmanagementsystem.db.DBConnection;
-import lk.ijse.etecmanagementsystem.dto.SalesDTO;
-import lk.ijse.etecmanagementsystem.dto.tm.PendingSaleTM;
-import lk.ijse.etecmanagementsystem.dto.tm.SalesTM;
 import lk.ijse.etecmanagementsystem.dao.CrudUtil;
+import lk.ijse.etecmanagementsystem.entity.Sales;
 import lk.ijse.etecmanagementsystem.util.GenerateReports;
 
 import java.sql.*;
@@ -20,14 +15,15 @@ import java.util.List;
 
 public class SalesDAOImpl implements SalesDAO {
 
-    public List<SalesDTO> getAllSale() throws SQLException {
-        List<SalesDTO> salesList = new ArrayList<>();
+    @Override
+    public List<Sales> getAll() throws SQLException {
+        List<Sales> salesList = new ArrayList<>();
 
         String sql = "SELECT * FROM Sales s ORDER BY s.sale_date DESC";
 
         ResultSet resultSet = CrudUtil.execute(sql);
         while (resultSet.next()) {
-            salesList.add(new SalesDTO(
+            salesList.add(new Sales(
                     resultSet.getInt("sale_id"),
                     resultSet.getInt("customer_id"),
                     resultSet.getInt("user_id"),
@@ -44,11 +40,41 @@ public class SalesDAOImpl implements SalesDAO {
         return salesList;
     }
 
-    public SalesDTO getSaleById(int saleId) throws SQLException {
+    @Override
+    public boolean save(Sales entity) throws SQLException {
+        String sqlSales = "INSERT INTO Sales (customer_id, user_id, sale_date, sub_total, discount, " +
+                "grand_total, paid_amount, payment_status, description) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
+
+        return CrudUtil.execute(
+                sqlSales,
+                entity.getCustomer_id() == 0 ? null : entity.getCustomer_id(),
+                entity.getUser_id(),
+                new Timestamp(System.currentTimeMillis()),
+                entity.getSub_total(),
+                entity.getDiscount(),
+                entity.getGrand_total(),
+                entity.getPaid_amount(),
+                entity.getPayment_status(),
+                entity.getDescription()
+        );
+    }
+
+    @Override
+    public boolean update(Sales entity) throws SQLException {
+        return false;
+    }
+
+    @Override
+    public boolean delete(int id) throws SQLException {
+        return false;
+    }
+
+    @Override
+    public Sales search(int id) throws SQLException {
         String sql = "SELECT * FROM Sales WHERE sale_id = ?";
-        ResultSet rs = CrudUtil.execute(sql, saleId);
+        ResultSet rs = CrudUtil.execute(sql, id);
         if (rs.next()) {
-            return new SalesDTO(
+            return new Sales(
                     rs.getInt("sale_id"),
                     rs.getInt("customer_id"),
                     rs.getInt("user_id"),
@@ -62,26 +88,11 @@ public class SalesDAOImpl implements SalesDAO {
             );
 
         }
+        rs.close();
         return null; // Sale not found
     }
 
-    public boolean saveSale(SalesDTO salesDTO) throws SQLException {
-        String sqlSales = "INSERT INTO Sales (customer_id, user_id, sale_date, sub_total, discount, " +
-                "grand_total, paid_amount, payment_status, description) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?)";
-
-        return CrudUtil.execute(sqlSales,
-                salesDTO.getCustomerId() == 0 ? null : salesDTO.getCustomerId(),
-                salesDTO.getUserId(),
-                new Timestamp(System.currentTimeMillis()),
-                salesDTO.getSubtotal(),
-                salesDTO.getDiscount(),
-                salesDTO.getGrandTotal(),
-                salesDTO.getPaidAmount(),
-                salesDTO.getPaymentStatus().toString(),
-                salesDTO.getDescription()
-        );
-    }
-
+    @Override
     public int getLastInsertedSalesId() throws SQLException {
         String idQuery = "SELECT LAST_INSERT_ID() AS id FROM Sales";
         ResultSet rs = CrudUtil.execute(idQuery);
@@ -92,21 +103,25 @@ public class SalesDAOImpl implements SalesDAO {
         }
     }
 
+    @Override
     public boolean updateSalePayment(int saleId, double newPaidAmount, String newPaymentStatus) throws SQLException {
         String updateSql = "UPDATE Sales SET paid_amount = paid_amount + ?, payment_status = ? WHERE sale_id = ?";
         return CrudUtil.execute(updateSql, newPaidAmount, newPaymentStatus, saleId);
     }
 
+    @Override
     public int getSalesCount(LocalDate from, LocalDate to) throws SQLException {
         String sql = "SELECT COUNT(*) FROM Sales WHERE sale_date BETWEEN ? AND ?";
         return GenerateReports.getCountByDateRange(sql, from, to);
     }
 
+    @Override
     public boolean isSaleExist(String saleId) throws SQLException {
         String sql = "SELECT sale_id FROM Sales WHERE sale_id = ?";
         return GenerateReports.checkIdExists(sql, saleId);
     }
 
+    @Override
     public XYChart.Series<String, Number> getSalesChartData() throws SQLException {
         String sqlSales = "SELECT DATE(sale_date) as d, COUNT(*) as c FROM Sales " +
                 "WHERE sale_date >= DATE(NOW()) - INTERVAL 7 DAY " +
