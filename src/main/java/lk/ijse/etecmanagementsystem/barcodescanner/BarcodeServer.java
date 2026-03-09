@@ -1,4 +1,4 @@
-package lk.ijse.etecmanagementsystem.util.barcodescanner;
+package lk.ijse.etecmanagementsystem.barcodescanner;
 
 import com.sun.net.httpserver.HttpServer;
 import com.sun.net.httpserver.HttpHandler;

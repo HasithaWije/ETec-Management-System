@@ -5,7 +5,7 @@ import javafx.scene.control.TextField;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.stage.Stage;
-import lk.ijse.etecmanagementsystem.util.barcodescanner.BarcodeServer;
+import lk.ijse.etecmanagementsystem.barcodescanner.BarcodeServer;
 
 import java.net.URL;
 import java.util.ResourceBundle;

@@ -1,4 +1,4 @@
-package lk.ijse.etecmanagementsystem.util.reports;
+package lk.ijse.etecmanagementsystem.reports;
 
 import javafx.scene.control.Alert;
 import lk.ijse.etecmanagementsystem.App;

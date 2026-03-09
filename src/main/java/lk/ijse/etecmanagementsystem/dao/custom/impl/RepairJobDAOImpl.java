@@ -4,7 +4,7 @@ import javafx.scene.chart.XYChart;
 import lk.ijse.etecmanagementsystem.dao.custom.RepairJobDAO;
 import lk.ijse.etecmanagementsystem.dao.CrudUtil;
 import lk.ijse.etecmanagementsystem.entity.RepairJob;
-import lk.ijse.etecmanagementsystem.util.reports.GenerateReports;
+import lk.ijse.etecmanagementsystem.reports.GenerateReports;
 import lk.ijse.etecmanagementsystem.dto.RepairStatus;
 
 import java.sql.*;

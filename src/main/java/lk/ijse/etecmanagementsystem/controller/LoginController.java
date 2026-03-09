@@ -10,7 +10,7 @@ import lk.ijse.etecmanagementsystem.bo.BOFactory;
 import lk.ijse.etecmanagementsystem.bo.custom.UserBO;
 import lk.ijse.etecmanagementsystem.dao.custom.impl.UserDAOImpl;
 import lk.ijse.etecmanagementsystem.util.ETecAlerts;
-import lk.ijse.etecmanagementsystem.util.emailservice.EmailService;
+import lk.ijse.etecmanagementsystem.emailservice.EmailService;
 import lk.ijse.etecmanagementsystem.util.LoginUtil;
 import lk.ijse.etecmanagementsystem.util.ButtonStyle;
 

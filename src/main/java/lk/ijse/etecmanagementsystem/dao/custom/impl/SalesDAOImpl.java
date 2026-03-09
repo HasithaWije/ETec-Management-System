@@ -4,7 +4,7 @@ import javafx.scene.chart.XYChart;
 import lk.ijse.etecmanagementsystem.dao.custom.SalesDAO;
 import lk.ijse.etecmanagementsystem.dao.CrudUtil;
 import lk.ijse.etecmanagementsystem.entity.Sales;
-import lk.ijse.etecmanagementsystem.util.reports.GenerateReports;
+import lk.ijse.etecmanagementsystem.reports.GenerateReports;
 
 import java.sql.*;
 import java.time.LocalDate;

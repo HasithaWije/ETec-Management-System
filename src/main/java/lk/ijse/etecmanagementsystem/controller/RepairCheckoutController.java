@@ -7,7 +7,7 @@ import javafx.stage.Stage;
 import lk.ijse.etecmanagementsystem.bo.custom.impl.RepairsBOImpl;
 import lk.ijse.etecmanagementsystem.dto.tm.RepairJobTM;
 import lk.ijse.etecmanagementsystem.dto.tm.RepairPartTM;
-import lk.ijse.etecmanagementsystem.util.reports.GenerateReports;
+import lk.ijse.etecmanagementsystem.reports.GenerateReports;
 import lk.ijse.etecmanagementsystem.util.LoginUtil;
 
 import java.sql.SQLException;

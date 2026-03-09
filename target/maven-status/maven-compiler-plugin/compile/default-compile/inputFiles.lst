@@ -1,4 +1,5 @@
 E:\ETec-Management-System\src\main\java\lk\ijse\etecmanagementsystem\App.java
+E:\ETec-Management-System\src\main\java\lk\ijse\etecmanagementsystem\barcodescanner\BarcodeServer.java
 E:\ETec-Management-System\src\main\java\lk\ijse\etecmanagementsystem\bo\BOFactory.java
 E:\ETec-Management-System\src\main\java\lk\ijse\etecmanagementsystem\bo\custom\CategoryBO.java
 E:\ETec-Management-System\src\main\java\lk\ijse\etecmanagementsystem\bo\custom\CustomerBO.java
@@ -113,6 +114,7 @@ E:\ETec-Management-System\src\main\java\lk\ijse\etecmanagementsystem\dto\TopProd
 E:\ETec-Management-System\src\main\java\lk\ijse\etecmanagementsystem\dto\TransactionDTO.java
 E:\ETec-Management-System\src\main\java\lk\ijse\etecmanagementsystem\dto\TransactionFlow.java
 E:\ETec-Management-System\src\main\java\lk\ijse\etecmanagementsystem\dto\UserDTO.java
+E:\ETec-Management-System\src\main\java\lk\ijse\etecmanagementsystem\emailservice\EmailService.java
 E:\ETec-Management-System\src\main\java\lk\ijse\etecmanagementsystem\entity\Category.java
 E:\ETec-Management-System\src\main\java\lk\ijse\etecmanagementsystem\entity\Customer.java
 E:\ETec-Management-System\src\main\java\lk\ijse\etecmanagementsystem\entity\Product.java
@@ -125,13 +127,12 @@ E:\ETec-Management-System\src\main\java\lk\ijse\etecmanagementsystem\entity\Sale
 E:\ETec-Management-System\src\main\java\lk\ijse\etecmanagementsystem\entity\Supplier.java
 E:\ETec-Management-System\src\main\java\lk\ijse\etecmanagementsystem\entity\TransactionRecord.java
 E:\ETec-Management-System\src\main\java\lk\ijse\etecmanagementsystem\entity\User.java
+E:\ETec-Management-System\src\main\java\lk\ijse\etecmanagementsystem\reports\GenerateReports.java
 E:\ETec-Management-System\src\main\java\lk\ijse\etecmanagementsystem\util\Autocomplete.java
 E:\ETec-Management-System\src\main\java\lk\ijse\etecmanagementsystem\util\BackgroundImageUtil.java
 E:\ETec-Management-System\src\main\java\lk\ijse\etecmanagementsystem\util\BackupUtil.java
-E:\ETec-Management-System\src\main\java\lk\ijse\etecmanagementsystem\util\barcodescanner\BarcodeServer.java
 E:\ETec-Management-System\src\main\java\lk\ijse\etecmanagementsystem\util\ButtonStyle.java
 E:\ETec-Management-System\src\main\java\lk\ijse\etecmanagementsystem\util\CategoryScene.java
-E:\ETec-Management-System\src\main\java\lk\ijse\etecmanagementsystem\util\emailservice\EmailService.java
 E:\ETec-Management-System\src\main\java\lk\ijse\etecmanagementsystem\util\ETecAlerts.java
 E:\ETec-Management-System\src\main\java\lk\ijse\etecmanagementsystem\util\FieldsValidation.java
 E:\ETec-Management-System\src\main\java\lk\ijse\etecmanagementsystem\util\ImageUtils.java
@@ -139,6 +140,5 @@ E:\ETec-Management-System\src\main\java\lk\ijse\etecmanagementsystem\util\Invent
 E:\ETec-Management-System\src\main\java\lk\ijse\etecmanagementsystem\util\LoginUtil.java
 E:\ETec-Management-System\src\main\java\lk\ijse\etecmanagementsystem\util\MenuBar.java
 E:\ETec-Management-System\src\main\java\lk\ijse\etecmanagementsystem\util\ProductUtil.java
-E:\ETec-Management-System\src\main\java\lk\ijse\etecmanagementsystem\util\reports\GenerateReports.java
 E:\ETec-Management-System\src\main\java\lk\ijse\etecmanagementsystem\util\ThreadService.java
 E:\ETec-Management-System\src\main\java\module-info.java

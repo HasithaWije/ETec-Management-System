@@ -9,7 +9,7 @@ import javafx.scene.layout.HBox;
 import lk.ijse.etecmanagementsystem.bo.BOFactory;
 import lk.ijse.etecmanagementsystem.bo.custom.ReportBO;
 import lk.ijse.etecmanagementsystem.util.ETecAlerts;
-import lk.ijse.etecmanagementsystem.util.reports.GenerateReports;
+import lk.ijse.etecmanagementsystem.reports.GenerateReports;
 
 import java.sql.Date;
 import java.sql.SQLException;

@@ -3,7 +3,7 @@ package lk.ijse.etecmanagementsystem.dao.custom.impl;
 import lk.ijse.etecmanagementsystem.dao.custom.SupplierDAO;
 import lk.ijse.etecmanagementsystem.dao.CrudUtil;
 import lk.ijse.etecmanagementsystem.entity.Supplier;
-import lk.ijse.etecmanagementsystem.util.reports.GenerateReports;
+import lk.ijse.etecmanagementsystem.reports.GenerateReports;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;

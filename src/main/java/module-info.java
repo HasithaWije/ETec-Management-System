@@ -29,10 +29,10 @@ module lk.ijse.etecmanagementsystem {
     opens lk.ijse.etecmanagementsystem.dao to javafx.fxml;
     exports lk.ijse.etecmanagementsystem.dao;
     opens lk.ijse.etecmanagementsystem.dto to java.base, javafx.fxml;
-    exports lk.ijse.etecmanagementsystem.util.emailservice;
-    opens lk.ijse.etecmanagementsystem.util.emailservice to javafx.fxml;
-    exports lk.ijse.etecmanagementsystem.util.reports;
-    opens lk.ijse.etecmanagementsystem.util.reports to javafx.fxml;
+    exports lk.ijse.etecmanagementsystem.emailservice;
+    opens lk.ijse.etecmanagementsystem.emailservice to javafx.fxml;
+    exports lk.ijse.etecmanagementsystem.reports;
+    opens lk.ijse.etecmanagementsystem.reports to javafx.fxml;
     opens lk.ijse.etecmanagementsystem.dto.tm to java.base, javafx.fxml;
 
 }

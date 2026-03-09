@@ -20,7 +20,7 @@ import lk.ijse.etecmanagementsystem.bo.custom.InventoryBO;
 import lk.ijse.etecmanagementsystem.dao.custom.impl.QueryDAOImpl;
 import lk.ijse.etecmanagementsystem.dto.ProductDTO;
 import lk.ijse.etecmanagementsystem.dto.ProductItemDTO;
-import lk.ijse.etecmanagementsystem.util.barcodescanner.BarcodeServer;
+import lk.ijse.etecmanagementsystem.barcodescanner.BarcodeServer;
 
 import java.sql.SQLException;
 import java.util.ArrayList;

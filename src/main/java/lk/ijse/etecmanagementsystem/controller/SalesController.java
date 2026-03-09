@@ -27,7 +27,7 @@ import lk.ijse.etecmanagementsystem.dao.custom.impl.QueryDAOImpl;
 import lk.ijse.etecmanagementsystem.dto.*;
 import lk.ijse.etecmanagementsystem.dto.tm.InventoryItemTM;
 import lk.ijse.etecmanagementsystem.dto.tm.ItemCartTM;
-import lk.ijse.etecmanagementsystem.util.barcodescanner.BarcodeServer;
+import lk.ijse.etecmanagementsystem.barcodescanner.BarcodeServer;
 import lk.ijse.etecmanagementsystem.util.*;
 
 import java.io.IOException;

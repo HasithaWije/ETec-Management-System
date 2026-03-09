@@ -3,7 +3,7 @@ package lk.ijse.etecmanagementsystem.dao.custom.impl;
 import lk.ijse.etecmanagementsystem.dao.custom.TransactionRecordDAO;
 import lk.ijse.etecmanagementsystem.entity.TransactionRecord;
 import lk.ijse.etecmanagementsystem.dao.CrudUtil;
-import lk.ijse.etecmanagementsystem.util.reports.GenerateReports;
+import lk.ijse.etecmanagementsystem.reports.GenerateReports;
 
 import java.sql.Date;
 import java.sql.ResultSet;
