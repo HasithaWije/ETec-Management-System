@@ -30,8 +30,10 @@ public class RepairsBOImpl implements RepairsBO {
     SalesDAO salesDAO = (SalesDAO) DAOFactory.getInstance().getDAO(DAOFactory.DAOTypes.SALES);
     QueryDAO queryDAO = (QueryDAO) DAOFactory.getInstance().getDAO(DAOFactory.DAOTypes.QUERY);
     TransactionRecordDAO transactionRecordDAO = (TransactionRecordDAO) DAOFactory.getInstance().getDAO(DAOFactory.DAOTypes.TRANSACTION_RECORD);
+    ProductDAO productDAO = (ProductDAO) DAOFactory.getInstance().getDAO(DAOFactory.DAOTypes.PRODUCT);
 
 
+    @Override
     public List<RepairJobDTO> getAllRepairJobs() throws SQLException {
 
         List<RepairJob> entities = repairJobDAO.getAll();
@@ -62,16 +64,12 @@ public class RepairsBOImpl implements RepairsBO {
 
     }
 
+    @Override
     public boolean updateRepairJobDetails(int repairId, String intake, String diagnosis, String resolution,
                                           double laborCost, double partsCost, double totalAmount,
-                                          List<RepairPartTM> activeParts,
-                                          List<RepairPartTM> returnedParts) throws SQLException {
+                                          List<ProductItemDTO> activeParts,
+                                          List<ProductItemDTO> returnedParts) throws SQLException {
 
-        RepairJobDAOImpl repairJobDAO = new RepairJobDAOImpl();
-        RepairItemDAOImpl repairItemDAO = new RepairItemDAOImpl();
-        ProductItemDAOImpl productItemDAO = new ProductItemDAOImpl();
-        ProductDAOImpl productDAO = new ProductDAOImpl();
-        QueryDAOImpl queryDAO = new QueryDAOImpl();
 
         Connection connection = null;
         try {
@@ -89,7 +87,7 @@ public class RepairsBOImpl implements RepairsBO {
             }
 
             int repairItemId;
-            for (RepairPartTM part : activeParts) {
+            for (ProductItemDTO part : activeParts) {
                 repairItemId = repairItemDAO.getRepairItemId(repairId, part.getItemId());
 
                 if (repairItemId == -1) {
@@ -98,7 +96,7 @@ public class RepairsBOImpl implements RepairsBO {
                             0,
                             repairId,
                             part.getItemId(),
-                            part.getUnitPrice()
+                            part.getPrice()
                     ));
 
                     if (!linkSaved) {
@@ -140,7 +138,7 @@ public class RepairsBOImpl implements RepairsBO {
                 }
             }
 
-            for (RepairPartTM part : returnedParts) {
+            for (ProductItemDTO part : returnedParts) {
 
                 boolean linkDeleted = repairItemDAO.deleteRepairItem(repairId, part.getItemId());
                 if (!linkDeleted) {
@@ -196,6 +194,7 @@ public class RepairsBOImpl implements RepairsBO {
         }
     }
 
+    @Override
     public boolean completeCheckout(int repairId, int customerId, int userId,
                                     double totalAmount, double discount, double partsTotal, double paidAmount, String paymentMethod, String serialNumber) throws SQLException {
 
@@ -227,7 +226,7 @@ public class RepairsBOImpl implements RepairsBO {
             if (hasParts) {
                 List<CustomDTO> dbParts = getUsedParts(repairId);
                 List<RepairPartTM> partsToMark = getRepairPartTMS(dbParts);
-//                List<RepairPartTM> partsToMark = queryDAO.getUsedParts(repairId);
+
                 for (RepairPartTM repairPart : partsToMark) {
                     String sn = getProductItem(repairPart.getItemId()).getSerialNumber();
                     boolean marked = productItemDAO.updateStatus(sn, "SOLD");
@@ -332,6 +331,7 @@ public class RepairsBOImpl implements RepairsBO {
         );
     }
 
+    @Override
     public boolean saveRepairJob(RepairJobDTO repairJobDTO) throws SQLException {
         return repairJobDAO.save(new RepairJob(
                 repairJobDTO.getCusId(),
@@ -344,10 +344,12 @@ public class RepairsBOImpl implements RepairsBO {
         ));
     }
 
+    @Override
     public int getLastInsertedRepairId() throws SQLException {
         return repairJobDAO.getLastInsertedRepairId();
     }
 
+    @Override
     public boolean updateRepairJob(RepairJobDTO repairJobDTO) throws SQLException {
         return repairJobDAO.updateRepairJob(new RepairJob(
 
@@ -360,18 +362,22 @@ public class RepairsBOImpl implements RepairsBO {
         ));
     }
 
+    @Override
     public boolean updateStatus(int repairId, RepairStatus newStatus) throws SQLException {
         return repairJobDAO.updateStatus(repairId, newStatus);
     }
 
+    @Override
     public boolean deleteRepairJob(int repairId) throws SQLException {
         return repairJobDAO.delete(repairId);
     }
 
+    @Override
     public List<CustomDTO> getPendingRepairs() throws SQLException {
         return queryDAO.getPendingRepairs();
     }
 
+    @Override
     public List<CustomDTO> getUsedParts(int repairId) throws SQLException {
         return queryDAO.getUsedParts(repairId);
     }

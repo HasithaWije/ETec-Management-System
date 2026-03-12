@@ -24,6 +24,7 @@ public class TransactionBOImpl implements TransactionBO {
     SalesDAO salesDAO = (SalesDAO) DAOFactory.getInstance().getDAO(DAOFactory.DAOTypes.SALES);
     TransactionRecordDAO transactionRecordDAO = (TransactionRecordDAO) DAOFactory.getInstance().getDAO(DAOFactory.DAOTypes.TRANSACTION_RECORD);
 
+    @Override
     public boolean settlePayment(String type, int id, double amount, int userId, String newPaymentStatus) throws SQLException {
 
 
@@ -98,6 +99,7 @@ public class TransactionBOImpl implements TransactionBO {
         }
     }
 
+    @Override
     public List<TransactionDTO> getAllTransactions(Date dpFromDate, Date dpToDate) throws SQLException {
         List<TransactionRecord> entities = transactionRecordDAO.getAllTransactions(dpFromDate, dpToDate);
         List<TransactionDTO> dtos = new ArrayList<>();
@@ -121,10 +123,12 @@ public class TransactionBOImpl implements TransactionBO {
         return dtos;
     }
 
+    @Override
     public boolean saveManualTransaction(String type, double amount, String method, String note, int userId) throws SQLException {
         return transactionRecordDAO.saveManualTransaction(type, amount, method, note, userId);
     }
 
+    @Override
     public double[] getDashboardStats(Date fromDate, Date toDate) throws SQLException {
         return transactionRecordDAO.getDashboardStats(fromDate, toDate);
     }

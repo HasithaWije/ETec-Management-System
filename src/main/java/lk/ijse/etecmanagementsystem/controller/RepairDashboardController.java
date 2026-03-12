@@ -16,16 +16,11 @@ import javafx.stage.Stage;
 import lk.ijse.etecmanagementsystem.App;
 import lk.ijse.etecmanagementsystem.bo.BOFactory;
 import lk.ijse.etecmanagementsystem.bo.custom.CustomerBO;
+import lk.ijse.etecmanagementsystem.bo.custom.RepairsBO;
 import lk.ijse.etecmanagementsystem.bo.custom.impl.RepairsBOImpl;
-import lk.ijse.etecmanagementsystem.dao.custom.impl.QueryDAOImpl;
-import lk.ijse.etecmanagementsystem.dao.custom.impl.RepairJobDAOImpl;
-import lk.ijse.etecmanagementsystem.dto.CustomDTO;
-import lk.ijse.etecmanagementsystem.dto.CustomerDTO;
-import lk.ijse.etecmanagementsystem.dto.RepairJobDTO;
+import lk.ijse.etecmanagementsystem.dto.*;
 import lk.ijse.etecmanagementsystem.dto.tm.RepairJobTM;
 import lk.ijse.etecmanagementsystem.dto.tm.RepairPartTM;
-import lk.ijse.etecmanagementsystem.dto.ProductCondition;
-import lk.ijse.etecmanagementsystem.dto.RepairStatus;
 
 import java.io.IOException;
 import java.sql.SQLException;
@@ -114,9 +109,7 @@ public class RepairDashboardController {
     private final ObservableList<RepairPartTM> usedPartsList = FXCollections.observableArrayList(); // Visible in Table
     private final List<RepairPartTM> partsToReturnList = new ArrayList<>(); // Hidden list for removed items (Restocking)
 
-    RepairsBOImpl repairsBOimpl = new RepairsBOImpl();
-    RepairJobDAOImpl repairJobDAO = new RepairJobDAOImpl();
-    QueryDAOImpl queryDAO = new QueryDAOImpl();
+    RepairsBO repairsBO = (RepairsBO) BOFactory.getInstance().getBO(BOFactory.BOTypes.REPAIRS);
     CustomerBO customerBO = (CustomerBO) BOFactory.getInstance().getBO(BOFactory.BOTypes.CUSTOMER);
 
 
@@ -247,7 +240,29 @@ public class RepairDashboardController {
 
             double totalAmount = laborCost + partsCost;
 
-            boolean isSuccess = repairsBOimpl.updateRepairJobDetails(
+            List<ProductItemDTO> usedPartsDTOs = new ArrayList<>();
+            for (RepairPartTM part : usedPartsList) {
+                usedPartsDTOs.add(new ProductItemDTO(
+                        part.getItemId(),
+                        part.getItemName(),
+                        part.getSerialNumber(),
+                        part.getCondition(),
+                        part.getUnitPrice()
+                ));
+            }
+
+            List<ProductItemDTO> returnedPartsDTOs = new ArrayList<>();
+            for (RepairPartTM part : partsToReturnList) {
+                returnedPartsDTOs.add(new ProductItemDTO(
+                        part.getItemId(),
+                        part.getItemName(),
+                        part.getSerialNumber(),
+                        part.getCondition(),
+                        part.getUnitPrice()
+                ));
+            }
+
+            boolean isSuccess = repairsBO.updateRepairJobDetails(
                     repairId,
                     intake,
                     diagnosis,
@@ -255,8 +270,8 @@ public class RepairDashboardController {
                     laborCost,
                     partsCost,
                     totalAmount,
-                    new ArrayList<>(usedPartsList), // Active Parts (Link & Mark Sold)
-                    partsToReturnList               // Returned Parts (Unlink & Mark Available)
+                    usedPartsDTOs, // Active Parts (Link & Mark Sold)
+                    returnedPartsDTOs               // Returned Parts (Unlink & Mark Available)
             );
 
             if (isSuccess) {
@@ -298,7 +313,7 @@ public class RepairDashboardController {
 
     private void loadDataFromDB() {
         try {
-            List<RepairJobDTO> dtoList = repairsBOimpl.getAllRepairJobs();
+            List<RepairJobDTO> dtoList = repairsBO.getAllRepairJobs();
             List<RepairJobTM> dbList = new ArrayList<>();
             for (RepairJobDTO dto : dtoList) {
                 CustomerDTO customer = customerBO.getCustomerById(dto.getCusId());
@@ -410,7 +425,7 @@ public class RepairDashboardController {
             usedPartsList.clear();
             partsToReturnList.clear();
 
-            List<CustomDTO> dbParts = repairsBOimpl.getUsedParts(job.getRepairId());
+            List<CustomDTO> dbParts = repairsBO.getUsedParts(job.getRepairId());
             List<RepairPartTM> partsList = getRepairPartTMS(dbParts);
 
             usedPartsList.addAll(partsList);
@@ -525,7 +540,7 @@ public class RepairDashboardController {
 
     private void updateStatus(RepairStatus newStatus) {
         try {
-            boolean isUpdated = repairsBOimpl.updateStatus(currentSelection.getRepairId(), newStatus);
+            boolean isUpdated = repairsBO.updateStatus(currentSelection.getRepairId(), newStatus);
             if (isUpdated) {
                 currentSelection.setStatus(newStatus);
 

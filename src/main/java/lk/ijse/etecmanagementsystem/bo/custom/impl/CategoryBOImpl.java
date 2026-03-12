@@ -3,7 +3,6 @@ package lk.ijse.etecmanagementsystem.bo.custom.impl;
 import lk.ijse.etecmanagementsystem.bo.custom.CategoryBO;
 import lk.ijse.etecmanagementsystem.dao.DAOFactory;
 import lk.ijse.etecmanagementsystem.dao.custom.CategoryDAO;
-import lk.ijse.etecmanagementsystem.dao.custom.impl.CategoryDAOImpl;
 import lk.ijse.etecmanagementsystem.entity.Category;
 
 import java.sql.SQLException;

@@ -48,9 +48,7 @@ public class SelectRepairPartController {
     private RepairDashboardController mainController;
     private final ObservableList<RepairPartTM> stockList = FXCollections.observableArrayList();
 
-    // Model Instance
-    ProductItemDAOImpl productItemDAO = new ProductItemDAOImpl();
-    ProductDAOImpl productDAO = new ProductDAOImpl();
+    // BO Instances
     InventoryBO inventoryBO = (InventoryBO) BOFactory.getInstance().getBO(BOFactory.BOTypes.INVENTORY);
 
     public void setMainController(RepairDashboardController mainController) {

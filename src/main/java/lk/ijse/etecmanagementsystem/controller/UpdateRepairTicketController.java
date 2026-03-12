@@ -60,9 +60,7 @@ public class UpdateRepairTicketController {
     private final ObservableList<String> originalList = FXCollections.observableArrayList();
     private int selectedCustomerId = -1;
 
-    private final CustomerDAOImpl customerDAO = new CustomerDAOImpl();
-    RepairJobDAOImpl repairJobDAO = new RepairJobDAOImpl();
-    QueryDAOImpl queryDAO = new QueryDAOImpl();
+
     CustomerBO customerBO = (CustomerBO) BOFactory.getInstance().getBO(BOFactory.BOTypes.CUSTOMER);
     RepairsBO repairsBO = (RepairsBO) BOFactory.getInstance().getBO(BOFactory.BOTypes.REPAIRS);
 

@@ -38,8 +38,6 @@ public class LoginController {
     @FXML
     private AnchorPane rootNode;
 
-    ButtonStyle buttonStyle = new ButtonStyle();
-    UserDAOImpl userDAO = new UserDAOImpl();
     UserBO userBO = (UserBO) BOFactory.getInstance().getBO(BOFactory.BOTypes.USER);
 
 

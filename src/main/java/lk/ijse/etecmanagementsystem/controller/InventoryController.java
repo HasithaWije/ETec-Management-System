@@ -15,6 +15,7 @@ import javafx.stage.Stage;
 
 import lk.ijse.etecmanagementsystem.App;
 import lk.ijse.etecmanagementsystem.bo.BOFactory;
+import lk.ijse.etecmanagementsystem.bo.custom.CategoryBO;
 import lk.ijse.etecmanagementsystem.bo.custom.InventoryBO;
 import lk.ijse.etecmanagementsystem.bo.custom.impl.CategoryBOImpl;
 import lk.ijse.etecmanagementsystem.component.ProductCard;
@@ -79,8 +80,8 @@ public class InventoryController {
     private boolean isGridView = true;
 
 
-    private final ProductDAOImpl productDAO = new ProductDAOImpl();
-    CategoryBOImpl categoryBO = new CategoryBOImpl();
+
+    CategoryBO categoryBO = (CategoryBO) BOFactory.getInstance().getBO(BOFactory.BOTypes.CATEGORY);
     InventoryBO inventoryBO = (InventoryBO) BOFactory.getInstance().getBO(BOFactory.BOTypes.INVENTORY);
 
 

@@ -13,8 +13,9 @@ import java.util.List;
 
 public class SupplierBOImpl implements SupplierBO {
 
-     SupplierDAO supplierDAO = (SupplierDAO) DAOFactory.getInstance().getDAO(DAOFactory.DAOTypes.SUPPLIER);
+    SupplierDAO supplierDAO = (SupplierDAO) DAOFactory.getInstance().getDAO(DAOFactory.DAOTypes.SUPPLIER);
 
+    @Override
     public List<SupplierDTO> getAllSuppliers() throws SQLException {
         List<Supplier> entities = supplierDAO.getAll();
         List<SupplierDTO> dtos = new ArrayList<>();
@@ -30,6 +31,7 @@ public class SupplierBOImpl implements SupplierBO {
         return dtos;
     }
 
+    @Override
     public SupplierDTO getSupplierById(int id) throws SQLException {
         Supplier entity = supplierDAO.search(id);
         return new SupplierDTO(
@@ -41,6 +43,7 @@ public class SupplierBOImpl implements SupplierBO {
         );
     }
 
+    @Override
     public List<SupplierDTO> getSupplierByName(String name) throws SQLException {
 
         List<Supplier> entities = supplierDAO.getSupplierByName(name);
@@ -58,6 +61,7 @@ public class SupplierBOImpl implements SupplierBO {
         return suppliers;
     }
 
+    @Override
     public boolean saveSuppliers(SupplierDTO supplierDTO) throws SQLException {
         return supplierDAO.save(new Supplier(
                 supplierDTO.getSupplierId(),
@@ -68,6 +72,7 @@ public class SupplierBOImpl implements SupplierBO {
         ));
     }
 
+    @Override
     public boolean updateSuppliers(SupplierDTO supplierDTO) throws SQLException {
 
         return supplierDAO.update(new Supplier(
@@ -79,6 +84,7 @@ public class SupplierBOImpl implements SupplierBO {
         ));
     }
 
+    @Override
     public boolean deleteSuppliers(int id) throws SQLException {
         return supplierDAO.delete(id);
     }

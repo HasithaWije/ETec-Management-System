@@ -13,6 +13,9 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.input.KeyCode;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
+import lk.ijse.etecmanagementsystem.bo.BOFactory;
+import lk.ijse.etecmanagementsystem.bo.custom.CategoryBO;
+import lk.ijse.etecmanagementsystem.bo.custom.InventoryBO;
 import lk.ijse.etecmanagementsystem.bo.custom.impl.CategoryBOImpl;
 import lk.ijse.etecmanagementsystem.bo.custom.impl.InventoryBOImpl;
 import lk.ijse.etecmanagementsystem.dao.custom.impl.ProductDAOImpl;
@@ -94,10 +97,8 @@ public class ProductController implements Initializable {
     private final ObservableList<ProductDTO> productList = FXCollections.observableArrayList();
     private String selectedImagePath = "";
 
-    private final ProductDAOImpl productDAO = new ProductDAOImpl();
-    ProductItemDAOImpl productItemDAO = new ProductItemDAOImpl();
-    InventoryBOImpl inventoryBO = new InventoryBOImpl();
-    CategoryBOImpl categoryBO = new CategoryBOImpl();
+    InventoryBO inventoryBO = (InventoryBO) BOFactory.getInstance().getBO(BOFactory.BOTypes.INVENTORY);
+    CategoryBO categoryBO = (CategoryBO) BOFactory.getInstance().getBO(BOFactory.BOTypes.CATEGORY);
 
 
     private final String NAME_REGEX = "^[ -~]{3,30}$"; // Alphanumeric and special characters, 3-50 chars

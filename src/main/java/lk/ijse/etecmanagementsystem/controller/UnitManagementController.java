@@ -122,7 +122,7 @@ public class UnitManagementController {
     private final ObservableList<ProductItemDTO> viewList = FXCollections.observableArrayList();
     private final ObservableList<ProductItemDTO> productItemList = FXCollections.observableArrayList();
 
-    QueryDAOImpl queryDAO = new QueryDAOImpl();
+
 
     public void initialize() {
         setupTables();

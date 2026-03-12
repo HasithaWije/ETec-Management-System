@@ -60,10 +60,7 @@ public class SalesHistoryController {
     @FXML
     private TableColumn<SalesTM, Double> colPaid;
 
-    SalesDAOImpl salesDAO = new SalesDAOImpl();
-    QueryDAOImpl queryDAO = new QueryDAOImpl();
-    CustomerDAOImpl customerDAO = new CustomerDAOImpl();
-    UserDAOImpl userDAO = new UserDAOImpl();
+
     CustomerBO customerBO = (CustomerBO) BOFactory.getInstance().getBO(BOFactory.BOTypes.CUSTOMER);
     SalesBO salesBO = (SalesBO) BOFactory.getInstance().getBO(BOFactory.BOTypes.SALES);
     UserBO userBO = (UserBO) BOFactory.getInstance().getBO(BOFactory.BOTypes.USER);

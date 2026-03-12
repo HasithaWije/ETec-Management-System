@@ -59,7 +59,7 @@ public class CustomersController {
     @FXML
     private Button btnReset;
 
-    private final CustomerDAOImpl customerDAO = new CustomerDAOImpl();
+
     private final ObservableList<CustomerDTO> customerObservableList = FXCollections.observableArrayList();
     CustomerBO customerBO = (CustomerBO) BOFactory.getInstance().getBO(BOFactory.BOTypes.CUSTOMER);
 

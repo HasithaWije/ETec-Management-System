@@ -13,6 +13,7 @@ import lk.ijse.etecmanagementsystem.bo.BOFactory;
 import lk.ijse.etecmanagementsystem.bo.custom.SalesBO;
 import lk.ijse.etecmanagementsystem.bo.custom.impl.SalesBOImpl;
 import lk.ijse.etecmanagementsystem.dto.CustomerDTO;
+import lk.ijse.etecmanagementsystem.dto.ItemCartDTO;
 import lk.ijse.etecmanagementsystem.dto.SalesDTO;
 import lk.ijse.etecmanagementsystem.dto.tm.ItemCartTM;
 import lk.ijse.etecmanagementsystem.reports.GenerateReports;
@@ -205,7 +206,22 @@ public class SalesCheckoutController {
 
 
         try {
-            boolean isPlaced = salesBO.placeOrder(salesDTO, new ArrayList<>(cartItems));
+            List<ItemCartDTO> itemCartDTOList = new ArrayList<>();
+            for (ItemCartTM tm : cartItems) {
+                ItemCartDTO dto = new ItemCartDTO(
+                        tm.getItemId(),
+                        tm.getItemName(),
+                        tm.getSerialNo(),
+                        tm.getWarrantyMonths(),
+                        tm.getQuantity(),
+                        tm.getCondition(),
+                        tm.getUnitPrice(),
+                        tm.getDiscount(),
+                        tm.getTotal()
+                );
+                itemCartDTOList.add(dto);
+            }
+            boolean isPlaced = salesBO.placeOrder(salesDTO, itemCartDTOList);
 
             if (isPlaced) {
 

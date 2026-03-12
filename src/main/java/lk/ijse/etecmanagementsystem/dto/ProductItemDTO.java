@@ -14,6 +14,8 @@ public class ProductItemDTO {
     private int supplierWarranty;
     private int customerWarranty;
     private String status;
+    private ProductCondition productCondition;
+    private double price;
 
     // Raw Dates for Calculation
     private Date addedDate;
@@ -64,6 +66,31 @@ public class ProductItemDTO {
     }
 
     public ProductItemDTO(int stockId, int supplierWarranty) {
+    }
+
+
+    public ProductItemDTO(int itemId, String productName, String serialNumber, ProductCondition productCondition, double price) {
+        this.itemId = itemId;
+        this.productName = productName;
+        this.serialNumber = serialNumber;
+        this.productCondition = productCondition;
+        this.price = price;
+    }
+
+    public double getPrice() {
+        return price;
+    }
+
+    public void setPrice(double price) {
+        this.price = price;
+    }
+
+    public ProductCondition getProductCondition() {
+        return productCondition;
+    }
+
+    public void setProductCondition(ProductCondition productCondition) {
+        this.productCondition = productCondition;
     }
 
     public int getItemId() {

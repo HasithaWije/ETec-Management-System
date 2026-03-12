@@ -11,6 +11,7 @@ import lk.ijse.etecmanagementsystem.dao.DAOFactory;
 import lk.ijse.etecmanagementsystem.dao.custom.*;
 import lk.ijse.etecmanagementsystem.dao.custom.impl.*;
 import lk.ijse.etecmanagementsystem.dto.CustomDTO;
+import lk.ijse.etecmanagementsystem.dto.ItemCartDTO;
 import lk.ijse.etecmanagementsystem.entity.ProductItem;
 import lk.ijse.etecmanagementsystem.entity.Sales;
 import lk.ijse.etecmanagementsystem.entity.SalesItem;
@@ -37,16 +38,16 @@ public class SalesBOImpl implements SalesBO {
     ProductDAO productDAO = (ProductDAO) DAOFactory.getInstance().getDAO(DAOFactory.DAOTypes.PRODUCT);
 
     @Override
-    public boolean placeOrder(SalesDTO salesDTO, List<ItemCartTM> cartItems) throws SQLException {
+    public boolean placeOrder(SalesDTO salesDTO, List<ItemCartDTO> cartItems) throws SQLException {
         Connection con = null;
         try {
             con = DBConnection.getInstance().getConnection();
             con.setAutoCommit(false); // 1. Start Transaction
 
             // --- PHASE 1: PREPARE INVENTORY (Split Multi-Qty Items) ---
-            List<ItemCartTM> finalItemsToSave = new ArrayList<>();
+            List<ItemCartDTO> finalItemsToSave = new ArrayList<>();
 
-            for (ItemCartTM item : cartItems) {
+            for (ItemCartDTO item : cartItems) {
                 if (item.getQuantity() > 1) {
 
                     // A. Get Stock ID
@@ -87,7 +88,7 @@ public class SalesBOImpl implements SalesBO {
 
                     for (int i = 0; i < item.getQuantity(); i++) {
                         ProductItemDTO pi = productItems.get(i);
-                        finalItemsToSave.add(new ItemCartTM(
+                        finalItemsToSave.add(new ItemCartDTO(
                                 pi.getItemId(), item.getItemName(), null, item.getWarrantyMonths(),
                                 1, item.getCondition(), item.getUnitPrice(),
                                 item.getDiscount(), item.getTotal()
@@ -129,7 +130,7 @@ public class SalesBOImpl implements SalesBO {
             }
 
             // --- PHASE 3: BATCH PROCESSING (Sales Items & Status Updates) ---
-            for (ItemCartTM item : finalItemsToSave) {
+            for (ItemCartDTO item : finalItemsToSave) {
 
                 SalesItem salesItem = new SalesItem(
                         0,

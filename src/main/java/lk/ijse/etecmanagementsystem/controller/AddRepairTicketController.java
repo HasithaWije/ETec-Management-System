@@ -62,9 +62,7 @@ public class AddRepairTicketController {
     private int selectedCustomerId = -1;
     private RepairDashboardController mainController;
 
-    RepairJobDAOImpl repairJobDAO = new RepairJobDAOImpl();
     CustomerBO customerBO = (CustomerBO) BOFactory.getInstance().getBO(BOFactory.BOTypes.CUSTOMER);
-
     RepairsBO repairsBO = (RepairsBO) BOFactory.getInstance().getBO(BOFactory.BOTypes.REPAIRS);
 
     public void setMainController(RepairDashboardController mainController) {

@@ -552,7 +552,7 @@ public class InventoryBOImpl implements InventoryBO {
                     customDTO.getProductItemSerialNumber(),
                     productName,
                     customDTO.getProductItemSupplierName(),
-                     customDTO.getProductItemSupplierWarranty(),
+                    customDTO.getProductItemSupplierWarranty(),
                     customDTO.getProductItemCustomerWarranty(),
                     customDTO.getProductItemStatus(),
                     customDTO.getProductItemAddedDate(),
@@ -582,6 +582,11 @@ public class InventoryBOImpl implements InventoryBO {
                     customDTO.getProductItemAddedDate(),
                     customDTO.getProductItemSoldDate()
             );
+    }
+
+    @Override
+    public boolean updateSerialNumber(int itemId, String serialNumber) throws SQLException {
+        return productItemDAO.updateSerialNumber(itemId, serialNumber);
     }
 
     private ProductCondition fromConditionString(String s) {

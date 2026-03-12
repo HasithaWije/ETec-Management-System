@@ -1,6 +1,7 @@
 package lk.ijse.etecmanagementsystem.bo.custom;
 
 import lk.ijse.etecmanagementsystem.bo.SuperBO;
+import lk.ijse.etecmanagementsystem.dao.CrudUtil;
 import lk.ijse.etecmanagementsystem.dto.*;
 
 import java.sql.SQLException;
@@ -54,5 +55,7 @@ public interface InventoryBO extends SuperBO {
     List<ProductItemDTO> getUnitsByStockId(int stockId, String productName) throws SQLException;
 
     ProductItemDTO getItemBySerial(String serial) throws SQLException;
+
+    boolean updateSerialNumber(int itemId, String serialNumber) throws SQLException;
 }
 

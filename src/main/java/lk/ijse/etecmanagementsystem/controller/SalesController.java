@@ -152,10 +152,6 @@ public class SalesController implements Initializable {
     private final Stage newStage = new Stage();
 
 
-    private final CustomerDAOImpl customerDAO = new CustomerDAOImpl();
-    private final ProductDAOImpl productDAO = new ProductDAOImpl();
-    ProductItemDAOImpl productItemDAO = new ProductItemDAOImpl();
-    QueryDAOImpl queryDAO = new QueryDAOImpl();
     CustomerBO customerBO = (CustomerBO) BOFactory.getInstance().getBO(BOFactory.BOTypes.CUSTOMER);
     InventoryBO inventoryBO = (InventoryBO) BOFactory.getInstance().getBO(BOFactory.BOTypes.INVENTORY);
 
@@ -505,7 +501,7 @@ public class SalesController implements Initializable {
 
 
         try {
-            boolean isUpdated = productItemDAO.updateSerialNumber(cartItem.getItemId(), cartItem.getSerialNo());
+            boolean isUpdated = inventoryBO.updateSerialNumber(cartItem.getItemId(), cartItem.getSerialNo());
             if (!isUpdated) {
                 showAlert(Alert.AlertType.ERROR, "Failed to update serial number in inventory.");
                 return;

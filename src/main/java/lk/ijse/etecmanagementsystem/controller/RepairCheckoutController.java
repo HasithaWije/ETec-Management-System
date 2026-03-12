@@ -4,6 +4,8 @@ import javafx.collections.FXCollections;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.stage.Stage;
+import lk.ijse.etecmanagementsystem.bo.BOFactory;
+import lk.ijse.etecmanagementsystem.bo.custom.RepairsBO;
 import lk.ijse.etecmanagementsystem.bo.custom.impl.RepairsBOImpl;
 import lk.ijse.etecmanagementsystem.dto.tm.RepairJobTM;
 import lk.ijse.etecmanagementsystem.dto.tm.RepairPartTM;
@@ -43,7 +45,8 @@ public class RepairCheckoutController {
     // --- DATA ---
     private RepairJobTM jobTM;
     private RepairDashboardController mainController;
-    RepairsBOImpl repairsBOimpl = new RepairsBOImpl();
+
+    RepairsBO repairsBOImpl = (RepairsBO) BOFactory.getInstance().getBO(BOFactory.BOTypes.REPAIRS);
 
     private double subTotal = 0.0;
     private double grandTotal = 0.0;
@@ -175,7 +178,7 @@ public class RepairCheckoutController {
             double partsTotal = jobTM.getOriginalDto().getPartsCost();
 
             // CALL MODEL TRANSACTION
-            boolean success = repairsBOimpl.completeCheckout(
+            boolean success = repairsBOImpl.completeCheckout(
                     jobTM.getRepairId(),
                     cusId,
                     userId,

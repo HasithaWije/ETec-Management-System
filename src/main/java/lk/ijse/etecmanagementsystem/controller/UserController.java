@@ -57,7 +57,7 @@ public class UserController {
     @FXML
     private TableColumn<UserDTO, String> colRole;
 
-    private final UserDAOImpl userDAO = new UserDAOImpl();
+
     private final ObservableList<UserDTO> userObservableList = FXCollections.observableArrayList();
     UserBO userBO = (UserBO) BOFactory.getInstance().getBO(BOFactory.BOTypes.USER);
 

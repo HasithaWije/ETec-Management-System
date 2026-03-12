@@ -60,7 +60,7 @@ public class SuppliersController {
     @FXML
     private Button btnReset;
 
-    private final SupplierDAOImpl supplierDAO = new SupplierDAOImpl();
+
     private final ObservableList<SupplierDTO> suppliersObservableList = FXCollections.observableArrayList();
 
     SupplierBO supplierBO = (SupplierBO) BOFactory.getInstance().getBO(BOFactory.BOTypes.SUPPLIER);
